@@ -1,15 +1,11 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { View } from 'react-native';
 
 import Myevents from '../pages/home/myevents';
 import Allevents from '../pages/home/all_events';
 
 import {
-  SafeAreaView,
   SafeAreaProvider,
-  SafeAreaInsetsContext,
-  useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
 const Tab = createMaterialTopTabNavigator();

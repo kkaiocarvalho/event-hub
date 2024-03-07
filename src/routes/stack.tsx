@@ -8,10 +8,9 @@ import { TouchableOpacity, Text } from "react-native";
 
 import Login from "../pages/login";
 import Register from "../pages/register";
-import MyTabs from "./bottomtabs";
-import Myevents from "../pages/home/myevents";
+import MyBottomTabs from "./bottomtabs";
 import TopBars from "./topbars";
-import Home from "../pages/home";
+import Home from "../pages/home/bottom_menu";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +18,7 @@ type StackNavigation = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
-  MyTabs: undefined;
+  MyBottomTabs: undefined;
   TopBars: undefined;
 };
 
@@ -62,20 +61,17 @@ export default function StackComponent() {
         <Stack.Screen name="Register" component={Register} />
 
         <Stack.Screen
-          name="MyTabs"
-          component={MyTabs}
-          options={{ headerShown: true, headerBackVisible: false }}
-        />
-
-        <Stack.Screen
-          name="TopBars"
-          component={TopBars}
+          name="MyBottomTabs" component={MyBottomTabs}
           options={{ headerShown: false, headerBackVisible: false }}
         />
 
         <Stack.Screen
-          name="Home"
-          component={Home}
+          name="TopBars" component={TopBars}
+          options={{ headerShown: false, headerBackVisible: false }}
+        />
+
+        <Stack.Screen
+          name="Home" component={Home}
           options={{ headerShown: false, headerBackVisible: false }}
         />
       </Stack.Navigator>

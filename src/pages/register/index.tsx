@@ -4,6 +4,8 @@ import { Button, TextInput, Provider as PaperProvider } from 'react-native-paper
 import { useNavigation } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
 
+import theme from '../../components/theme/theme';
+
 const Register = () => {
 
     const navigation = useNavigation<StackTypes>();
@@ -73,20 +75,6 @@ const Register = () => {
     </PaperProvider>
   )
 }
-
-const theme = {
-  colors: {
-    primary: '#313131', // Cor primária (cor do texto e da borda)
-    accent: '#313131', // Cor de destaque (cor do botão)
-    background: 'white', // Cor de fundo
-    surface: 'white', // Cor da superfície
-    text: 'black', // Cor do texto
-    disabled: '#313131', // Cor de texto desativado
-    placeholder: '#313131', // Cor do placeholder
-    backdrop: 'rgba(0, 0, 0, 0.5)', // Cor do fundo do modal
-    notification: '#313131', // Cor da notificação
-  },
-};
 
 const styles = StyleSheet.create({
   viewStyle: {

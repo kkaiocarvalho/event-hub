@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Keyboard, Image, TouchableOpacity, Share} from 'react-native';
-import { Button, TextInput, Provider as PaperProvider } from 'react-native-paper';
+import { TextInput, Provider as PaperProvider } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
 import { useFonts, Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
-import MyTabs from '../../routes/bottomtabs';
-import Myevents from '../home/myevents';
-import TopBars from '../../routes/topbars';
 
+import theme from '../../components/theme/theme';
 
 const onShare = async () => {
   const result = await Share.share({
@@ -16,9 +14,7 @@ const onShare = async () => {
 }
 
 const Login = () => {
-  const [fontsLoaded] = useFonts({
-    Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold
-  });
+  const [fontsLoaded] = useFonts({ Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold });
 
   const navigation = useNavigation<StackTypes>();
   const [text, setText] = React.useState("");
@@ -54,12 +50,11 @@ const Login = () => {
 
           <TouchableOpacity
             style={styles.buttonLogin}
-            onPress={() => {navigation.navigate("Home");}}
+            onPress={() => {navigation.navigate("MyBottomTabs");}}
           >
             <Text style={styles.buttonLabel}>Entrar</Text>
           </TouchableOpacity>
         </View>
-
 
           <View style={styles.shareFlex}>
           <TouchableOpacity 
@@ -71,22 +66,6 @@ const Login = () => {
     </PaperProvider>
   );
 }
-
-const theme = {
-  colors: {
-    primary: '#313131', // Cor primária (cor do texto e da borda)
-    accent: '#26eb80', // Cor de destaque (cor do botão)
-    background: 'white', // Cor de fundo
-    surface: 'white', // Cor da superfície
-    text: 'black', // Cor do texto
-    disabled: '#b5b5b5', // Cor de texto desativado
-    placeholder: '#666', // Cor do placeholder
-    backdrop: 'rgba(0, 0, 0, 0.5)', // Cor do fundo do modal
-    notification: '#f50057', // Cor da notificação
-    border: 'transparent', // Torna a cor da borda transparente
-  },
-};
-
 
 const styles = StyleSheet.create({
   viewStyle: {
@@ -109,7 +88,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: 250,
     height: 30,
-    paddingVertical: 10, // Adicionar espaço vertical interno
+    paddingVertical: 10, 
     marginBottom: 20,
     marginTop: 10,
   },
@@ -117,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#c1ff72",
     color: "black",
     width: 250,
-    borderWidth: 0, // Definir a largura da borda como 0 para torná-la transparente
+    borderWidth: 0, 
   },
   buttonLogin: {
     backgroundColor: "#26eb80",

@@ -1,16 +1,18 @@
 import React from 'react';
-import { View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import Profile from '../pages/profile';
+import EventsTop from '../pages/home/top_bar';
+import CreateEvent from '../pages/creation_event'
+import QrCode from '../pages/qr_code';
 import Settings from '../pages/settings_page';
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function MyTabs() {
+export default function MyBottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="EventsTop"
       barStyle={{ backgroundColor: '#313131' }} // Cor de fundo do rodapé
       activeColor="#c1ff72" // Cor do ícone e texto da aba ativa
       inactiveColor="#888" // Cor do ícone e texto da aba inativa
@@ -18,17 +20,27 @@ export default function MyTabs() {
     >
       <Tab.Screen name="Profile" 
       options={{ 
-        tabBarLabel: 'Perfil', 
-        tabBarIcon: 'home' 
+        tabBarLabel: 'Perfil', tabBarIcon: 'account' 
         }} 
         component={Profile} />
 
-      <Tab.Screen name="Settings" 
+      <Tab.Screen name="EventsTop" 
       options={{ 
-        tabBarLabel: 'Configurações', 
-        tabBarIcon: 'calendar' 
+        tabBarLabel: 'Ingressos', tabBarIcon: 'calendar' 
         }} 
-        component={Settings} />
+        component={EventsTop} />
+
+      <Tab.Screen name="CreateEvent" 
+      options={{ 
+        tabBarLabel: 'Criar Evento', tabBarIcon: 'calendar' 
+        }} 
+        component={CreateEvent} />
+
+      <Tab.Screen name="QrCode" 
+      options={{ 
+        tabBarLabel: 'Validar Evento', tabBarIcon: 'line-scan' 
+        }} 
+        component={QrCode} />
         
     </Tab.Navigator>
   );

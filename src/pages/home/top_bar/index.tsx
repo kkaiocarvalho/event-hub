@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import theme from '../../components/theme/theme';
+import TopBars from '../../../routes/topbars';
 
-const Settings = () => {
+import theme from '../../../components/theme/theme';
+
+const EventsTop = () => {
   return (
       <PaperProvider theme={theme}>
-        <View></View>
+        <TopBars/>
       </PaperProvider>   
   );
 }
+
+
 
 const styles = StyleSheet.create({
     viewStyle: {
@@ -25,4 +29,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Settings;
+export default EventsTop;
