@@ -13,9 +13,9 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaView style={{ flex: 1 }}>
         <QueryClientProvider client={queryClient}>
-          {/* <PaperProvider>*/}
-          <Routes />
-          {/*</PaperProvider>*/}
+          <PaperProvider>
+            <Routes />
+          </PaperProvider>
         </QueryClientProvider>
       </SafeAreaView>
     </NavigationContainer>
