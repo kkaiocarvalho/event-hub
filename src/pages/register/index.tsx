@@ -1,5 +1,4 @@
 import {
-  View,
   Text,
   StyleSheet,
   Pressable,
@@ -7,24 +6,24 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import {
-  Button,
-  TextInput,
-  Provider as PaperProvider,
-} from "react-native-paper";
+import { TextInput, Provider as PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { StackTypes } from "../../routes/routes";
 
 import theme from "../../components/theme/theme";
+import { useForm } from "react-hook-form";
+
+type FormValues = {
+  name: string;
+  cpf: string;
+  phone: string;
+  email: string;
+  password: string;
+};
 
 const Register = () => {
   const navigation = useNavigation<StackTypes>();
-
-  const [nome, setNome] = React.useState("");
-  const [cpf, setCpf] = React.useState("");
-  const [telefone, setTelefone] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const form = useForm<FormValues>();
 
   return (
     <PaperProvider theme={theme}>
@@ -32,17 +31,19 @@ const Register = () => {
         <TextInput
           style={styles.textInput}
           label="Nome Completo"
-          value={nome}
-          onChangeText={(nome) => setNome(nome)}
           mode="outlined"
           outlineColor="transparent"
+          {...form.register("name", {
+            required: '"Nome" é um campo obrigatório',
+          })}
         />
 
         <TextInput
           style={styles.textInput}
           label="CPF"
-          value={cpf}
-          onChangeText={(cpf) => setCpf(cpf)}
+          {...form.register("cpf", {
+            required: '"CPF" é um campo obrigatório',
+          })}
           mode="outlined"
           outlineColor="transparent"
         />
@@ -50,8 +51,9 @@ const Register = () => {
         <TextInput
           style={styles.textInput}
           label="Telefone"
-          value={telefone}
-          onChangeText={(telefone) => setTelefone(telefone)}
+          {...form.register("phone", {
+            required: '"Telefone" é um campo obrigatório',
+          })}
           mode="outlined"
           outlineColor="transparent"
         />
@@ -59,8 +61,13 @@ const Register = () => {
         <TextInput
           style={styles.textInput}
           label="Email"
-          value={email}
-          onChangeText={(email) => setEmail(email)}
+          {...form.register("email", {
+            required: '"Email" é um campo obrigatório',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Endereço de e-mail inválido",
+            },
+          })}
           mode="outlined"
           outlineColor="transparent"
         />
@@ -68,8 +75,9 @@ const Register = () => {
         <TextInput
           style={styles.textInput}
           label="Senha"
-          value={password}
-          onChangeText={(password) => setPassword(password)}
+          {...form.register("password", {
+            required: '"Senha" é um campo obrigatório',
+          })}
           mode="outlined"
           secureTextEntry={true}
           outlineColor="transparent"

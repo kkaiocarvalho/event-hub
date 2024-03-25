@@ -38,9 +38,6 @@ const Login = () => {
   });
 
   const navigation = useNavigation<StackTypes>();
-  const [text, setText] = React.useState("");
-  const [password, setPassword] = React.useState("");
-
   const onShare = async () => {
     const result = await Share.share({
       message:
@@ -63,8 +60,6 @@ const Login = () => {
           <TextInput
             style={styles.textInput}
             label="Email"
-            value={text}
-            onChangeText={(text) => setText(text)}
             mode="outlined"
             outlineColor="transparent"
             {...form.register("email", {
@@ -79,8 +74,6 @@ const Login = () => {
           <TextInput
             style={styles.textInput}
             label="Senha"
-            value={password}
-            onChangeText={(password) => setPassword(password)}
             mode="outlined"
             outlineColor="transparent"
             {...form.register("password", {
