@@ -21,15 +21,15 @@ import {
 } from "@expo-google-fonts/barlow";
 
 import theme from "../../components/theme/theme";
+import { useForm } from "react-hook-form";
 
-const onShare = async () => {
-  const result = await Share.share({
-    message:
-      "Olá eu estou usando o Event HUB para gerenciar meus eventos! E confesso que estou amando o APP.",
-  });
+type FormValues = {
+  email: string;
+  password: string;
 };
 
 const Login = () => {
+  const form = useForm<FormValues>();
   const [fontsLoaded] = useFonts({
     Barlow_400Regular,
     Barlow_500Medium,
@@ -40,6 +40,15 @@ const Login = () => {
   const navigation = useNavigation<StackTypes>();
   const [text, setText] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const onShare = async () => {
+    const result = await Share.share({
+      message:
+        "Olá eu estou usando o Event HUB para gerenciar meus eventos! E confesso que estou amando o APP.",
+    });
+  };
+
+  console.log(form.formState.errors);
 
   return (
     <PaperProvider theme={theme}>
@@ -58,6 +67,13 @@ const Login = () => {
             onChangeText={(text) => setText(text)}
             mode="outlined"
             outlineColor="transparent"
+            {...form.register("email", {
+              required: '"Email" é um campo obrigatório',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Endereço de e-mail inválido",
+              },
+            })}
           />
 
           <TextInput
@@ -67,12 +83,15 @@ const Login = () => {
             onChangeText={(password) => setPassword(password)}
             mode="outlined"
             outlineColor="transparent"
+            {...form.register("password", {
+              required: '"Senha" é um campo obrigatório',
+            })}
           />
 
           <TouchableOpacity
             style={styles.buttonLogin}
             onPress={() => {
-              navigation.navigate("MyBottomTabs");
+              form.handleSubmit(() => navigation.navigate("MyBottomTabs"));
             }}
           >
             <Text style={styles.buttonLabel}>Entrar</Text>
