@@ -18,14 +18,14 @@ export default function TopBars() {
         tabBarStyle: { 
           backgroundColor: '#313131', // Cor de fundo do tab bar
         },
-        tabBarActiveTintColor: '#c1ff72', // Cor do texto da aba ativa
+        tabBarActiveTintColor: '#00FFE0', // Cor do texto da aba ativa
         tabBarInactiveTintColor: '#888', // Cor do texto da aba inativa
         tabBarLabelStyle: {
           fontSize: 16, // Tamanho do texto da aba
           fontWeight: 'bold', // Estilo do texto da aba
         },
         tabBarIndicatorStyle: {
-          backgroundColor: '#c1ff72', // Cor do indicador da aba ativa
+          backgroundColor: '#00FFE0', // Cor do indicador da aba ativa
         },
       }}
     >

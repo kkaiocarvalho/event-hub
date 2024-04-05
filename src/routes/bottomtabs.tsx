@@ -12,12 +12,15 @@ const Tab = createMaterialBottomTabNavigator();
 export default function MyBottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="EventsTop"
-      barStyle={{ backgroundColor: '#313131' }} // Cor de fundo do rodapé
-      activeColor="#c1ff72" // Cor do ícone e texto da aba ativa
-      inactiveColor="#888" // Cor do ícone e texto da aba inativa
-      shifting={false}
-    >
+  initialRouteName="EventsTop"
+  barStyle={{ backgroundColor: '#222222' }} // Cor de fundo do rodapé
+  activeColor="#00FFE0" // Cor do ícone e texto da aba ativa
+  inactiveColor="#FFF" // Cor do ícone e texto da aba inativa
+  shifting={true}
+  labeled={true}
+  shifting={true}
+  sceneContainerStyle={{ backgroundColor: '#000' }}
+>
       <Tab.Screen name="Profile" 
       options={{ 
         tabBarLabel: 'Perfil', tabBarIcon: 'account' 

@@ -1,40 +1,42 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Keyboard, Image, TouchableOpacity, Share} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Keyboard, TouchableOpacity, } from 'react-native';
 import { TextInput, Provider as PaperProvider } from 'react-native-paper';
+import {SvgXml} from 'react-native-svg'
+import { LinearGradient } from 'expo-linear-gradient';
+
 import { useNavigation } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
-import { useFonts, Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
+
+import { useForm } from "react-hook-form";
 
 import theme from '../../components/theme/theme';
-
-const onShare = async () => {
-  const result = await Share.share({
-      message: "Olá eu estou usando o Event HUB para gerenciar meus eventos! E confesso que estou amando o APP."
-  })
-}
+import logo from '../../components/theme/logo';
 
 const Login = () => {
-  const [fontsLoaded] = useFonts({ Barlow_400Regular, Barlow_500Medium, Barlow_600SemiBold, Barlow_700Bold });
 
   const navigation = useNavigation<StackTypes>();
-  const [text, setText] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const { register, handleSubmit, setValue } = useForm();
+
+  React.useEffect(() => {
+    register('email');
+    register('password');
+  }, [register]);
+
+  const onSubmit = data => {
+    console.log(data);
+    navigation.navigate("MyBottomTabs");
+  };
 
   return (
     <PaperProvider theme={theme}>
       <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
-        <View style={styles.viewLogin}>
-          <Image
-          source={require('../../assets/logo.png')}
-          style={styles.imageBackground}
-          resizeMode="cover"
-          />
-        
+        <LinearGradient colors={['#FFFA', '#606060', '#222222']}  style={styles.viewLogin}>
+          <SvgXml xml={logo} />
+          <View style={styles.card}/>
           <TextInput
             style={styles.textInput}
             label="Email"
-            value={text}
-            onChangeText={text => setText(text)}
+            onChangeText={text => setValue('email', text)}
             mode='outlined'
             outlineColor="transparent"
           />
@@ -42,48 +44,50 @@ const Login = () => {
           <TextInput
             style={styles.textInput}
             label="Senha"
-            value={password}
-            onChangeText={password => setPassword(password)}
+            onChangeText={password => setValue('password', password)}
             mode='outlined'
             outlineColor="transparent"
           />
 
           <TouchableOpacity
             style={styles.buttonLogin}
-            onPress={() => {navigation.navigate("MyBottomTabs");}}
+            onPress={handleSubmit(onSubmit)}
           >
             <Text style={styles.buttonLabel}>Entrar</Text>
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
 
-          <View style={styles.shareFlex}>
-          <TouchableOpacity 
-            style={styles.shareButton} onPress={onShare}>
-            <Text style={styles.buttonShareText}>Share</Text>
-          </TouchableOpacity>
-          </View>
       </Pressable>
     </PaperProvider>
   );
 }
 
+
 const styles = StyleSheet.create({
   viewStyle: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: "#313131"
+    backgroundColor: "#222222"
   },
   viewLogin: {
-    width: "100%",
+    width: "90%",
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 150
+    marginTop: 60,
+    zIndex: -1,
+    position: "relative",
+    marginBottom: 30,
+    borderRadius: 10,
+    padding: 40,
   },
   imageBackground: {
     width: '50%',
     height: 150,
+  },
+  card:{
+
   },
   textInput: {
     width: 250,
@@ -92,14 +96,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
   },
-  button: {
-    backgroundColor: "#c1ff72",
-    color: "black",
-    width: 250,
-    borderWidth: 0, 
-  },
   buttonLogin: {
-    backgroundColor: "#26eb80",
+    backgroundColor: "#00FFE0",
     marginTop: 20,
     borderRadius: 5,
     padding: 0,
@@ -115,23 +113,6 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 30,
     color: "black",
-  },
-  shareButton:{
-    backgroundColor: '#5CB8E4',
-    padding: 7,
-    borderRadius: 5,
-  },
-  buttonShareText:{
-    color: '#FFF',
-    fontSize: 22
-  },
-  shareFlex:{
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    alignItems: "flex-end",
-    paddingRight: 25,
-    paddingBottom: 25
   }
 });
 

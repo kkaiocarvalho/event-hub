@@ -11,6 +11,7 @@ import Register from "../pages/register";
 import MyBottomTabs from "./bottomtabs";
 import TopBars from "./topbars";
 import Home from "../pages/home/bottom_menu";
+import InitialScreen from "../pages/initial_screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ type StackNavigation = {
   Home: undefined;
   MyBottomTabs: undefined;
   TopBars: undefined;
+  InitialScreen: undefined;
 };
 
 export type StackTypes = NativeStackNavigationProp<StackNavigation>;
@@ -28,6 +30,7 @@ export default function StackComponent() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+      initialRouteName="InitialScreen"
         screenOptions={{
           headerTransparent: true,
           headerTintColor: "#fff",
@@ -40,24 +43,10 @@ export default function StackComponent() {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text
-                  style={{
-                    color: "#000",
-                    fontSize: 25,
-                    backgroundColor: "#c1ff72",
-                    padding: 5,
-                    borderRadius: 10,
-                  }}
-                >
-                  Registrar
-                </Text>
-              </TouchableOpacity>
-            ),
-          })}
         />
+
+        <Stack.Screen name="InitialScreen" component={InitialScreen} options={{ headerShown: false, headerBackVisible: false }}/>
+
         <Stack.Screen name="Register" component={Register} />
 
         <Stack.Screen

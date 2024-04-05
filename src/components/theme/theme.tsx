@@ -1,6 +1,6 @@
 const theme = {
     colors: {
-      primary: '#313131', // Cor primária (cor do texto e da borda)
+      primary: '#222222', // Cor primária (cor do texto e da borda)
       accent: '#26eb80', // Cor de destaque (cor do botão)
       background: 'white', // Cor de fundo
       surface: 'white', // Cor da superfície

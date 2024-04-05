@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+/*import React, { useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Camera } from 'expo-camera';
 
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CameraComponent;
+export default CameraComponent;*/
