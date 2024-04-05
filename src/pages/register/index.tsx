@@ -1,131 +1,121 @@
-import { View, Text, StyleSheet, Pressable, Keyboard, TouchableOpacity} from 'react-native'
+import { Text, StyleSheet, Pressable, Keyboard, TouchableOpacity} from 'react-native'
 import React from 'react';
-import { Button, TextInput, Provider as PaperProvider } from 'react-native-paper';
+import { TextInput, Provider as PaperProvider } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
+
+import theme from '../../components/theme/theme';
+
+import { useForm } from "react-hook-form";
 
 const Register = () => {
 
     const navigation = useNavigation<StackTypes>();
 
-    const [nome, setNome] = React.useState("");
-    const [cpf, setCpf] = React.useState("");
-    const [telefone, setTelefone] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-  
+    const { register, handleSubmit, setValue } = useForm();
 
-  return (
-    <PaperProvider theme={theme}>
-    <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
+    React.useEffect(() => {
+        register('nome');
+        register('cpf');
+        register('telefone');
+        register('email');
+        register('password');
+    }, [register]);
 
-    <TextInput style={styles.textInput}
-      label="Nome Completo"
-      value={nome}
-      onChangeText={nome => setNome(nome)}
-      mode='outlined'
-      outlineColor="transparent"
-    />
+    const onSubmit = data => {
+        console.log(data);
+        navigation.navigate("Register");
+    };
 
-    <TextInput style={styles.textInput}
-      label="CPF"
-      value={cpf}
-      onChangeText={cpf => setCpf(cpf)}
-      mode='outlined'
-      outlineColor="transparent"
-    />
+    return (
+        <PaperProvider theme={theme}>
+        <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
 
-  <TextInput style={styles.textInput}
-      label="Telefone"
-      value={telefone}
-      onChangeText={telefone => setTelefone(telefone)}
-      mode='outlined'
-      outlineColor="transparent"
-    />
+        <TextInput style={styles.textInput}
+            label="Nome Completo"
+            onChangeText={nome => setValue('nome', nome)}
+            mode='outlined'
+            outlineColor="transparent"
+        />
 
-    <TextInput
-      style={styles.textInput}
-      label="Email"
-      value={email}
-      onChangeText={email => setEmail(email)}
-      mode='outlined'
-      outlineColor="transparent"
-    />
+        <TextInput style={styles.textInput}
+            label="CPF"
+            onChangeText={cpf => setValue('cpf', cpf)}
+            mode='outlined'
+            outlineColor="transparent"
+        />
 
-    <TextInput style={styles.textInput}
-      label="Senha"
-      value={password}
-      onChangeText={password => setPassword(password)}
-      mode='outlined'
-      secureTextEntry={true}
-      outlineColor="transparent"
-    />
+        <TextInput style={styles.textInput}
+            label="Telefone"
+            onChangeText={telefone => setValue('telefone', telefone)}
+            mode='outlined'
+            outlineColor="transparent"
+        />
 
-  <TouchableOpacity 
-    style={styles.buttonRegister}
-    onPress={() => {navigation.navigate("Register");}}
-    >
-    <Text style={styles.buttonLabel}>Finalizar Cadastro</Text>
-  </TouchableOpacity>
+        <TextInput
+            style={styles.textInput}
+            label="Email"
+            onChangeText={email => setValue('email', email)}
+            mode='outlined'
+            outlineColor="transparent"
+        />
+
+        <TextInput style={styles.textInput}
+            label="Senha"
+            onChangeText={password => setValue('password', password)}
+            mode='outlined'
+            secureTextEntry={true}
+            outlineColor="transparent"
+        />
+
+        <TouchableOpacity 
+            style={styles.buttonRegister}
+            onPress={handleSubmit(onSubmit)}
+        >
+            <Text style={styles.buttonLabel}>Finalizar Cadastro</Text>
+        </TouchableOpacity>
 
 
-    </Pressable>
-    </PaperProvider>
-  )
+        </Pressable>
+        </PaperProvider>
+    )
 }
 
-const theme = {
-  colors: {
-    primary: '#313131', // Cor primária (cor do texto e da borda)
-    accent: '#313131', // Cor de destaque (cor do botão)
-    background: 'white', // Cor de fundo
-    surface: 'white', // Cor da superfície
-    text: 'black', // Cor do texto
-    disabled: '#313131', // Cor de texto desativado
-    placeholder: '#313131', // Cor do placeholder
-    backdrop: 'rgba(0, 0, 0, 0.5)', // Cor do fundo do modal
-    notification: '#313131', // Cor da notificação
-  },
-};
-
 const styles = StyleSheet.create({
-  viewStyle: {
-    flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center',
-    backgroundColor: "#313131"
-  },
-  textInput: {
-    width: 250,
-    height: 30,
-    marginBottom: 10,
-    paddingVertical: 10,
-    marginTop: 5,   
-  },
-  buttonRegister:{
-    //fontFamily: 'Barlow_500Medium',
-    backgroundColor: "#c1ff72",
-    color: "black",
-    marginBottom: 20,
-    marginTop:50,
-    borderRadius: 5,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center', 
-    height:50,
-    width:250
-  },
-  textTop:{
-    //fontFamily: 'Barlow_700Bold',
-    fontSize: 25,
-    color:"white"
-  },
-  buttonLabel: {
-   //fontFamily: 'Barlow_500Medium',
-    fontSize: 30,
-    color: "black",
-  }
+    viewStyle: {
+        flex: 1,
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: "#222222"
+    },
+    textInput: {
+        width: 250,
+        height: 30,
+        marginBottom: 10,
+        paddingVertical: 10,
+        marginTop: 5,   
+    },
+    buttonRegister:{
+        backgroundColor: "#00FFE0",
+        color: "black",
+        marginBottom: 20,
+        marginTop:50,
+        borderRadius: 5,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center', 
+        height:50,
+        width:250
+    },
+    textTop:{
+        fontSize: 25,
+        color:"white"
+    },
+    buttonLabel: {
+        fontSize: 30,
+        color: "black",
+    }
 });
 
 export default Register;

@@ -8,10 +8,10 @@ import { TouchableOpacity, Text } from "react-native";
 
 import Login from "../pages/login";
 import Register from "../pages/register";
-import MyTabs from "./bottomtabs";
-import Myevents from "../pages/home/myevents";
+import MyBottomTabs from "./bottomtabs";
 import TopBars from "./topbars";
-import Home from "../pages/home";
+import Home from "../pages/home/bottom_menu";
+import InitialScreen from "../pages/initial_screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,8 +19,9 @@ type StackNavigation = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
-  MyTabs: undefined;
+  MyBottomTabs: undefined;
   TopBars: undefined;
+  InitialScreen: undefined;
 };
 
 export type StackTypes = NativeStackNavigationProp<StackNavigation>;
@@ -29,6 +30,7 @@ export default function StackComponent() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+      initialRouteName="InitialScreen"
         screenOptions={{
           headerTransparent: true,
           headerTintColor: "#fff",
@@ -41,41 +43,24 @@ export default function StackComponent() {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text
-                  style={{
-                    color: "#000",
-                    fontSize: 25,
-                    backgroundColor: "#c1ff72",
-                    padding: 5,
-                    borderRadius: 10,
-                  }}
-                >
-                  Registrar
-                </Text>
-              </TouchableOpacity>
-            ),
-          })}
         />
+
+        <Stack.Screen name="InitialScreen" component={InitialScreen} options={{ headerShown: false, headerBackVisible: false }}/>
+
         <Stack.Screen name="Register" component={Register} />
 
         <Stack.Screen
-          name="MyTabs"
-          component={MyTabs}
-          options={{ headerShown: true, headerBackVisible: false }}
-        />
-
-        <Stack.Screen
-          name="TopBars"
-          component={TopBars}
+          name="MyBottomTabs" component={MyBottomTabs}
           options={{ headerShown: false, headerBackVisible: false }}
         />
 
         <Stack.Screen
-          name="Home"
-          component={Home}
+          name="TopBars" component={TopBars}
+          options={{ headerShown: false, headerBackVisible: false }}
+        />
+
+        <Stack.Screen
+          name="Home" component={Home}
           options={{ headerShown: false, headerBackVisible: false }}
         />
       </Stack.Navigator>
