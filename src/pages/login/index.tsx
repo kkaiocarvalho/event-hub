@@ -62,7 +62,6 @@ const Login = () => {
   );
 }
 
-
 const styles = StyleSheet.create({
   viewStyle: {
     flex: 1,

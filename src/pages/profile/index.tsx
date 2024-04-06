@@ -24,10 +24,9 @@ const Profile = () => {
   return (
     <PaperProvider theme={theme}>
       <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
-        <SvgXml xml={svgImagebackground} style={styles.background} />
+        {/*<SvgXml xml={svgImagebackground} style={styles.background} />*/}
         <View style={styles.cardInfo}>
           {/* Seu conteúdo do card aqui */}
-          <Text style={styles.title}>Perfil</Text>
 
           <TouchableOpacity onPress={handlePressIn}>
             <TextInput

@@ -13,6 +13,7 @@ import TopBars from "./topbars";
 import Home from "../pages/home/bottom_menu";
 import InitialScreen from "../pages/initial_screen";
 
+
 const Stack = createNativeStackNavigator();
 
 type StackNavigation = {
@@ -35,7 +36,6 @@ export default function StackComponent() {
           headerTransparent: true,
           headerTintColor: "#fff",
           headerTitleStyle: {
-            fontFamily: "Barlow_700Bold",
             fontSize: 24,
           },
         }}
