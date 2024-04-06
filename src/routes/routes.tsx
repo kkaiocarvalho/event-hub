@@ -1,14 +1,18 @@
 import {
   NativeStackNavigationOptions,
-  NativeStackNavigationProp,
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
-import { StartScreen } from "../pages/StartScreen";
+import * as P from "./allPages";
+import { NavigationProp } from "@react-navigation/native";
 
-const Stack = createNativeStackNavigator();
+// To add new screen, first add the name in ScreenName const, and create the screen object inside routes const
+export const ScreenName = ["StartScreen", "Login", "Register"] as const;
+type ScreenNames = (typeof ScreenName)[number];
+export type RootStackParamList = Record<ScreenNames, undefined>;
+export type StackNavigation = NavigationProp<RootStackParamList>;
 
 type RouteType = {
-  name: string;
+  name: ScreenNames;
   component: React.FC;
   options?: (props: any) => NativeStackNavigationOptions;
 };
@@ -16,7 +20,15 @@ type RouteType = {
 const routes: RouteType[] = [
   {
     name: "StartScreen",
-    component: StartScreen,
+    component: P.StartScreen,
+  },
+  {
+    name: "Login",
+    component: P.Login,
+  },
+  {
+    name: "Register",
+    component: P.Register,
   },
   /* 
   {
@@ -62,17 +74,7 @@ const routes: RouteType[] = [
   */
 ];
 
-type StackNavigation = {
-  Login: undefined;
-  Register: undefined;
-  Home: undefined;
-  MyBottomTabs: undefined;
-  TopBars: undefined;
-};
-
-//TODO: get object key value of each object in array instead StackNavigation
-
-export type StackTypes = NativeStackNavigationProp<StackNavigation>;
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Routes() {
   return (
