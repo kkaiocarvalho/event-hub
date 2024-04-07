@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import theme from '../../components/theme/theme';
 import logo from '../../components/theme/logo';
 
+import { AntDesign } from '@expo/vector-icons';
+
 const Login = () => {
 
   const navigation = useNavigation<StackTypes>();
@@ -30,9 +32,13 @@ const Login = () => {
   return (
     <PaperProvider theme={theme}>
       <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
-        <LinearGradient colors={['#FFFA', '#606060', '#222222']}  style={styles.viewLogin}>
+      <LinearGradient colors={['rgba(0, 255, 224, 1)', 'rgba(97, 0, 255, 1)']} 
+        start={{x: 1, y: 1}}
+        end={{x: 0.8, y: 0.8}}
+        locations={[1,1]}
+      style={styles.viewCardBack}>
+        <LinearGradient colors={['rgba(255, 255, 255, 0.3)', 'rgba(146, 146, 146, 0.1)', 'rgba(49, 49, 49, 0.0)']}  style={styles.viewLogin}>
           <SvgXml xml={logo} />
-          <View style={styles.card}/>
           <TextInput
             style={styles.textInput}
             label="Email"
@@ -54,9 +60,10 @@ const Login = () => {
             onPress={handleSubmit(onSubmit)}
           >
             <Text style={styles.buttonLabel}>Entrar</Text>
+            <AntDesign name="right" size={24} color="black" />
           </TouchableOpacity>
         </LinearGradient>
-
+        </LinearGradient>
       </Pressable>
     </PaperProvider>
   );
@@ -69,24 +76,35 @@ const styles = StyleSheet.create({
     backgroundColor: "#222222"
   },
   viewLogin: {
-    width: "90%",
+    width: "95%",
+    height:"100%",
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 60,
+    zIndex: 1,
+    position: "relative",
+    marginBottom: 20,
+    padding: 40,
+    borderBottomLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 35,
+    borderTopLeftRadius: 35,
+  },
+  viewCardBack: {
+    width: "100%",
+    height:"100%",
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: -1,
     position: "relative",
-    marginBottom: 30,
-    borderRadius: 10,
-    padding: 40,
   },
   imageBackground: {
     width: '50%',
     height: 150,
-  },
-  card:{
-
   },
   textInput: {
     width: 250,
@@ -100,10 +118,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 5,
     padding: 0,
-    width: 100,
+    width: 150,
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10
   },
   textTop: {
     fontSize: 25,

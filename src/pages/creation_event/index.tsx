@@ -18,6 +18,7 @@ const CreateEvent = () => {
   const { register, handleSubmit, setValue } = useForm();
   const [nomeEvento, setNomeEvento] = useState('');
   const [endereco, setEndereco] = useState('');
+  const [descricao, setDescricao] = useState('');
 
   const [date, setDate] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -33,6 +34,7 @@ const CreateEvent = () => {
     register('nomeEvento');
     register('endereco');
     register('data');
+    register('descricao');
   }, [register]);
 
   const onSubmit = data => {
@@ -44,10 +46,10 @@ const CreateEvent = () => {
     <PaperProvider theme={theme}>
       <Pressable onPress={Keyboard.dismiss} style={styles.viewStyle}>
         <View style={styles.viewForm}>
-          <View style={styles.card}/>
+          <Text style={styles.textTop}>Crie um Evento</Text>
           <TextInput
             style={styles.textInput}
-            label="Nome do Evento"
+            label="Nome"
             onChangeText={text => {
               setNomeEvento(text);
               setValue('nomeEvento', text);
@@ -55,7 +57,7 @@ const CreateEvent = () => {
             mode='outlined'
             outlineColor="transparent"
           />
-          <HelperText type="error" visible={!nomeEvento}>
+          <HelperText type="error" visible={!nomeEvento} style={styles.helperText}>
             Insira o nome do evento
           </HelperText>
 
@@ -69,7 +71,7 @@ const CreateEvent = () => {
             mode='outlined'
             outlineColor="transparent"
           />
-          <HelperText type="error" visible={!endereco}>
+          <HelperText type="error" visible={!endereco} style={styles.helperText}>
             Insira um endereço
           </HelperText>
 
@@ -85,8 +87,22 @@ const CreateEvent = () => {
             placeholder="dd/mm/yyyy"
             keyboardType='numeric'
           />
-          <HelperText type="error" visible={!date}>
-            Selecione uma data
+          <HelperText type="error" visible={!date} style={styles.helperText}>
+            Selecione a data que acontecerá o evento
+          </HelperText>
+
+          <TextInput
+            style={styles.textInput}
+            label="Descrição"
+            onChangeText={text => {
+              setDescricao(text);
+              setValue('descricao', text);
+            }}
+            mode='outlined'
+            outlineColor="transparent"
+          />
+          <HelperText type="error" visible={!descricao} style={styles.helperText}>
+            Insira uma descrição para seu evento. Por exemplo: Quando começa e quando termina!
           </HelperText>
 
           <TouchableOpacity
@@ -125,9 +141,6 @@ const styles = StyleSheet.create({
     width: '50%',
     height: 150,
   },
-  card:{
-
-  },
   textInput: {
     width: 250,
     height: 30,
@@ -152,6 +165,16 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 30,
     color: "black",
+  },
+  textTop: {
+    fontSize: 40,
+    color: 'white',
+    marginBottom: 30
+  },
+  helperText:{
+    color: 'white',
+    fontSize: 15,
+    marginTop: -15
   }
 });
 
