@@ -8,6 +8,7 @@ export const config = createConfig({
     colors: {
       ...defaultConfig.tokens.colors,
       background: "#181818",
+      textColor: "#bdbdbd",
       // primary-color
       primary50: "#39ffe8",
       primary100: "#11ffe3",
