@@ -9,7 +9,6 @@ import {
   ToastTitle,
   ToastDescription,
 } from "@gluestack-ui/themed";
-import { Image } from "react-native";
 import { Button } from "../components/Button";
 import { FacebookIcon } from "../icons/Facebook";
 import { useState } from "react";
@@ -17,13 +16,15 @@ import { GoogleIcon } from "../icons/Google";
 import { LinkedinIcon } from "../icons/Linkedin";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { navigateTo } from "../hook/NavigateTo";
+import { SvgXml } from "react-native-svg";
+import Logo from "../components/Logo";
 
 export function StartScreen() {
   const { navigate } = navigateTo();
   const [toastId, setToastId] = useState();
   const toast = useToast();
   const insets = useSafeAreaInsets();
-  const secondaryColor = "$secondary100";
+  const primaryColor = "$primary200";
 
   const showNotImplementedYet = () => {
     toast.close(toastId);
@@ -57,7 +58,7 @@ export function StartScreen() {
       h="$full"
       alignItems="center"
       justifyContent="center"
-      bg={secondaryColor}
+      bg={primaryColor}
     >
       <VStack
         h="95%"
@@ -68,22 +69,21 @@ export function StartScreen() {
         m="auto"
       >
         <Center h="$2/4">
-          <Image
-            source={require("../assets/cup_and_text.png")}
-            resizeMode="cover"
-          />
+          <SvgXml xml={Logo}/>
         </Center>
         <Center>
           <VStack w="80%" gap="$7">
             <Button
               w="$full"
               action="primary"
+              variant="outline"
               onPress={() => navigate("Register")}
               text="Cadastrar"
             />
             <Button
               w="$full"
               action="primary"
+              variant="outline"
               onPress={() => navigate("Login")}
               text="Entrar"
             />
@@ -91,11 +91,11 @@ export function StartScreen() {
         </Center>
         <Center>
           <Text color="$textColor">Entrar com</Text>
-          <HStack gap="$8" py="$8">
+          <HStack gap="$8" my="$8" bg="$primary200" borderRadius="$lg">
             <Button
               leftIcon={FacebookIcon}
               variant="link"
-              action="primary"
+              action="secondary"
               p="$0"
               h="$full"
               onPress={() => showNotImplementedYet()}
@@ -103,7 +103,7 @@ export function StartScreen() {
             <Button
               leftIcon={GoogleIcon}
               variant="link"
-              action="primary"
+              action="secondary"
               p="$0"
               h="$full"
               onPress={() => showNotImplementedYet()}
@@ -111,7 +111,7 @@ export function StartScreen() {
             <Button
               leftIcon={LinkedinIcon}
               variant="link"
-              action="primary"
+              action="secondary"
               p="$0"
               h="$full"
               onPress={() => showNotImplementedYet()}
