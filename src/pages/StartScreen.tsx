@@ -3,12 +3,12 @@ import {
   HStack,
   Text,
   VStack,
-  Box,
   useToast,
   Toast,
   ToastTitle,
   ToastDescription,
 } from "@gluestack-ui/themed";
+import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { FacebookIcon } from "../icons/Facebook";
 import { useState } from "react";
@@ -24,7 +24,6 @@ export function StartScreen() {
   const [toastId, setToastId] = useState();
   const toast = useToast();
   const insets = useSafeAreaInsets();
-  const primaryColor = "$primary200";
 
   const showNotImplementedYet = () => {
     toast.close(toastId);
@@ -54,22 +53,10 @@ export function StartScreen() {
   };
 
   return (
-    <Box
-      h="$full"
-      alignItems="center"
-      justifyContent="center"
-      bg={primaryColor}
-    >
-      <VStack
-        h="95%"
-        w="90%"
-        justifyContent="space-between"
-        bg="$background"
-        rounded="$2xl"
-        m="auto"
-      >
-        <Center h="$2/4">
-          <SvgXml xml={Logo}/>
+    <Background>
+      <VStack justifyContent="space-between" flex={1}>
+        <Center py="$10">
+          <SvgXml xml={Logo} />
         </Center>
         <Center>
           <VStack w="80%" gap="$7">
@@ -89,7 +76,7 @@ export function StartScreen() {
             />
           </VStack>
         </Center>
-        <Center>
+        <Center mt="$5">
           <Text color="$textColor">Entrar com</Text>
           <HStack gap="$8" my="$8" bg="$primary200" borderRadius="$lg">
             <Button
@@ -119,6 +106,6 @@ export function StartScreen() {
           </HStack>
         </Center>
       </VStack>
-    </Box>
+    </Background>
   );
 }

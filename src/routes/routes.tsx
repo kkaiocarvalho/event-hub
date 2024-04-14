@@ -1,9 +1,9 @@
 import {
-  NativeStackNavigationOptions,
+  type NativeStackNavigationOptions,
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
-import { NavigationProp } from "@react-navigation/native";
+import type { NavigationProp } from "@react-navigation/native";
 
 // To add new screen, first add the name in ScreenName const, and create the screen object inside routes const
 export const ScreenName = ["StartScreen", "Login", "Register"] as const;

@@ -9,9 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@dev-plugins/react-query": "^0.0.6",
     "@gluestack-style/react": "^1.0.52",
     "@gluestack-ui/config": "^1.1.18",
     "@gluestack-ui/themed": "^1.1.22",
+    "@hookform/resolvers": "^3.3.4",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/material-bottom-tabs": "^6.2.28",
     "@react-navigation/material-top-tabs": "^6.6.13",
@@ -35,6 +37,7 @@
     "react-native-svg": "^13.14.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3",
+    "yup": "^1.4.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
