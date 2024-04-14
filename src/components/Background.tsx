@@ -17,7 +17,7 @@ export function Background({ children, withScroll = false }: BackgroundProp) {
       p="$3"
     >
       <Box w="$full" bg="$background" rounded="$2xl" flex={1} p="$3">
-        {withScroll ? <ScrollView>{children}</ScrollView> : children}
+        {withScroll ? <ScrollView showsVerticalScrollIndicator={false} >{children}</ScrollView> : children}
       </Box>
     </Box>
   );

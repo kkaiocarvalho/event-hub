@@ -7,6 +7,7 @@ import {
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
 import { type Control, Controller } from "react-hook-form";
+import { Keyboard } from "react-native";
 
 export type InputProps = {
   label: string;
@@ -15,6 +16,7 @@ export type InputProps = {
   inputName: string;
   placeholder?: string;
   errorMessage?: string;
+  keyboardType?: any; 
   inputFieldProps?: ComponentProps<typeof InputField>;
   iconProps?: {
     iconSize?: any;
@@ -31,6 +33,7 @@ export function Input(inputProps: InputProps) {
     control,
     inputName,
     errorMessage,
+    keyboardType,
     ...glueInputProps
   } = inputProps;
   const iconSizeDefault = iconProps?.iconSize ? iconProps?.iconSize : "$10";
@@ -54,6 +57,7 @@ export function Input(inputProps: InputProps) {
             <InputField
               color="$textColor"
               placeholder={placeholder}
+              keyboardType={keyboardType}
               {...inputFieldProps}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -75,3 +79,5 @@ export function Input(inputProps: InputProps) {
     </VStack>
   );
 }
+
+

@@ -22,15 +22,35 @@ type FormValues = {
   confirmPassword: string;
 };
 
+//TODO: regex in cpf and phone
+const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
+const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+
+
 const schema = yup.object({
-  name: yup.string().required('"Nome" é um campo obrigatório'),
-  cpf: yup.string().required('"CPF"  é um campo obrigatório'),
+  name: yup
+    .string()
+    .min(4, 'O nome deve ter pelo menos 4 caracteres')
+    .max(255, 'O nome não pode ter mais de 255 caracteres').required('"Nome" é um campo obrigatório'),
+
   email: yup
     .string()
-    .email("E-mail inválido")
-    .required('"E-mail"  é um campo obrigatório'),
-  phone: yup.string().required('"Telefone"  é um campo obrigatório'),
-  password: yup.string().required('"Senha"  é um campo obrigatório'),
+    .required('"E-mail"  é um campo obrigatório')
+    .test('tem @?', 'O e-mail deve conter um "@"', value => value.includes('@')),
+
+  cpf: yup
+    .string()
+    .matches(cpfRegex, 'CPF errado')
+    .required('CPF é obrigatório'),
+
+  phone: yup.string().matches(phoneRegex, 'Telefone inválido').required('Telefone é obrigatório'),
+
+  password: yup
+    .string()
+    .min(6, "Senha deve conter mais de 6 caracteres")
+    .max(12, "Senha deve conter no maximo 12 caracteres")
+    .required('"Senha"  é um campo obrigatório'),
+
   confirmPassword: yup
     .string()
     .required("Confirme a senha")
@@ -41,7 +61,6 @@ const schema = yup.object({
 });
 
 export function Register() {
-  //TODO: regex in cpf and phone
   //TODO: improvement in input to pass password boolean props
   //TODO: add max and min for inputs
   const {
@@ -79,9 +98,9 @@ export function Register() {
   return (
     <Background withScroll={true}>
       <VStack justifyContent="space-between">
-        <VStack>
-          <Title text="Cadastro:" />
-          <Subtitle text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
+      <VStack>
+          <Title text="Cadastro" />
+          {/*<Subtitle text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />*/}
         </VStack>
         <Center p="$5">
           <VStack w="$full">
@@ -106,6 +125,7 @@ export function Register() {
                 inputName="cpf"
                 control={control}
                 errorMessage={errors.cpf?.message}
+                keyboardType="numeric"
               />
               <Input
                 placeholder="(00) 00000-0000"
@@ -113,6 +133,7 @@ export function Register() {
                 inputName="phone"
                 control={control}
                 errorMessage={errors.phone?.message}
+                keyboardType="numeric"
               />
               <Input
                 placeholder="Digite sua senha"
