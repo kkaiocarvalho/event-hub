@@ -15,8 +15,8 @@ function onFulfilledRequest(config: InternalAxiosRequestConfig) {
   return config;
 }
 
-api.interceptors.request.use(onFulfilledRequest, (error) =>
-  Promise.reject(error)
-);
+// api.interceptors.request.use(onFulfilledRequest, (error) =>
+//   Promise.reject(error)
+// );
 
 export { api };

@@ -23,34 +23,33 @@ type FormValues = {
 };
 
 //TODO: regex in cpf and phone
-const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
-const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-
+//TODO: mask in cpf and phone
+//const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
+//const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
 const schema = yup.object({
   name: yup
     .string()
-    .min(4, 'O nome deve ter pelo menos 4 caracteres')
-    .max(255, 'O nome não pode ter mais de 255 caracteres').required('"Nome" é um campo obrigatório'),
-
+    .min(4, "O nome deve ter pelo menos 4 caracteres")
+    .max(255, "O nome não pode ter mais de 255 caracteres")
+    .required('"Nome" é um campo obrigatório'),
   email: yup
     .string()
-    .required('"E-mail"  é um campo obrigatório')
-    .test('tem @?', 'O e-mail deve conter um "@"', value => value.includes('@')),
-
+    .email("E-mail inválido")
+    .required('"E-mail"  é um campo obrigatório'),
   cpf: yup
     .string()
-    .matches(cpfRegex, 'CPF errado')
-    .required('CPF é obrigatório'),
-
-  phone: yup.string().matches(phoneRegex, 'Telefone inválido').required('Telefone é obrigatório'),
-
+    //.matches(cpfRegex, "CPF inválido")
+    .required("CPF é obrigatório"),
+  phone: yup
+    .string()
+    //.matches(phoneRegex, "Telefone inválido")
+    .required("Telefone é obrigatório"),
   password: yup
     .string()
     .min(6, "Senha deve conter mais de 6 caracteres")
     .max(12, "Senha deve conter no maximo 12 caracteres")
     .required('"Senha"  é um campo obrigatório'),
-
   confirmPassword: yup
     .string()
     .required("Confirme a senha")
@@ -71,7 +70,18 @@ export function Register() {
     resolver: yupResolver(schema),
   });
 
-  const createUserMutation = useMutation({ mutationFn: createUser });
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    //TODO: create a hook to compile onSuccess and onError function toasts
+    onSuccess(data) {
+      //TODO: toast provider to inform user of success
+      console.log({ data });
+    },
+    onError(error) {
+      //TODO: toast provider to inform user of error
+      console.log({ error });
+    },
+  });
 
   const submit = (data: FormValues) => {
     if (!data) return;
@@ -98,7 +108,7 @@ export function Register() {
   return (
     <Background withScroll={true}>
       <VStack justifyContent="space-between">
-      <VStack>
+        <VStack>
           <Title text="Cadastro" />
           {/*<Subtitle text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />*/}
         </VStack>

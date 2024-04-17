@@ -9,10 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 
-import {
-  loginUser, 
-  type LoginUserVariables,
-} from "../api/requests/login-user";
+import { loginUser, type LoginUserVariables } from "../api/requests/login";
 
 type FormValues = {
   email: string;
@@ -22,15 +19,13 @@ type FormValues = {
 const schema = yup.object({
   email: yup
     .string()
-    .required('"E-mail"  é um campo obrigatório')
-    .test('tem @?', 'O e-mail deve conter um "@"', value => value.includes('@')),
-
+    .email("E-mail inválido")
+    .required('"E-mail"  é um campo obrigatório'),
   password: yup
     .string()
     .min(6, "Senha deve conter mais de 6 caracteres")
     .max(12, "Senha deve conter no maximo 12 caracteres")
     .required('"Senha"  é um campo obrigatório'),
-
 });
 
 export function Login() {
@@ -44,7 +39,18 @@ export function Login() {
     resolver: yupResolver(schema),
   });
 
-  const loginUserMutation = useMutation({ mutationFn: loginUser });
+  const loginUserMutation = useMutation({
+    mutationFn: loginUser,
+    //TODO: create a hook to compile onSuccess and onError function toasts
+    onSuccess(data) {
+      //TODO: toast provider to inform user of success
+      console.log({ data });
+    },
+    onError(error) {
+      //TODO: toast provider to inform user of error
+      console.log({ error });
+    },
+  });
 
   const submit = (data: FormValues) => {
     if (!data) return;
@@ -63,8 +69,8 @@ export function Login() {
 
   return (
     <Background withScroll={true}>
-      <VStack justifyContent="space-between" mt="$2/4" >
-      <VStack>
+      <VStack justifyContent="space-between" mt="$2/4">
+        <VStack>
           <Title text="Login" />
         </VStack>
         <Center p="$5">
@@ -83,7 +89,7 @@ export function Login() {
                 inputName="password"
                 control={control}
                 errorMessage={errors.password?.message}
-                />
+              />
             </VStack>
             <Button
               action="primary"
