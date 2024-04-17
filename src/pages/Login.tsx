@@ -8,8 +8,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
-
-import { loginUser, type LoginUserVariables } from "../api/requests/login";
+import { login, type LoginUserVariables } from "../api/requests/login";
 
 type FormValues = {
   email: string;
@@ -40,7 +39,7 @@ export function Login() {
   });
 
   const loginUserMutation = useMutation({
-    mutationFn: loginUser,
+    mutationFn: login,
     //TODO: create a hook to compile onSuccess and onError function toasts
     onSuccess(data) {
       //TODO: toast provider to inform user of success
