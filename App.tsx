@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "./src/config/themeConfig";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
+import { AuthProvider } from "./src/contexts/AuthContext";
 
 export default function App() {
   useReactQueryDevTools(queryClient);
@@ -15,9 +16,11 @@ export default function App() {
       <SafeAreaProvider>
         <GluestackUIProvider config={config}>
           <NavigationContainer>
-            <SafeAreaView style={{ flex: 1 }}>
-              <Routes />
-            </SafeAreaView>
+            <AuthProvider>
+              <SafeAreaView style={{ flex: 1 }}>
+                <Routes />
+              </SafeAreaView>
+            </AuthProvider>
           </NavigationContainer>
         </GluestackUIProvider>
       </SafeAreaProvider>

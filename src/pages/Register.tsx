@@ -85,21 +85,12 @@ export function Register() {
 
   const submit = (data: FormValues) => {
     if (!data) return;
-    const dataMock: FormValues = {
-      name: "Adamastores",
-      cpf: "44566878914",
-      email: "adamastor04@gmail.com",
-      phone: "34988776655",
-      password: "senhaforte01",
-      confirmPassword: "senhaforte01",
-    };
-
     const body: CreateUserVariables = {
-      nome: dataMock.name,
-      cpf: dataMock.cpf,
-      email: dataMock.email,
-      telefone: dataMock.phone,
-      senha: dataMock.password,
+      nome: data.name,
+      cpf: data.cpf,
+      email: data.email,
+      telefone: data.phone,
+      senha: data.password,
     };
 
     createUserMutation.mutate(body);

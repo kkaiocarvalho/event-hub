@@ -1,14 +1,13 @@
 import { Center, VStack } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
-import { Subtitle } from "../components/Subtitle";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMutation } from "@tanstack/react-query";
-import { login, type LoginUserVariables } from "../api/requests/login";
+import { useAuth } from "../hook/useAuth";
+import { AuthenticateVariables } from "../api/requests/authenticate";
 
 type FormValues = {
   email: string;
@@ -28,6 +27,7 @@ const schema = yup.object({
 });
 
 export function Login() {
+  const { login, loading } = useAuth();
   //TODO: improvement in input to pass password boolean props
   //TODO: add max and min for inputs
   const {
@@ -38,32 +38,13 @@ export function Login() {
     resolver: yupResolver(schema),
   });
 
-  const loginUserMutation = useMutation({
-    mutationFn: login,
-    //TODO: create a hook to compile onSuccess and onError function toasts
-    onSuccess(data) {
-      //TODO: toast provider to inform user of success
-      console.log({ data });
-    },
-    onError(error) {
-      //TODO: toast provider to inform user of error
-      console.log({ error });
-    },
-  });
-
   const submit = (data: FormValues) => {
     if (!data) return;
-    const dataMock: FormValues = {
-      email: "adamastor04@gmail.com",
-      password: "senhaforte01",
+    const body: AuthenticateVariables = {
+      email: data.email,
+      senha: data.password,
     };
-
-    const body: LoginUserVariables = {
-      email: dataMock.email,
-      senha: dataMock.password,
-    };
-
-    loginUserMutation.mutate(body);
+    login(body);
   };
 
   return (
@@ -95,7 +76,7 @@ export function Login() {
               variant="outline"
               text="Entrar"
               mt="$5"
-              isDisabled={loginUserMutation.isPending}
+              isDisabled={loading}
               onPress={handleSubmit(submit)}
             />
           </VStack>

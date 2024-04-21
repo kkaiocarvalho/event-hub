@@ -19,17 +19,15 @@ const internalErrorSchema = z.object({
   correlationError: z.string(),
 });
 
-enum ErrorResponse {
-  "invalidDataSchema" = 400,
-  "ruleErrorSchema" = 422,
-  "internalErrorSchema" = 500,
-}
+export type InvalidDataSchemaResponse = z.infer<typeof invalidDataSchema>;
+export type RuleErrorSchemaResponse = z.infer<typeof ruleErrorSchema>;
+export type InternalErrorSchemaResponse = z.infer<typeof internalErrorSchema>;
 
-const errorResponseSchema = {
-  invalidDataSchema: invalidDataSchema,
-  ruleErrorSchema: ruleErrorSchema,
-  internalErrorSchema: internalErrorSchema,
-};
+export type RequestErrorSchema =
+  | InvalidDataSchemaResponse
+  | RuleErrorSchemaResponse
+  | InternalErrorSchemaResponse
+  | AxiosError;
 
 type RequestProps = {
   method: typeof api.get | typeof api.post | typeof api.delete;
@@ -38,25 +36,27 @@ type RequestProps = {
   schema: z.ZodObject<any>;
 };
 
-export async function request({
+export async function request<T = unknown>({
   method,
   url,
   body = {},
   schema,
-}: RequestProps) {
+}: RequestProps): Promise<T | AxiosError> {
   return await method(url, body)
-    .then((response) => schema.parse(response))
+    .then((response) => schema.parse(response.data) as T)
     .catch((err: AxiosError) => {
       const response = err.response;
       if (!response) return err;
       const status = response?.status as number;
       const schema =
-        errorResponseSchema[
-          ErrorResponse[status] as
-            | "invalidDataSchema"
-            | "ruleErrorSchema"
-            | "internalErrorSchema"
-        ];
+        status === 500
+          ? internalErrorSchema
+          : status === 400
+          ? invalidDataSchema
+          : [401, 404, 422].includes(status)
+          ? ruleErrorSchema
+          : undefined;
+      if (!schema) return Promise.reject(err.response);
 
       return Promise.reject(schema.parse(response.data));
     });

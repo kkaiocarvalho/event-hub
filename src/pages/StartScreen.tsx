@@ -2,45 +2,41 @@ import {
   Center,
   HStack,
   Text,
-  VStack,
-  useToast,
   Toast,
   ToastTitle,
-  ToastDescription,
+  useToast,
+  VStack,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { FacebookIcon } from "../icons/Facebook";
-import { useState } from "react";
 import { GoogleIcon } from "../icons/Google";
 import { LinkedinIcon } from "../icons/Linkedin";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { navigateTo } from "../hook/NavigateTo";
 import { SvgXml } from "react-native-svg";
 import Logo from "../components/Logo";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ToastDescription } from "@gluestack-ui/themed";
 
 export function StartScreen() {
   const { navigate } = navigateTo();
-  const [toastId, setToastId] = useState();
-  const toast = useToast();
+  const configToast = useToast();
   const insets = useSafeAreaInsets();
 
-  const showNotImplementedYet = () => {
-    toast.close(toastId);
-    toast.show({
+  const showToast = () => {
+    configToast.close("toasts-show");
+    configToast.show({
       placement: "top",
-      render: ({ id }) => {
-        setToastId(id);
-        const toastId = "toast-" + id;
+      render: () => {
         return (
           <Toast
-            nativeID={toastId}
-            action="info"
+            nativeID="toasts-show"
+            action="error"
             variant="accent"
             top={insets.top}
           >
             <VStack space="xs">
-              <ToastTitle>👷 Em andamento </ToastTitle>
+              <ToastTitle>👷 Em andamento</ToastTitle>
               <ToastDescription>
                 Ainda estamos trabalhando nisso. Esta funcionalidade virá em
                 breve!
@@ -85,7 +81,7 @@ export function StartScreen() {
               action="secondary"
               p="$0"
               h="$full"
-              onPress={() => showNotImplementedYet()}
+              onPress={() => showToast()}
             />
             <Button
               leftIcon={GoogleIcon}
@@ -93,7 +89,7 @@ export function StartScreen() {
               action="secondary"
               p="$0"
               h="$full"
-              onPress={() => showNotImplementedYet()}
+              onPress={() => showToast()}
             />
             <Button
               leftIcon={LinkedinIcon}
@@ -101,7 +97,7 @@ export function StartScreen() {
               action="secondary"
               p="$0"
               h="$full"
-              onPress={() => showNotImplementedYet()}
+              onPress={() => showToast()}
             />
           </HStack>
         </Center>
