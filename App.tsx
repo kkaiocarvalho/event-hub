@@ -8,6 +8,9 @@ import { config } from "./src/config/themeConfig";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { AuthProvider } from "./src/contexts/AuthContext";
 
+import 'react-native-reanimated'
+import 'react-native-gesture-handler'
+
 export default function App() {
   useReactQueryDevTools(queryClient);
   // press shift + m to open

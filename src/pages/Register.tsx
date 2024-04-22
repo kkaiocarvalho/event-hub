@@ -13,6 +13,8 @@ import {
   type CreateUserVariables,
 } from "../api/requests/create-user";
 
+import { StyleSheet } from "react-native";
+
 type FormValues = {
   name: string;
   cpf: string;
@@ -106,21 +108,21 @@ export function Register() {
         <Center p="$5">
           <VStack w="$full">
             <VStack>
-              <Input
+              <Input style={styles.input}
                 placeholder="Digite seu nome"
                 label="Nome"
                 inputName="name"
                 control={control}
                 errorMessage={errors.name?.message}
               />
-              <Input
+              <Input style={styles.input}
                 placeholder="Digite seu e-mail"
                 label="E-mail"
                 inputName="email"
                 control={control}
                 errorMessage={errors.email?.message}
               />
-              <Input
+              <Input style={styles.input}
                 placeholder="000.000.000-00"
                 label="CPF"
                 inputName="cpf"
@@ -128,7 +130,7 @@ export function Register() {
                 errorMessage={errors.cpf?.message}
                 keyboardType="numeric"
               />
-              <Input
+              <Input style={styles.input}
                 placeholder="(00) 00000-0000"
                 label="Telefone"
                 inputName="phone"
@@ -136,14 +138,14 @@ export function Register() {
                 errorMessage={errors.phone?.message}
                 keyboardType="numeric"
               />
-              <Input
+              <Input style={styles.input}
                 placeholder="Digite sua senha"
                 label="Senha"
                 inputName="password"
                 control={control}
                 errorMessage={errors.password?.message}
               />
-              <Input
+              <Input style={styles.input}
                 placeholder="Confirme sua senha"
                 label="Confirmar Senha"
                 inputName="confirmPassword"
@@ -152,8 +154,9 @@ export function Register() {
               />
             </VStack>
             <Button
-              action="primary"
-              variant="outline"
+              action="secondary"
+              bgColor="#038C8C"
+              variant="solid"
               text="Cadastrar"
               mt="$5"
               isDisabled={createUserMutation.isPending}
@@ -165,3 +168,12 @@ export function Register() {
     </Background>
   );
 }
+
+const styles = StyleSheet.create({
+  input:{
+    backgroundColor: "rgba(3, 140, 140, 0.5)",
+    borderWidth: 0,
+    color: "#F2F2F2",
+
+  }
+})

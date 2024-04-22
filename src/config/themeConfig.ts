@@ -7,10 +7,26 @@ export const config = createConfig({
     ...defaultConfig.tokens,
     colors: {
       ...defaultConfig.tokens.colors,
-      background: "#181818",
-      textColor: "#bdbdbd",
+      background: "#0B1726",
+      textColor: "#F2F2F2",
       titleColor: "#ffffff",
       // primary-color
+      primary: "#05C7F2",
+
+      // secondary-color
+      secondary: "#5C73F2",
+
+      // tertiary-color
+      tertiary: "#C5F222",
+
+      // quaternary-color
+      quaternary: "#EBF222",
+
+      // quinary-color
+      quinary: "#0D0D0D",
+
+      /*
+      antigas cores
       primary50: "#fff18b",
       primary100: "#ffed63",
       primary200: "#ffe83b",
@@ -33,6 +49,23 @@ export const config = createConfig({
       secondary700: "#520f95",
       secondary800: "#46117c",
       secondary900: "#3a1263",
+
+
+            // primary-color
+      primary: "#F20CB5",
+
+      // secondary-color
+      secondary: "#CA38F2",
+
+      // tertiary-color
+      tertiary: "#341959",
+
+      // quaternary-color
+      quaternary: "#0511F2",
+
+      // quinary-color
+      quinary: "#2793F2",
+      */
     },
   },
 });

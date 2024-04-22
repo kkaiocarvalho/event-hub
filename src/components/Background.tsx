@@ -6,7 +6,7 @@ type BackgroundProp = {
 } & PropsWithChildren;
 
 export function Background({ children, withScroll = false }: BackgroundProp) {
-  const primaryColor = "$primary200";
+  const primaryColor = "$secondary";
 
   return (
     <Box
@@ -14,9 +14,9 @@ export function Background({ children, withScroll = false }: BackgroundProp) {
       alignItems="center"
       justifyContent="center"
       bg={primaryColor}
-      p="$3"
+      p="$0"
     >
-      <Box w="$full" bg="$background" rounded="$2xl" flex={1} p="$3">
+      <Box w="$full" bg="$background" rounded="$none" flex={1} p="$10">
         {withScroll ? <ScrollView showsVerticalScrollIndicator={false} >{children}</ScrollView> : children}
       </Box>
     </Box>

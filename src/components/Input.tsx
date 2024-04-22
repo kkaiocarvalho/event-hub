@@ -41,7 +41,7 @@ export function Input(inputProps: InputProps) {
   return (
     <VStack h="$24">
       <Subtitle text={label} h="$5" pl="$0" fontSize="$sm" />
-      <GlueInput h="$10" variant="underlined" {...glueInputProps}>
+      <GlueInput h="$10" variant="outline" {...glueInputProps}>
         {iconProps?.leftIcon ? (
           <InputIcon
             h={iconSizeDefault}
