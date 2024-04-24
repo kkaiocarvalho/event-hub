@@ -1,7 +1,13 @@
-import { Center, VStack } from "@gluestack-ui/themed";
+import {
+  Center,
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  useToast,
+  VStack,
+} from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
-import { Subtitle } from "../components/Subtitle";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { useForm } from "react-hook-form";
@@ -12,8 +18,8 @@ import {
   createUser,
   type CreateUserVariables,
 } from "../api/requests/create-user";
-
-import { StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useState } from "react";
 
 type FormValues = {
   name: string;
@@ -64,6 +70,9 @@ const schema = yup.object({
 export function Register() {
   //TODO: improvement in input to pass password boolean props
   //TODO: add max and min for inputs
+  const [toastId, setToastId] = useState<string | null>(null);
+  const configToast = useToast();
+  const insets = useSafeAreaInsets();
   const {
     formState: { errors },
     control,
@@ -75,13 +84,51 @@ export function Register() {
   const createUserMutation = useMutation({
     mutationFn: createUser,
     //TODO: create a hook to compile onSuccess and onError function toasts
-    onSuccess(data) {
-      //TODO: toast provider to inform user of success
-      console.log({ data });
+    onSuccess() {
+      configToast.close(toastId);
+      configToast.show({
+        placement: "top",
+        render: ({ id }) => {
+          setToastId("toast-" + id);
+          return (
+            <Toast
+              nativeID={"toast-" + id}
+              action="success"
+              variant="accent"
+              top={insets.top}
+            >
+              <VStack space="xs">
+                <ToastTitle>Cadastro realizado com sucesso. </ToastTitle>
+                <ToastDescription>
+                  Seja bem vindo ao Event Hub!
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     },
     onError(error) {
-      //TODO: toast provider to inform user of error
-      console.log({ error });
+      configToast.close(toastId);
+      configToast.show({
+        placement: "top",
+        render: ({ id }) => {
+          setToastId("toast-" + id);
+          return (
+            <Toast
+              nativeID={"toast-" + id}
+              action="error"
+              variant="accent"
+              top={insets.top}
+            >
+              <VStack space="xs">
+                <ToastTitle>Erro durante o Cadastro </ToastTitle>
+                <ToastDescription>{error.message}</ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     },
   });
 
@@ -103,26 +150,25 @@ export function Register() {
       <VStack justifyContent="space-between">
         <VStack>
           <Title text="Cadastro" />
-          {/*<Subtitle text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />*/}
         </VStack>
         <Center p="$5">
           <VStack w="$full">
             <VStack>
-              <Input style={styles.input}
+              <Input
                 placeholder="Digite seu nome"
                 label="Nome"
                 inputName="name"
                 control={control}
                 errorMessage={errors.name?.message}
               />
-              <Input style={styles.input}
+              <Input
                 placeholder="Digite seu e-mail"
                 label="E-mail"
                 inputName="email"
                 control={control}
                 errorMessage={errors.email?.message}
               />
-              <Input style={styles.input}
+              <Input
                 placeholder="000.000.000-00"
                 label="CPF"
                 inputName="cpf"
@@ -130,7 +176,7 @@ export function Register() {
                 errorMessage={errors.cpf?.message}
                 keyboardType="numeric"
               />
-              <Input style={styles.input}
+              <Input
                 placeholder="(00) 00000-0000"
                 label="Telefone"
                 inputName="phone"
@@ -138,14 +184,14 @@ export function Register() {
                 errorMessage={errors.phone?.message}
                 keyboardType="numeric"
               />
-              <Input style={styles.input}
+              <Input
                 placeholder="Digite sua senha"
                 label="Senha"
                 inputName="password"
                 control={control}
                 errorMessage={errors.password?.message}
               />
-              <Input style={styles.input}
+              <Input
                 placeholder="Confirme sua senha"
                 label="Confirmar Senha"
                 inputName="confirmPassword"
@@ -154,12 +200,11 @@ export function Register() {
               />
             </VStack>
             <Button
-              action="secondary"
-              bgColor="#038C8C"
+              action="primary"
               variant="solid"
               text="Cadastrar"
               mt="$5"
-              isDisabled={createUserMutation.isPending}
+              isLoading={createUserMutation.isPending}
               onPress={handleSubmit(submit)}
             />
           </VStack>
@@ -168,12 +213,3 @@ export function Register() {
     </Background>
   );
 }
-
-const styles = StyleSheet.create({
-  input:{
-    backgroundColor: "rgba(3, 140, 140, 0.5)",
-    borderWidth: 0,
-    color: "#F2F2F2",
-
-  }
-})

@@ -8,22 +8,23 @@ export const config = createConfig({
     colors: {
       ...defaultConfig.tokens.colors,
       background: "#0B1726",
+      backgroundLogo: "#038c8c66",
       textColor: "#F2F2F2",
       titleColor: "#ffffff",
-      // primary-color
-      primary: "#05C7F2",
+      placeholderColor: "#c2c2c2",
 
-      // secondary-color
-      secondary: "#5C73F2",
+      // passive to changes:
 
-      // tertiary-color
-      tertiary: "#C5F222",
-
-      // quaternary-color
-      quaternary: "#EBF222",
-
-      // quinary-color
-      quinary: "#0D0D0D",
+      primary50: "#2fffff",
+      primary100: "#07ffff",
+      primary200: "#00dede",
+      primary300: "#04b3b3",
+      primary400: "#038c8c",
+      primary500: "#067171",
+      primary600: "#085858",
+      primary700: "#084040",
+      primary800: "#072a2a",
+      primary900: "#041515",
 
       /*
       antigas cores

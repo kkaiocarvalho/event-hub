@@ -1,5 +1,6 @@
 import {
   ButtonIcon,
+  ButtonSpinner,
   ButtonText,
   Button as GlueButton,
 } from "@gluestack-ui/themed";
@@ -11,18 +12,27 @@ export type ButtonProps = {
   leftIcon?: any;
   rightIcon?: any;
   text?: string;
+  isLoading?: boolean;
+  isDisabled?: boolean;
 } & ComponentProps<typeof GlueButton>;
 
 export function Button({
   leftIcon,
   iconSize,
   rightIcon,
+  isLoading,
+  isDisabled,
   text,
   ...props
 }: ButtonProps) {
   const iconSizeDefault = iconSize ? iconSize : "$10";
   return (
-    <GlueButton h="$16" rounded="$xl" {...props}>
+    <GlueButton
+      h="$16"
+      rounded="$xl"
+      {...props}
+      isDisabled={isDisabled || isLoading}
+    >
       {leftIcon ? (
         <ButtonIcon
           h={iconSizeDefault}
@@ -31,7 +41,11 @@ export function Button({
           mr={text || rightIcon ? "$2" : "$0"}
         />
       ) : null}
-      {text ? <ButtonText>{text}</ButtonText> : null}
+      {isLoading ? (
+        <ButtonSpinner size={50} />
+      ) : text ? (
+        <ButtonText>{text}</ButtonText>
+      ) : null}
       {rightIcon ? (
         <ButtonIcon
           h={iconSizeDefault}

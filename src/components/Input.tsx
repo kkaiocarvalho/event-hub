@@ -16,7 +16,7 @@ export type InputProps = {
   inputName: string;
   placeholder?: string;
   errorMessage?: string;
-  keyboardType?: any; 
+  keyboardType?: any;
   inputFieldProps?: ComponentProps<typeof InputField>;
   iconProps?: {
     iconSize?: any;
@@ -40,8 +40,14 @@ export function Input(inputProps: InputProps) {
 
   return (
     <VStack h="$24">
-      <Subtitle text={label} h="$5" pl="$0" fontSize="$sm" />
-      <GlueInput h="$10" variant="outline" {...glueInputProps}>
+      <Subtitle text={label} h="$5" pl="$0" mb="$2" fontSize="$sm" />
+      <GlueInput
+        h="$10"
+        variant="outline"
+        bgColor="$primary600"
+        borderColor="$primary600"
+        {...glueInputProps}
+      >
         {iconProps?.leftIcon ? (
           <InputIcon
             h={iconSizeDefault}
@@ -56,6 +62,7 @@ export function Input(inputProps: InputProps) {
           render={({ field: { onBlur, onChange, value } }) => (
             <InputField
               color="$textColor"
+              placeholderTextColor="$placeholderColor"
               placeholder={placeholder}
               keyboardType={keyboardType}
               {...inputFieldProps}
@@ -71,7 +78,7 @@ export function Input(inputProps: InputProps) {
           color="$error400"
           text={errorMessage}
           h="$5"
-          mt="$1"
+          mt="$0.5"
           pl="$0"
           fontSize="$sm"
         />
@@ -79,5 +86,3 @@ export function Input(inputProps: InputProps) {
     </VStack>
   );
 }
-
-

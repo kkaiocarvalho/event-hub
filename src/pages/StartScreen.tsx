@@ -13,53 +13,15 @@ import { FacebookIcon } from "../icons/Facebook";
 import { GoogleIcon } from "../icons/Google";
 import { LinkedinIcon } from "../icons/Linkedin";
 import { navigateTo } from "../hook/NavigateTo";
-import { SvgXml } from "react-native-svg";
-import Logo from "../components/Logo";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ToastDescription } from "@gluestack-ui/themed";
-
-import { MotiView, useAnimationState } from 'moti'
-import { Pressable, useWindowDimensions, View, StyleSheet } from "react-native";
+import { MotiView } from "moti";
+import { InteractiveLogo } from "../components/InteractiveLogo";
 
 export function StartScreen() {
   const { navigate } = navigateTo();
   const configToast = useToast();
   const insets = useSafeAreaInsets();
-
-  const { height } = useWindowDimensions()
-
-  const animationState = useAnimationState({
-    from: {
-      opacity: 0.5, 
-      translateY: -height, 
-      rotateZ: "50deg", 
-      rotateY: "30deg", 
-      rotateX: "30deg"
-    },
-    intermediate: {
-      opacity: 0.75,
-      translateY: -height / 2,
-      rotateZ: "-50deg", 
-      rotateY: "-30deg", 
-      rotateX: "-30deg"
-    },
-    to: {
-      opacity: 1, 
-      translateY: 0, 
-      rotateZ: "0deg", 
-      rotateY: "0deg", 
-      rotateX: "0deg" 
-    },
-  });
-  
-
-  const handlePress = () => {
-    animationState.transitionTo('from');
-    animationState.transitionTo('intermediate');
-    setTimeout(() => {
-      animationState.transitionTo('to');
-    }, 10);
-  };
 
   const showToast = () => {
     configToast.close("toasts-show");
@@ -89,51 +51,33 @@ export function StartScreen() {
   return (
     <Background>
       <VStack justifyContent="space-between" flex={1}>
-
         <Center py="$10">
-        <View style={styles.fundo}>
-        <Pressable onPress={handlePress}>
-            <MotiView 
-              state={animationState}
-              transition={{  
-                type: "spring", 
-                damping: 20, 
-                rotateZ:{damping: 15, mass: 3}  
-              }}
-              >
-              <SvgXml xml={Logo} />
-            </MotiView>
-          </Pressable>
-        </View>
+          <InteractiveLogo withBackgrund />
         </Center>
-        
-        <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ type: 'timing', duration: 2300}}
-        >
 
-        <Center>
-          <VStack w="80%" gap="$7">
-            <Button
-              w="$full"
-              action="secondary"
-              bgColor="#038C8C"
-              variant="solid"
-              onPress={() => navigate("Register")}
-              text="Cadastrar"
+        <MotiView
+          from={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: "timing", duration: 2300 }}
+        >
+          <Center>
+            <VStack w="80%" gap="$7">
+              <Button
+                w="$full"
+                action="primary"
+                variant="solid"
+                onPress={() => navigate("Register")}
+                text="Cadastrar"
               />
-            <Button
-              w="$full"
-              action="secondary"
-              bgColor="#038C8C"
-              variant="solid"
-              onPress={() => navigate("Login")}
-              text="Entrar"
-              
-            />
-          </VStack>
-        </Center>
+              <Button
+                w="$full"
+                action="primary"
+                variant="solid"
+                onPress={() => navigate("Login")}
+                text="Entrar"
+              />
+            </VStack>
+          </Center>
         </MotiView>
         <Center mt="$5">
           <Text color="$textColor">Entrar com</Text>
@@ -168,19 +112,3 @@ export function StartScreen() {
     </Background>
   );
 }
-
-const styles = StyleSheet.create({
-  fundo:{
-    backgroundColor: "rgba(3, 140, 140, 0.4)",
-    borderWidth: 0,
-    width: 250,
-    height: 300,
-    zIndex: -1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 10,
-  }
-})
