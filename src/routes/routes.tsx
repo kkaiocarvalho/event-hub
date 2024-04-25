@@ -4,6 +4,7 @@ import {
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
 import type { NavigationProp } from "@react-navigation/native";
+import { useAuth } from "../hook/useAuth";
 
 // To add new screen, first add the name in ScreenName const, and create the screen object inside routes const
 export const ScreenName = ["StartScreen", "Login", "Register", "Home"] as const;
@@ -17,7 +18,7 @@ type RouteType = {
   options?: (props: any) => NativeStackNavigationOptions;
 };
 
-const routes: RouteType[] = [
+const routesLoggedOut: RouteType[] = [
   {
     name: "StartScreen",
     component: P.StartScreen,
@@ -30,10 +31,7 @@ const routes: RouteType[] = [
     name: "Register",
     component: P.Register,
   },
-  {
-    name: "Home",
-    component: P.Home,
-  },
+
   /* 
   {
     name: "Login",
@@ -78,12 +76,22 @@ const routes: RouteType[] = [
   */
 ];
 
+const routesLoggedIn: RouteType[] = [
+  {
+    name: "Home",
+    component: P.Home,
+  },
+];
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Routes() {
+  const { isAuthenticated } = useAuth();
+  const routes = isAuthenticated ? routesLoggedIn : routesLoggedOut;
+
   return (
     <Stack.Navigator
-      initialRouteName={routes[0].name}
+      initialRouteName={routesLoggedOut[0].name}
       screenOptions={{
         header: () => undefined,
       }}

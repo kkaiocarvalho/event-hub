@@ -33,7 +33,7 @@ type AuthContextValue = {
   logout: () => void;
   error: AuthError;
   loading: boolean;
-  isAuthenticated: () => boolean;
+  isAuthenticated: boolean;
 };
 
 export const AuthContext = React.createContext<AuthContextValue>({
@@ -41,7 +41,7 @@ export const AuthContext = React.createContext<AuthContextValue>({
   logout: () => {},
   error: undefined,
   loading: false,
-  isAuthenticated: () => false,
+  isAuthenticated: false,
 });
 
 AuthContext.displayName = "AuthContext";
@@ -49,6 +49,7 @@ AuthContext.displayName = "AuthContext";
 export function AuthProvider({ children }: React.PropsWithChildren) {
   const configToast = useToast();
   const insets = useSafeAreaInsets();
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const { navigate } = navigateTo();
   const authenticateMutation = useMutation({
     mutationFn: authenticate,
@@ -78,6 +79,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         });
         const data = response as AuthenticateResponse;
         setStorageItem(AUTH_TOKEN, data.token);
+        setIsAuthenticated(true);
         setTimeout(() => {
           navigate("Home");
         }, 2000);
@@ -111,13 +113,17 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   function logout() {
     removeStorageItem(AUTH_TOKEN);
+    setIsAuthenticated(false);
     queryClient.clear();
-    navigate("StartScreen");
+    //navigate("StartScreen");
   }
 
-  function isAuthenticated() {
-    return Boolean(getStorageItem(AUTH_TOKEN));
-  }
+  // async function isAuthenticated() {
+  //   console.log(await getStorageItem(AUTH_TOKEN));
+  //   console.log(Boolean(await getStorageItem(AUTH_TOKEN)));
+  //   Boolean(await getStorageItem(AUTH_TOKEN));
+  //   return Boolean(await getStorageItem(AUTH_TOKEN));
+  // }
 
   const authError = (function getAuthError() {
     if (authenticateMutation.isError) {
