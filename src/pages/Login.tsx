@@ -10,6 +10,7 @@ import { useAuth } from "../hook/useAuth";
 import { AuthenticateVariables } from "../api/requests/authenticate";
 import { Subtitle } from "../components/Subtitle";
 import { InteractiveLogo } from "../components/InteractiveLogo";
+
 type FormValues = {
   email: string;
   password: string;

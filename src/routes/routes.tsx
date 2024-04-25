@@ -7,7 +7,7 @@ import type { NavigationProp } from "@react-navigation/native";
 import { useAuth } from "../hook/useAuth";
 
 // To add new screen, first add the name in ScreenName const, and create the screen object inside routes const
-export const ScreenName = ["StartScreen", "Login", "Register", "Home"] as const;
+export const ScreenName = ["StartScreen", "Login", "Register", "Home", "AddressForm"] as const;
 export type ScreenNames = (typeof ScreenName)[number];
 export type RootStackParamList = Record<ScreenNames, undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
@@ -31,7 +31,7 @@ const routesLoggedOut: RouteType[] = [
     name: "Register",
     component: P.Register,
   },
-
+ 
   /* 
   {
     name: "Login",
@@ -80,6 +80,10 @@ const routesLoggedIn: RouteType[] = [
   {
     name: "Home",
     component: P.Home,
+  },
+  {
+    name: "AddressForm",
+    component: P.AddressForm,
   },
 ];
 

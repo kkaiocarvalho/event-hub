@@ -8,9 +8,11 @@ import { useState } from "react";
 import { Button } from "../components/Button";
 import { useAuth } from "../hook/useAuth";
 import { InteractiveLogo } from "../components/InteractiveLogo";
+import { navigateTo } from "../hook/NavigateTo";
 
 export function Home() {
   const { logout } = useAuth();
+  const { navigate } = navigateTo();
   const [token, setToken] = useState<string | null>(null);
   (async () => await getStorageItem(AUTH_TOKEN))().then((value) => {
     setToken(value);
@@ -26,6 +28,7 @@ export function Home() {
             <Text>HOME</Text>
             <Text textAlign="center">{token}</Text>
             <Button text="Sair" action="negative" onPress={() => logout()} />
+            <Button text="Endereço" action="positive" onPress={() => navigate("AddressForm")} />
           </Center>
         </Center>
       </VStack>

@@ -7,6 +7,12 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+
+const apiCep = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_API_CEP_URL,
+  headers: { "Content-Type": "application/json" },
+})
+
 function onFulfilledRequest(config: InternalAxiosRequestConfig) {
   const token = getAuthToken();
   if (token) {
@@ -19,4 +25,4 @@ function onFulfilledRequest(config: InternalAxiosRequestConfig) {
 //   Promise.reject(error)
 // );
 
-export { api };
+export { api, apiCep };
