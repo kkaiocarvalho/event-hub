@@ -33,7 +33,7 @@ type RequestProps = {
   method: typeof api.get | typeof api.post | typeof api.delete;
   url: string;
   body?: any;
-  schema: z.ZodObject<any>;
+  schema: z.ZodObject<any> | z.ZodArray<any>;
 };
 
 export async function request<T = unknown>({
