@@ -22,6 +22,7 @@ export function StartScreen() {
   const { navigate } = navigateTo();
   const configToast = useToast();
   const insets = useSafeAreaInsets();
+  const hasIntegration = false;
 
   const showToast = () => {
     configToast.close("toasts-show");
@@ -79,35 +80,37 @@ export function StartScreen() {
             </VStack>
           </Center>
         </MotiView>
-        <Center mt="$5">
-          <Text color="$textColor">Entrar com</Text>
-          <HStack gap="$8" my="$8" /*bg="$secondary200"*/ borderRadius="$lg">
-            <Button
-              leftIcon={FacebookIcon}
-              variant="link"
-              action="positive"
-              p="$0"
-              h="$full"
-              onPress={() => showToast()}
-            />
-            <Button
-              leftIcon={GoogleIcon}
-              variant="link"
-              action="positive"
-              p="$0"
-              h="$full"
-              onPress={() => showToast()}
-            />
-            <Button
-              leftIcon={LinkedinIcon}
-              variant="link"
-              action="positive"
-              p="$0"
-              h="$full"
-              onPress={() => showToast()}
-            />
-          </HStack>
-        </Center>
+        {hasIntegration ? (
+          <Center mt="$5">
+            <Text color="$textColor">Entrar com</Text>
+            <HStack gap="$8" my="$8" /*bg="$secondary200"*/ borderRadius="$lg">
+              <Button
+                leftIcon={FacebookIcon}
+                variant="link"
+                action="positive"
+                p="$0"
+                h="$full"
+                onPress={() => showToast()}
+              />
+              <Button
+                leftIcon={GoogleIcon}
+                variant="link"
+                action="positive"
+                p="$0"
+                h="$full"
+                onPress={() => showToast()}
+              />
+              <Button
+                leftIcon={LinkedinIcon}
+                variant="link"
+                action="positive"
+                p="$0"
+                h="$full"
+                onPress={() => showToast()}
+              />
+            </HStack>
+          </Center>
+        ) : null}
       </VStack>
     </Background>
   );

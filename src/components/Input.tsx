@@ -6,25 +6,28 @@ import {
 } from "@gluestack-ui/themed";
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
-import { type Control, Controller } from "react-hook-form";
 import { Keyboard } from "react-native";
+import { Controller } from "react-hook-form";
+import type { Control, FieldValues, FieldPath } from "react-hook-form";
 
-export type InputProps = {
+export type InputProps<FormValues> = {
   label: string;
-  //TODO: type dinamic Control and others anys types
-  control: Control<any, any>;
-  inputName: string;
   placeholder?: string;
   errorMessage?: string;
   keyboardType?: any;
-  inputFieldProps?: ComponentProps<typeof InputField>;
+  nextInput?: () => void;
+  format?: (value: string, formatOptions: any) => string;
+  formatOptions?: any;
   iconProps?: {
     iconSize?: any;
     leftIcon: any;
   };
+  inputFieldProps?: ComponentProps<typeof InputField>;
+  control?: Control<FormValues extends FieldValues ? FormValues : any, any>;
+  inputName: FieldPath<FormValues extends FieldValues ? FormValues : any>;
 } & ComponentProps<typeof GlueInput>;
 
-export function Input(inputProps: InputProps) {
+export function Input<T>(inputProps: InputProps<T>) {
   const {
     iconProps,
     placeholder,
@@ -34,6 +37,9 @@ export function Input(inputProps: InputProps) {
     inputName,
     errorMessage,
     keyboardType,
+    nextInput,
+    format,
+    formatOptions,
     ...glueInputProps
   } = inputProps;
   const iconSizeDefault = iconProps?.iconSize ? iconProps?.iconSize : "$10";
@@ -45,7 +51,7 @@ export function Input(inputProps: InputProps) {
         h="$10"
         variant="outline"
         bgColor="$primary600"
-        borderColor="$primary600"
+        borderColor={errorMessage ? "$error700" : "$primary600"}
         {...glueInputProps}
       >
         {iconProps?.leftIcon ? (
@@ -59,7 +65,7 @@ export function Input(inputProps: InputProps) {
         <Controller
           control={control}
           name={inputName}
-          render={({ field: { onBlur, onChange, value } }) => (
+          render={({ field: { onBlur, onChange, value, ref } }) => (
             <InputField
               color="$textColor"
               placeholderTextColor="$placeholderColor"
@@ -67,8 +73,18 @@ export function Input(inputProps: InputProps) {
               keyboardType={keyboardType}
               {...inputFieldProps}
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(txt) =>
+                format
+                  ? onChange(format(txt, formatOptions))
+                  : onChange(txt.trimStart())
+              }
               value={value}
+              ref={ref}
+              onSubmitEditing={() =>
+                nextInput ? nextInput() : Keyboard.dismiss()
+              }
+              blurOnSubmit={false}
+              autoCapitalize="none"
             />
           )}
         />

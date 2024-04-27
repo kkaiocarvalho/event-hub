@@ -20,6 +20,12 @@ import {
 } from "../api/requests/create-user";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
+import { formatPhone, removeMasks } from "../utils/helpers";
+import {
+  formatCPF,
+  isValidCPF,
+  isValidPhone,
+} from "@brazilian-utils/brazilian-utils";
 
 type FormValues = {
   name: string;
@@ -29,11 +35,6 @@ type FormValues = {
   password: string;
   confirmPassword: string;
 };
-
-//TODO: regex in cpf and phone
-//TODO: mask in cpf and phone
-//const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
-//const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
 const schema = yup.object({
   name: yup
@@ -47,16 +48,15 @@ const schema = yup.object({
     .required('"E-mail"  é um campo obrigatório'),
   cpf: yup
     .string()
-    //.matches(cpfRegex, "CPF inválido")
-    .required("CPF é obrigatório"),
+    .required("CPF é obrigatório")
+    .test("test-cpf", "CPF inválido", isValidCPF),
   phone: yup
     .string()
-    //.matches(phoneRegex, "Telefone inválido")
-    .required("Telefone é obrigatório"),
+    .required("Telefone é obrigatório")
+    .test("test-phone", "Telefone inválido", isValidPhone),
   password: yup
     .string()
     .min(6, "Senha deve conter mais de 6 caracteres")
-    .max(12, "Senha deve conter no maximo 12 caracteres")
     .required('"Senha"  é um campo obrigatório'),
   confirmPassword: yup
     .string()
@@ -68,8 +68,6 @@ const schema = yup.object({
 });
 
 export function Register() {
-  //TODO: improvement in input to pass password boolean props
-  //TODO: add max and min for inputs
   const [toastId, setToastId] = useState<string | null>(null);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
@@ -77,13 +75,13 @@ export function Register() {
     formState: { errors },
     control,
     handleSubmit,
+    setFocus,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
 
   const createUserMutation = useMutation({
     mutationFn: createUser,
-    //TODO: create a hook to compile onSuccess and onError function toasts
     onSuccess() {
       configToast.close(toastId);
       configToast.show({
@@ -136,9 +134,9 @@ export function Register() {
     if (!data) return;
     const body: CreateUserVariables = {
       nome: data.name,
-      cpf: data.cpf,
+      cpf: removeMasks(data.cpf),
       email: data.email,
-      telefone: data.phone,
+      telefone: removeMasks(data.phone),
       senha: data.password,
     };
 
@@ -160,6 +158,7 @@ export function Register() {
                 inputName="name"
                 control={control}
                 errorMessage={errors.name?.message}
+                nextInput={() => setFocus("email")}
               />
               <Input
                 placeholder="Digite seu e-mail"
@@ -167,21 +166,26 @@ export function Register() {
                 inputName="email"
                 control={control}
                 errorMessage={errors.email?.message}
+                nextInput={() => setFocus("cpf")}
               />
               <Input
                 placeholder="000.000.000-00"
+                format={formatCPF}
                 label="CPF"
                 inputName="cpf"
                 control={control}
                 errorMessage={errors.cpf?.message}
+                nextInput={() => setFocus("phone")}
                 keyboardType="numeric"
               />
               <Input
                 placeholder="(00) 00000-0000"
+                format={formatPhone}
                 label="Telefone"
                 inputName="phone"
                 control={control}
                 errorMessage={errors.phone?.message}
+                nextInput={() => setFocus("password")}
                 keyboardType="numeric"
               />
               <Input
@@ -190,6 +194,7 @@ export function Register() {
                 inputName="password"
                 control={control}
                 errorMessage={errors.password?.message}
+                nextInput={() => setFocus("confirmPassword")}
               />
               <Input
                 placeholder="Confirme sua senha"

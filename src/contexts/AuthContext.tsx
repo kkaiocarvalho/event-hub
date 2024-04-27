@@ -115,15 +115,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     removeStorageItem(AUTH_TOKEN);
     setIsAuthenticated(false);
     queryClient.clear();
-    //navigate("StartScreen");
   }
-
-  // async function isAuthenticated() {
-  //   console.log(await getStorageItem(AUTH_TOKEN));
-  //   console.log(Boolean(await getStorageItem(AUTH_TOKEN)));
-  //   Boolean(await getStorageItem(AUTH_TOKEN));
-  //   return Boolean(await getStorageItem(AUTH_TOKEN));
-  // }
 
   const authError = (function getAuthError() {
     if (authenticateMutation.isError) {

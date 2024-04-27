@@ -24,7 +24,6 @@ const schema = yup.object({
   password: yup
     .string()
     .min(6, "Senha deve conter mais de 6 caracteres")
-    .max(12, "Senha deve conter no maximo 12 caracteres")
     .required('"Senha"  é um campo obrigatório'),
 });
 
@@ -36,6 +35,7 @@ export function Login() {
     formState: { errors },
     control,
     handleSubmit,
+    setFocus,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
@@ -66,6 +66,7 @@ export function Login() {
                 inputName="email"
                 control={control}
                 errorMessage={errors.email?.message}
+                nextInput={() => setFocus("password")}
               />
               <Input
                 placeholder="Digite sua senha"
