@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../../config/api";
+import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
 const drawParticipantResponseSchema = z.object({
@@ -18,7 +18,7 @@ export type DrawParticipantResponse = z.infer<
 
 export async function drawParticipant(variables: DrawParticipantVariables) {
   return await request({
-    method: api.post,
+    method: apiEvents.post,
     url: "/participantes/sortear-participante",
     body: variables,
     schema: drawParticipantResponseSchema,

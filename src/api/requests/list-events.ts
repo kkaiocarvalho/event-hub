@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../../config/api";
+import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
 const listEventsResponseSchema = z.object({
@@ -56,7 +56,7 @@ export type ListEventsResponse = z.infer<typeof listEventsResponseSchema>;
 
 export async function listEvents(variables: ListEventsVariables) {
   return await request({
-    method: api.post,
+    method: apiEvents.post,
     url: "/eventos/listar-eventos",
     body: variables,
     schema: listEventsResponseSchema,

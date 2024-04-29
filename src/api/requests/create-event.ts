@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../../config/api";
+import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
 const createEventResponseSchema = z.object({
@@ -45,7 +45,7 @@ export type CreateEventResponse = z.infer<typeof createEventResponseSchema>;
 
 export async function createEvent(variables: CreateEventVariables) {
   return await request({
-    method: api.post,
+    method: apiEvents.post,
     url: "/eventos/criar-evento",
     body: variables,
     schema: createEventResponseSchema,

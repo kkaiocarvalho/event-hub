@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../../config/api";
+import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
 const subscribeUserResponseSchema = z.object({
@@ -25,7 +25,7 @@ export type SubscribeUserResponse = z.infer<typeof subscribeUserResponseSchema>;
 
 export async function subscribeUser(variables: SubscribeUserVariables) {
   return await request({
-    method: api.post,
+    method: apiEvents.post,
     url: "/participantes/incluir-participacao-evento",
     body: variables,
     schema: subscribeUserResponseSchema,

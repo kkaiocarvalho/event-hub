@@ -10,28 +10,30 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+const apiEvents = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_API_EVENTS_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
 const apiCep = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_CEP_URL,
   headers: { "Content-Type": "application/json" },
 });
 
 async function onFulfilledRequest(config: InternalAxiosRequestConfig) {
-  // const token = await getAuthToken();
+  let token = "";
   await getStorageItem(AUTH_TOKEN)
     .then((response) => {
-      console.log("Await deu certo");
-      console.log({ response });
-      config.headers.Authorization = `Bearer ${response}`;
-      return config;
+      if (response) token = response;
     })
     .catch((err) => console.log({ err }));
-  console.log("saiu da promisse ");
-  console.log({ config });
+
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 }
 
-// api.interceptors.request.use(onFulfilledRequest, (error) => {
-//   Promise.reject(error);
-// });
+apiEvents.interceptors.request.use(onFulfilledRequest, (error) => {
+  Promise.reject(error);
+});
 
-export { api, apiCep };
+export { api, apiEvents, apiCep };

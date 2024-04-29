@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { api } from "../../config/api";
+import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
 const getDrawnParticipantsResponseSchema = z.array(
@@ -16,7 +16,7 @@ export type GetDrawnParticipantsResponse = z.infer<
 
 export async function getDrawnParticipants(idEvent: string) {
   return await request({
-    method: api.get,
+    method: apiEvents.get,
     url: `/participantes/buscar-participantes-sorteados/${idEvent}`,
     schema: getDrawnParticipantsResponseSchema,
   });
