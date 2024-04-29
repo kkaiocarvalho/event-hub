@@ -1,10 +1,10 @@
 import { useToast } from "@gluestack-ui/themed";
-import { ScreenNames, StackNavigation } from "../routes/routes";
+import { ScreenNames, Navigation } from "../routes/routes";
 import { useNavigation } from "@react-navigation/native";
 
 export function navigateTo() {
   const toast = useToast();
-  const navigation = useNavigation<StackNavigation>();
+  const navigation = useNavigation<Navigation>();
 
   const navigate = (route: ScreenNames) => {
     toast.closeAll();

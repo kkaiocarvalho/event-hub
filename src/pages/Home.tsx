@@ -28,7 +28,6 @@ export function Home() {
             <Text>HOME</Text>
             <Text textAlign="center">{token}</Text>
             <Button text="Sair" action="negative" onPress={() => logout()} />
-            <Button text="Endereço" action="positive" onPress={() => navigate("AddressForm")} />
           </Center>
         </Center>
       </VStack>

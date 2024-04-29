@@ -7,13 +7,8 @@ import {
   type AuthenticateVariables,
   type AuthenticateResponse,
 } from "../api/requests/authenticate";
-import { navigateTo } from "../hook/NavigateTo";
 import { AUTH_TOKEN } from "../utils/constants";
-import {
-  getStorageItem,
-  removeStorageItem,
-  setStorageItem,
-} from "../utils/storage";
+import { removeStorageItem, setStorageItem } from "../utils/storage";
 import {
   Toast,
   ToastDescription,
@@ -50,7 +45,6 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   const configToast = useToast();
   const insets = useSafeAreaInsets();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const { navigate } = navigateTo();
   const authenticateMutation = useMutation({
     mutationFn: authenticate,
   });
@@ -80,9 +74,6 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         const data = response as AuthenticateResponse;
         setStorageItem(AUTH_TOKEN, data.token);
         setIsAuthenticated(true);
-        setTimeout(() => {
-          navigate("Home");
-        }, 2000);
       },
 
       onError(error) {
