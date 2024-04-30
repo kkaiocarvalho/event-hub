@@ -9,14 +9,14 @@ const listEventsResponseSchema = z.object({
       nomeEvento: z.string(),
       statusEvento: z.string(),
       complementoEvento: z.string(),
-      motivoCancelamentoEvento: z.string(),
-      valorIngresso: z.string(),
+      motivoCancelamentoEvento: z.string().nullable(),
+      valorIngresso: z.number().nullable(),
       nomeResponsavel: z.string(),
       dtInicio: z.string(),
       dtEncerramento: z.string(),
       numeroMaximoParticipantes: z.number(),
       dtRegistroEvento: z.string(),
-      dtUltimaAtualizacaoEvento: z.string(),
+      dtUltimaAtualizacaoEvento: z.string().nullable(),
       endereco: z.object({
         cdEnderecoEvento: z.number(),
         numeroCEP: z.string(),
@@ -32,7 +32,7 @@ const listEventsResponseSchema = z.object({
   paginacao: z.object({
     qntItensRetornados: z.number(),
     paginaAtual: z.number(),
-    proximaPagina: z.number(),
+    proximaPagina: z.number().nullable(),
     temProximaPagina: z.boolean(),
   }),
 });

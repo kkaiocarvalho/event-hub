@@ -8,7 +8,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export const ScreenName = ["Home", "Events", "QRCode"] as const;
+export const ScreenName = ["TabEvents", "Home", "QRCode"] as const;
 
 export type ScreenNames = (typeof ScreenName)[number];
 export type Navigation = NavigationProp<RootParamList<ScreenNames>>;
@@ -21,8 +21,8 @@ type RouteType = {
 
 const tabs: RouteType[] = [
   {
-    name: "Events",
-    component: P.Events,
+    name: "TabEvents",
+    component: P.TabEvents,
     options: () => ({
       title: "Eventos",
       tabBarLabelStyle: { display: "none" },

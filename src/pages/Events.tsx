@@ -1,95 +1,145 @@
 import {
   Text,
   Center,
-  useToast,
-  Toast,
   VStack,
-  ToastTitle,
-  ToastDescription,
+  ScrollView,
+  RefreshControl,
+  Spinner,
+  HStack,
 } from "@gluestack-ui/themed";
+import { Feather } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { QK_EVENT_LIST } from "../utils/constants";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   listEvents,
+  ListEventsResponse,
   type ListEventsVariables,
 } from "../api/requests/list-events";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { EventCard } from "../components/EventCard";
+import { Button } from "../components/Button";
 
-const defaultFilter: ListEventsVariables = {
-  filtros: [],
-  apenasMeusEventos: "N",
-  paginacao: {
-    pagina: 0,
-    qntItensPaginados: 10,
-  },
+type EventsProps = {
+  showOnlyMyEvents?: boolean;
 };
 
-export function Events() {
-  const [toastId, setToastId] = useState<string | null>(null);
+export function Events(props: EventsProps) {
+  const defaultFilter: ListEventsVariables = {
+    filtros: [],
+    apenasMeusEventos: props.showOnlyMyEvents ? "S" : "N",
+    paginacao: {
+      pagina: 0,
+      qntItensPaginados: 10,
+    },
+  };
+
+  const defaultPagination: ListEventsResponse["paginacao"] = {
+    qntItensRetornados: 0,
+    paginaAtual: 0,
+    proximaPagina: 0,
+    temProximaPagina: false,
+  };
+
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
-  const configToast = useToast();
-  const insets = useSafeAreaInsets();
 
   const eventsQuery = useQuery({
     queryKey: [QK_EVENT_LIST, filters],
     queryFn: () => listEvents(filters),
   });
 
-  const showErrorToast = () => {
-    configToast.close(toastId);
-    configToast.show({
-      placement: "top",
-      render: ({ id }) => {
-        setToastId("toast-" + id);
-        return (
-          <Toast
-            nativeID={"toast-" + id}
-            action="error"
-            variant="accent"
-            top={insets.top}
-          >
-            <VStack space="xs">
-              <ToastTitle>Erro na listagem de eventos</ToastTitle>
-              <ToastDescription>{eventsQuery.error?.message}</ToastDescription>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
-    return null;
-  };
+  const eventsData = eventsQuery.data as ListEventsResponse;
 
-  const showSuccessToast = () => {
-    configToast.close(toastId);
-    configToast.show({
-      placement: "top",
-      render: ({ id }) => {
-        setToastId("toast-" + id);
-        return (
-          <Toast
-            nativeID={"toast-" + id}
-            action="success"
-            variant="accent"
-            top={insets.top}
-          >
-            <VStack space="xs">
-              <ToastTitle>Listagem realizada com sucesso!</ToastTitle>
-              <ToastDescription>
-                Estes são os eventos disponíveis atualmente
-              </ToastDescription>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
-    return null;
-  };
+  const pagination = eventsData?.paginacao ?? defaultPagination;
+  const events = eventsData?.eventos ?? [];
 
-  useEffect(() => console.log({ eventsQuery }), [eventsQuery]);
+  const onRefresh = useCallback(() => {
+    setFilters(defaultFilter);
+  }, []);
+
   return (
-    <Center flex={1}>
-      <Text>Listagem de eventos</Text>
-    </Center>
+    <VStack bgColor="$background" flex={1} gap={10}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            colors={["#038c8c66"]}
+            progressBackgroundColor="#084040"
+            refreshing={eventsQuery.isLoading}
+            onRefresh={onRefresh}
+          />
+        }
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+        }}
+      >
+        {
+          eventsQuery.isLoading ? (
+            <Spinner size={55} />
+          ) : events.length > 0 ? (
+            events.map((event) => (
+              <EventCard key={event.cdRegistroEvento} event={event} />
+            ))
+          ) : (
+            <Center flex={1}>
+              <Text maxWidth="60%" textAlign="center">
+                Ainda não temos nenhum evento cadastrado :/
+              </Text>
+            </Center>
+          )
+          // FLAT LIST WITHOUT STYLE
+          // <FlatList
+          //   data={events}
+          //   keyExtractor={(item) => item.cdRegistroEvento.toString()}
+          //   extraData={events}
+          //   renderItem={({ item }) => <EventCard event={item} />}
+          //   ListEmptyComponent={
+          //     <Center flex={1}>
+          //       <Text maxWidth="60%" textAlign="center">
+          //         Ainda não temos nenhum evento cadastrado :/
+          //       </Text>
+          //     </Center>
+          //   }
+          // />
+        }
+      </ScrollView>
+      <Center pb="$20">
+        <HStack gap={10}>
+          {pagination.paginaAtual > 0 ? (
+            <Button
+              icon={<Feather name="chevron-left" size={24} color="#0B1726" />}
+              text="Página anterior"
+              borderRadius="$full"
+              onPress={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  paginacao: {
+                    ...prev.paginacao,
+                    pagina: prev.paginacao.pagina - 1,
+                  },
+                }))
+              }
+            />
+          ) : null}
+          {pagination.temProximaPagina ? (
+            <Button
+              icon={<Feather name="chevron-right" size={24} color="#0B1726" />}
+              text="Próxima página"
+              borderRadius="$full"
+              onPress={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  paginacao: {
+                    ...prev.paginacao,
+                    pagina: prev.paginacao.pagina + 1,
+                  },
+                }))
+              }
+            />
+          ) : null}
+        </HStack>
+      </Center>
+    </VStack>
   );
 }

@@ -25,7 +25,6 @@ export const config = createConfig({
       primary700: "#084040",
       primary800: "#072a2a",
       primary900: "#041515",
-
     },
   },
 });

@@ -9,8 +9,9 @@ import { ComponentProps } from "react";
 //TODO: type ButtonProps appropriately
 export type ButtonProps = {
   iconSize?: any;
-  leftIcon?: any;
-  rightIcon?: any;
+  leftIcon?: string;
+  rightIcon?: string;
+  icon?: React.ReactNode;
   text?: string;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -20,6 +21,7 @@ export function Button({
   leftIcon,
   iconSize,
   rightIcon,
+  icon,
   isLoading,
   isDisabled,
   text,
@@ -43,6 +45,8 @@ export function Button({
       ) : null}
       {isLoading ? (
         <ButtonSpinner size={50} />
+      ) : icon ? (
+        icon
       ) : text ? (
         <ButtonText>{text}</ButtonText>
       ) : null}
