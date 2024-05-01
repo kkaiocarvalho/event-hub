@@ -68,10 +68,11 @@ export function Events(props: EventsProps) {
           />
         }
         contentContainerStyle={{
-          flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          gap: 10,
+          padding: 15,
+          paddingBottom: 0,
+          gap: 15,
         }}
       >
         {

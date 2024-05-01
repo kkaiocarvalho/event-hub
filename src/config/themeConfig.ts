@@ -8,6 +8,7 @@ export const config = createConfig({
     colors: {
       ...defaultConfig.tokens.colors,
       background: "#0B1726",
+      lightBackground: "#d9d9d9",
       backgroundLogo: "#038c8c66",
       textColor: "#F2F2F2",
       titleColor: "#ffffff",

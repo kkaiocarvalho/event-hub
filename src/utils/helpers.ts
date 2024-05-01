@@ -16,3 +16,20 @@ export function formatPhone(value: string) {
 export function removeMasks(value: string) {
   return value.replace(/[^a-zA-Z^0-9]/g, "");
 }
+
+export function formatDateToShow(value: string, options = { withTime: false }) {
+  const date = new Date(value);
+  const toLocale = (value: number) =>
+    value.toLocaleString("pt-BR", {
+      minimumIntegerDigits: 2,
+    });
+  const year = date.getFullYear();
+  const month = toLocale(date.getMonth() + 1);
+  const day = toLocale(date.getDate());
+
+  const hour = toLocale(date.getHours());
+  const minute = toLocale(date.getMinutes());
+  return `${day}/${month}/${year}${
+    options.withTime ? ` ás ${hour}:${minute}` : ""
+  }`;
+}

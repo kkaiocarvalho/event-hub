@@ -8,7 +8,11 @@ import {
   type AuthenticateResponse,
 } from "../api/requests/authenticate";
 import { AUTH_TOKEN } from "../utils/constants";
-import { removeStorageItem, setStorageItem } from "../utils/storage";
+import {
+  getStorageItem,
+  removeStorageItem,
+  setStorageItem,
+} from "../utils/storage";
 import {
   Toast,
   ToastDescription,
@@ -50,6 +54,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   });
   const queryClient = useQueryClient();
 
+  React.useMemo(() => {
+    getStorageItem(AUTH_TOKEN)
+      .then((response) => setIsAuthenticated(!!response))
+      .catch(() => setIsAuthenticated(false));
+  }, [authenticateMutation.isPending]);
+
   function login(loginData: AuthenticateVariables) {
     authenticateMutation.mutate(loginData, {
       onSuccess(response) {
@@ -73,7 +83,6 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         });
         const data = response as AuthenticateResponse;
         setStorageItem(AUTH_TOKEN, data.token);
-        setIsAuthenticated(true);
       },
 
       onError(error) {

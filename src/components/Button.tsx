@@ -9,8 +9,8 @@ import { ComponentProps } from "react";
 //TODO: type ButtonProps appropriately
 export type ButtonProps = {
   iconSize?: any;
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: any;
+  rightIcon?: any;
   icon?: React.ReactNode;
   text?: string;
   isLoading?: boolean;
