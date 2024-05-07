@@ -8,8 +8,9 @@ import { NavigationProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TabEvents } from "./TabEvents";
+import { HomeStack } from "./HomeStack";
 
-export const ScreenName = ["TabEvents", "Home", "QRCode"] as const;
+export const ScreenName = ["TabEvents", "HomeStack", "QRCode"] as const;
 
 export type ScreenNames = (typeof ScreenName)[number];
 export type Navigation = NavigationProp<RootParamList<ScreenNames>>;
@@ -37,8 +38,8 @@ const tabs: RouteType[] = [
     }),
   },
   {
-    name: "Home",
-    component: P.Home,
+    name: "HomeStack",
+    component: HomeStack,
     options: () => ({
       title: "Ínicio",
       tabBarLabelStyle: { display: "none" },
@@ -65,7 +66,7 @@ const Tab = createBottomTabNavigator<RootParamList<ScreenNames>>();
 export function BottomTabRoutes() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeStack"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#13F2F2",

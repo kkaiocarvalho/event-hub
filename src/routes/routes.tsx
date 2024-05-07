@@ -37,49 +37,6 @@ const routesLoggedOut: RouteType[] = [
     name: "Register",
     component: P.Register,
   },
-
-  /* 
-  {
-    name: "Login",
-    component: Login,
-    options: ({ navigation }) => ({
-      headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text
-            style={{
-              color: "#000",
-              fontSize: 25,
-              backgroundColor: "#c1ff72",
-              padding: 5,
-              borderRadius: 10,
-            }}
-          >
-            Registrar
-          </Text>
-        </TouchableOpacity>
-      ),
-    }),
-  },
-  {
-    name: "Register",
-    component: Register,
-  },
-  {
-    name: "MyBottomTabs",
-    component: MyBottomTabs,
-    options: () => ({ headerShown: false, headerBackVisible: false }),
-  },
-  {
-    name: "TopBars",
-    component: TopBars,
-    options: () => ({ headerShown: false, headerBackVisible: false }),
-  },
-  {
-    name: "Home",
-    component: Home,
-    options: () => ({ headerShown: false, headerBackVisible: false }),
-  },
-  */
 ];
 
 const Stack = createNativeStackNavigator<RootParamList<ScreenNames>>();

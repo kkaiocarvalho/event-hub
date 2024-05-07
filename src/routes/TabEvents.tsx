@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/material-top-tabs";
 import { NavigationProp } from "@react-navigation/native";
 import { RootParamList } from "../routes/routes";
-import { Events } from "../pages/Events";
+import * as P from "./allPages";
 
 export const ScreenName = ["Events", "MyEvents"] as const;
 
@@ -21,14 +21,14 @@ type RouteEventsType = {
 const eventTabs: RouteEventsType[] = [
   {
     name: "Events",
-    Component: Events,
+    Component: P.Events,
     options: () => ({
       title: "Eventos",
     }),
   },
   {
     name: "MyEvents",
-    Component: Events,
+    Component: P.Events,
     options: () => ({
       title: "Meus Eventos",
     }),
