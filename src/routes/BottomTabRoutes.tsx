@@ -7,6 +7,7 @@ import * as P from "./allPages";
 import { NavigationProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TabEvents } from "./TabEvents";
 
 export const ScreenName = ["TabEvents", "Home", "QRCode"] as const;
 
@@ -22,7 +23,7 @@ type RouteType = {
 const tabs: RouteType[] = [
   {
     name: "TabEvents",
-    component: P.TabEvents,
+    component: TabEvents,
     options: () => ({
       title: "Eventos",
       tabBarLabelStyle: { display: "none" },

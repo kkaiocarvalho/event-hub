@@ -31,7 +31,6 @@ type EventCardType = {
 export function EventCard({ event }: EventCardType) {
   const [subscribeStatus, setSubscribeStatus] = useState(0);
   const [showAlertDialog, setShowAlertDialog] = useState(false);
-  const textPrimaryButton = ["Se inscreva", "Inscrito"];
   const actionPrimaryButton = ["primary", "positive"];
   const iconPrimaryButton = [AddIcon, CheckIcon];
 
@@ -52,7 +51,6 @@ export function EventCard({ event }: EventCardType) {
       borderRadius="$md"
       p="$5"
     >
-    
       <AlertDialog
         isOpen={showAlertDialog}
         onClose={() => {
@@ -68,7 +66,6 @@ export function EventCard({ event }: EventCardType) {
             </AlertDialogCloseButton>
           </AlertDialogHeader>
           <AlertDialogBody>
-            
             <VStack gap={2}>
               <Text size="md">Evento: {event.nomeEvento}</Text>
               <Text size="sm">
@@ -88,7 +85,6 @@ export function EventCard({ event }: EventCardType) {
                   setShowAlertDialog(false);
                 }}
               />
-
               <Button
                 action="negative"
                 text="Confirmar"
@@ -103,66 +99,60 @@ export function EventCard({ event }: EventCardType) {
         </AlertDialogContent>
       </AlertDialog>
 
-      <VStack>
-      <Box
-        borderRadius="$lg"
-        //bgColor="$primary600"
-        //borderColor="background"
-        borderWidth="$0"
-        display="flex"
-        alignItems="flex-start"
-        p="$2"
-        w="$full"
-      >
-        <Text fontSize="$2xl" color="$textColor" fontWeight="$bold" numberOfLines={1} color="#0B1726">
-          {event.nomeEvento}
-        </Text>
-      </Box>
-      <Box
-        borderRadius="$lg"
-        //bgColor="$primary600"
-        //borderColor="background"
-        borderWidth="$0"
-        display="flex"
-        alignItems="flex-start"
-        p="$2"
-        w="$full"
+      <VStack flex={1}>
+        <Box
+          borderRadius="$lg"
+          borderWidth="$0"
+          display="flex"
+          alignItems="flex-start"
+          p="$2"
+          w="$full"
         >
-        <Text fontSize="$xl" color="$textColor" fontWeight="$bold" color="#0B1726">
-          Data: {formatDateToShow(event.dtInicio)}
-        </Text>
-      </Box>
+          <Text
+            fontSize="$2xl"
+            color="$background"
+            fontWeight="$bold"
+            numberOfLines={1}
+          >
+            {event.nomeEvento}
+          </Text>
+        </Box>
+        <Box
+          borderRadius="$lg"
+          borderWidth="$0"
+          display="flex"
+          alignItems="flex-start"
+          p="$2"
+          w="$full"
+        >
+          <Text fontSize="$xl" color="$background" fontWeight="$bold">
+            Data: {formatDateToShow(event.dtInicio)}
+          </Text>
+        </Box>
       </VStack>
-
       <HStack gap={5}>
         <Button
           h="$24"
-          w='$15'
-          //flex={1}
-          //text={textPrimaryButton[subscribeStatus]}
+          w="$16"
           action={
             actionPrimaryButton[subscribeStatus] as
-            | "primary"
+              | "primary"
               | "positive"
               | "negative"
-            }
+          }
           iconSize={24}
           rightIcon={iconPrimaryButton[subscribeStatus]}
           onPress={handlePressEventCard}
         />
-
         <Button
           h="$24"
-          w='$16'
-          //flex={1}
+          w="$16"
           variant="link"
           bgColor="$background"
-          //text="Detalhes"
           iconSize={24}
           rightIcon={ChevronsRightIcon}
-          />
+        />
       </HStack>
-
     </HStack>
   );
 }

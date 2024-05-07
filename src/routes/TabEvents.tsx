@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/material-top-tabs";
 import { NavigationProp } from "@react-navigation/native";
 import { RootParamList } from "../routes/routes";
-import { Events } from "./Events";
+import { Events } from "../pages/Events";
 
 export const ScreenName = ["Events", "MyEvents"] as const;
 

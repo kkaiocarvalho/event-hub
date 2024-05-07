@@ -13,6 +13,8 @@ export const config = createConfig({
       textColor: "#F2F2F2",
       titleColor: "#ffffff",
       placeholderColor: "#c2c2c2",
+      actionColor: "#13F2F2",
+      bgActionColor: "#111D40",
 
       // passive to changes:
 

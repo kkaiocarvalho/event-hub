@@ -113,7 +113,7 @@ export function Events(props: EventsProps) {
               text="Página anterior"
               borderRadius="$md"
               h="$10"
-              bgColor="#13F2F2"
+              bgColor="$actionColor"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
@@ -131,7 +131,7 @@ export function Events(props: EventsProps) {
               text="Próxima página"
               borderRadius="$md"
               h="$10"
-              bgColor="#13F2F2"
+              bgColor="$actionColor"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
