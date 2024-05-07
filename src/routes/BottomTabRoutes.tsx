@@ -67,11 +67,11 @@ export function BottomTabRoutes() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#038c8c",
+        tabBarActiveTintColor: "#13F2F2",
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: "#084040",
-          borderColor: "#084040",
+          backgroundColor: "#111D40",
+          borderColor: "#111D40",
           borderRadius: 15,
           bottom: 15,
           left: 15,

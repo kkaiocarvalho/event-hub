@@ -44,14 +44,15 @@ export function EventCard({ event }: EventCardType) {
   };
 
   return (
-    <VStack
+    <HStack
       alignItems="flex-start"
-      gap={10}
+      gap={5}
       w="100%"
       bgColor="$lightBackground"
       borderRadius="$md"
-      p="$4"
+      p="$5"
     >
+    
       <AlertDialog
         isOpen={showAlertDialog}
         onClose={() => {
@@ -67,7 +68,8 @@ export function EventCard({ event }: EventCardType) {
             </AlertDialogCloseButton>
           </AlertDialogHeader>
           <AlertDialogBody>
-            <VStack gap={5}>
+            
+            <VStack gap={2}>
               <Text size="md">Evento: {event.nomeEvento}</Text>
               <Text size="sm">
                 Ao realizar essa ação seu ingresso será excluído e sua entrada
@@ -101,58 +103,66 @@ export function EventCard({ event }: EventCardType) {
         </AlertDialogContent>
       </AlertDialog>
 
+      <VStack>
       <Box
         borderRadius="$lg"
-        bgColor="$primary600"
-        borderColor="background"
-        borderWidth="$2"
+        //bgColor="$primary600"
+        //borderColor="background"
+        borderWidth="$0"
         display="flex"
         alignItems="flex-start"
         p="$2"
         w="$full"
       >
-        <Text color="$textColor" fontWeight="$bold" numberOfLines={1}>
-          Nome: {event.nomeEvento}
+        <Text fontSize="$2xl" color="$textColor" fontWeight="$bold" numberOfLines={1} color="#0B1726">
+          {event.nomeEvento}
         </Text>
       </Box>
       <Box
         borderRadius="$lg"
-        bgColor="$primary600"
-        borderColor="background"
-        borderWidth="$2"
+        //bgColor="$primary600"
+        //borderColor="background"
+        borderWidth="$0"
         display="flex"
         alignItems="flex-start"
         p="$2"
         w="$full"
-      >
-        <Text color="$textColor" fontWeight="$bold">
+        >
+        <Text fontSize="$xl" color="$textColor" fontWeight="$bold" color="#0B1726">
           Data: {formatDateToShow(event.dtInicio)}
         </Text>
       </Box>
-      <HStack gap={10}>
+      </VStack>
+
+      <HStack gap={5}>
         <Button
-          h="$12"
-          flex={1}
-          text={textPrimaryButton[subscribeStatus]}
+          h="$24"
+          w='$15'
+          //flex={1}
+          //text={textPrimaryButton[subscribeStatus]}
           action={
             actionPrimaryButton[subscribeStatus] as
-              | "primary"
+            | "primary"
               | "positive"
               | "negative"
-          }
+            }
           iconSize={24}
           rightIcon={iconPrimaryButton[subscribeStatus]}
           onPress={handlePressEventCard}
         />
+
         <Button
-          flex={1}
-          h="$12"
+          h="$24"
+          w='$16'
+          //flex={1}
           variant="link"
-          text="Detalhes"
+          bgColor="$background"
+          //text="Detalhes"
           iconSize={24}
           rightIcon={ChevronsRightIcon}
-        />
+          />
       </HStack>
-    </VStack>
+
+    </HStack>
   );
 }

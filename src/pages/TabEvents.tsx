@@ -43,10 +43,10 @@ export function TabEvents() {
     <Tab.Navigator
       initialRouteName="Events"
       screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: "#038c8c" },
-        tabBarActiveTintColor: "#038c8c",
+        tabBarIndicatorStyle: { backgroundColor: "#13F2F2" },
+        tabBarActiveTintColor: "#13F2F2",
         tabBarStyle: {
-          backgroundColor: "#084040",
+          backgroundColor: "#111D40",
         },
       }}
     >

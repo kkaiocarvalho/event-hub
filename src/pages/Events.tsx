@@ -105,13 +105,15 @@ export function Events(props: EventsProps) {
           // />
         }
       </ScrollView>
-      <Center pb="$20">
+      <Center pb="$1/5">
         <HStack gap={10}>
           {pagination.paginaAtual > 0 ? (
             <Button
               icon={<Feather name="chevron-left" size={24} color="#0B1726" />}
               text="Página anterior"
-              borderRadius="$full"
+              borderRadius="$md"
+              h="$10"
+              bgColor="#13F2F2"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
@@ -127,7 +129,9 @@ export function Events(props: EventsProps) {
             <Button
               icon={<Feather name="chevron-right" size={24} color="#0B1726" />}
               text="Próxima página"
-              borderRadius="$full"
+              borderRadius="$md"
+              h="$10"
+              bgColor="#13F2F2"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
