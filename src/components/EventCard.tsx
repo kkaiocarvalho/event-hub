@@ -6,6 +6,8 @@ import {
   CloseIcon,
   CheckIcon,
   AddIcon,
+  SlashIcon,
+  CloseCircleIcon,
   AlertDialog,
   AlertDialogBackdrop,
   AlertDialogContent,
@@ -16,32 +18,106 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
 } from "@gluestack-ui/themed";
-import { ListEventsResponse } from "../api/requests/list-events";
 import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
 import {} from "@gluestack-ui/themed";
 import { ChevronsRightIcon } from "@gluestack-ui/themed";
 import { useState } from "react";
 import { ButtonGroup } from "@gluestack-ui/themed";
+import { Event } from "../types/event";
+import { Input } from "./Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { EventOnChangeType } from "../pages/Events";
 
 type EventCardType = {
-  event: ListEventsResponse["eventos"][0];
+  event: Event;
+  isSubscribed: boolean;
+  showOnlyMyEvents: boolean;
+  handleOnPress: (values: EventOnChangeType) => void;
 };
 
-export function EventCard({ event }: EventCardType) {
-  const [subscribeStatus, setSubscribeStatus] = useState(0);
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
-  const actionPrimaryButton = ["primary", "positive"];
-  const iconPrimaryButton = [AddIcon, CheckIcon];
+type FormValues = {
+  reason?: string | undefined;
+};
 
-  const handlePressEventCard = () => {
-    if (subscribeStatus === 0) {
-      setSubscribeStatus(1);
-    } else {
-      setShowAlertDialog(true);
-    }
+const schema = yup.object({
+  reason: yup
+    .string()
+    .min(4, "O motivo deve ter pelo menos 4 caracteres")
+    .max(255, "O motivo não pode ter mais de 255 caracteres")
+    .optional(),
+});
+
+export function EventCard({
+  event,
+  showOnlyMyEvents,
+  isSubscribed,
+  handleOnPress,
+}: EventCardType) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    ...form
+  } = useForm<FormValues>({ resolver: yupResolver(schema) });
+  const isEventClosed = !!event.motivoCancelamentoEvento;
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+
+  const getAction = () =>
+    showOnlyMyEvents
+      ? isEventClosed
+        ? "secondary"
+        : "negative"
+      : isSubscribed
+      ? "positive"
+      : "primary";
+
+  const getIcon = () =>
+    showOnlyMyEvents
+      ? isEventClosed
+        ? CloseCircleIcon
+        : SlashIcon
+      : isSubscribed
+      ? CheckIcon
+      : AddIcon;
+
+  // ===> FLUXO
+  // meus eventos:
+  // posição 0 = ao clicar deve abrir dialog para fechar o evento
+  // posição 1 = fechado não tem como interagir
+
+  // todos os eventos:
+  // posição 0 = não inscrito, ao clicar deve se inscrever no evento
+  // posição 1 = inscrito, ao clicar deve abrir dialog para se desiscrever
+
+  const submit = (data: FormValues) => {
+    if (showOnlyMyEvents && !data) return;
+    handleOnPress({
+      event,
+      type: showOnlyMyEvents ? "creator" : "user",
+      options: {
+        ...(showOnlyMyEvents && { reason: data.reason }),
+        operation: isSubscribed ? "unsubscribe" : "subscribe",
+      },
+    });
+    showAlertDialog && setShowAlertDialog(false);
   };
 
+  const handleConfirmDialog = () => {
+    if (showOnlyMyEvents && !form.getValues("reason")) {
+      form.setError("reason", { message: '"Motivo" é obrigatório' });
+      return;
+    }
+    handleSubmit(submit)();
+  };
+
+  const handlePressEventCard = () => {
+    (showOnlyMyEvents && !isEventClosed) || isSubscribed
+      ? setShowAlertDialog(true)
+      : handleSubmit(submit)();
+  };
   return (
     <HStack
       alignItems="flex-start"
@@ -60,7 +136,9 @@ export function EventCard({ event }: EventCardType) {
         <AlertDialogBackdrop />
         <AlertDialogContent>
           <AlertDialogHeader>
-            <Heading size="lg">Cencelar Inscrição</Heading>
+            <Heading size="lg">
+              Cencelar {showOnlyMyEvents ? "Evento" : "Inscrição"}
+            </Heading>
             <AlertDialogCloseButton>
               <Icon as={CloseIcon} />
             </AlertDialogCloseButton>
@@ -69,9 +147,21 @@ export function EventCard({ event }: EventCardType) {
             <VStack gap={2}>
               <Text size="md">Evento: {event.nomeEvento}</Text>
               <Text size="sm">
-                Ao realizar essa ação seu ingresso será excluído e sua entrada
-                ao não poderá ser validada.
+                Ao realizar essa ação seu{" "}
+                {showOnlyMyEvents ? "evento" : "ingresso"} será excluído{" "}
+                {showOnlyMyEvents
+                  ? "e não poderá ser reativado."
+                  : "e sua entrada não poderá ser validada."}
               </Text>
+              {showOnlyMyEvents ? (
+                <Input
+                  placeholder="Motivo do cancelamento"
+                  label="Motivo"
+                  inputName="reason"
+                  control={control}
+                  errorMessage={errors.reason?.message}
+                />
+              ) : null}
             </VStack>
           </AlertDialogBody>
           <AlertDialogFooter>
@@ -89,10 +179,7 @@ export function EventCard({ event }: EventCardType) {
                 action="negative"
                 text="Confirmar"
                 flex={1}
-                onPress={() => {
-                  setShowAlertDialog(false);
-                  setSubscribeStatus(0);
-                }}
+                onPress={handleConfirmDialog}
               />
             </ButtonGroup>
           </AlertDialogFooter>
@@ -134,14 +221,10 @@ export function EventCard({ event }: EventCardType) {
         <Button
           h="$24"
           w="$16"
-          action={
-            actionPrimaryButton[subscribeStatus] as
-              | "primary"
-              | "positive"
-              | "negative"
-          }
+          action={getAction()}
           iconSize={24}
-          rightIcon={iconPrimaryButton[subscribeStatus]}
+          rightIcon={getIcon()}
+          isDisabled={isEventClosed}
           onPress={handlePressEventCard}
         />
         <Button

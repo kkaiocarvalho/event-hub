@@ -2,7 +2,7 @@ import { z } from "zod";
 import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
-const subscribeUserResponseSchema = z.object({
+const inscriptionEventResponseSchema = z.object({
   cdParticipanteEvento: z.number(),
   enumInscricaoEvento: z.string(),
   statusInscricaoEvento: z.string(),
@@ -17,17 +17,19 @@ const subscribeUserResponseSchema = z.object({
   dtRegistroParticipacao: z.string(),
 });
 
-export type SubscribeUserVariables = {
+export type InscriptionEventVariables = {
   cdRegistroEvento: number;
 };
 
-export type SubscribeUserResponse = z.infer<typeof subscribeUserResponseSchema>;
+export type InscriptionEventResponse = z.infer<
+  typeof inscriptionEventResponseSchema
+>;
 
-export async function subscribeUser(variables: SubscribeUserVariables) {
+export async function inscriptionEvent(variables: InscriptionEventVariables) {
   return await request({
     method: apiEvents.post,
     url: "/participantes/incluir-participacao-evento",
     body: variables,
-    schema: subscribeUserResponseSchema,
+    schema: inscriptionEventResponseSchema,
   });
 }

@@ -6,7 +6,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { RootParamList } from "../routes/routes";
 import * as P from "./allPages";
 
-export const ScreenName = ["Events", "MyEvents"] as const;
+export const ScreenName = ["Events", "SubscribedEvents"] as const;
 
 export type ScreenNames = (typeof ScreenName)[number];
 export type Navigation = NavigationProp<RootParamList<ScreenNames>>;
@@ -27,10 +27,10 @@ const eventTabs: RouteEventsType[] = [
     }),
   },
   {
-    name: "MyEvents",
+    name: "SubscribedEvents",
     Component: P.Events,
     options: () => ({
-      title: "Meus Eventos",
+      title: "Eventos Inscritos",
     }),
     props: { showOnlyMyEvents: true },
   },

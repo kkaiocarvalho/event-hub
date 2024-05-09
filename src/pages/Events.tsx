@@ -8,8 +8,8 @@ import {
   HStack,
 } from "@gluestack-ui/themed";
 import { Feather } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
-import { QK_EVENT_LIST } from "../utils/constants";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import { QK_EVENT_LIST, QK_REGISTERED_EVENT_LIST } from "../utils/constants";
 import { useCallback, useState } from "react";
 import {
   listEvents,
@@ -18,9 +18,35 @@ import {
 } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
 import { Button } from "../components/Button";
+import {
+  cancelEvent,
+  CancelEventVariables,
+} from "../api/requests/cancel-events";
+import {
+  inscriptionEvent,
+  InscriptionEventVariables,
+} from "../api/requests/inscription-event";
+import { Event } from "../types/event";
+import {
+  unsubscriptionEvent,
+  UnsubscriptionEventVariables,
+} from "../api/requests/unsubscription-event";
+import {
+  listSubscribedEvents,
+  ListSubscribedEventsResponse,
+} from "../api/requests/list-subscribed-events";
 
 type EventsProps = {
   showOnlyMyEvents?: boolean;
+};
+
+export type EventOnChangeType = {
+  event: Event;
+  type: "creator" | "user";
+  options: {
+    reason?: string;
+    operation?: "subscribe" | "unsubscribe";
+  };
 };
 
 export function Events(props: EventsProps) {
@@ -45,12 +71,72 @@ export function Events(props: EventsProps) {
   const eventsQuery = useQuery({
     queryKey: [QK_EVENT_LIST, filters],
     queryFn: () => listEvents(filters),
+    placeholderData: keepPreviousData,
   });
 
-  const eventsData = eventsQuery.data as ListEventsResponse;
+  const listSubscribedEventsQuery = useQuery({
+    queryKey: [QK_REGISTERED_EVENT_LIST],
+    queryFn: () => listSubscribedEvents(filters),
+    placeholderData: keepPreviousData,
+  });
 
+  const cancelEventMutation = useMutation({
+    mutationFn: cancelEvent,
+    onSettled(data, error, variables) {
+      console.log(
+        "========================CANCEL MUTATION===================="
+      );
+      console.log({ data, error, variables });
+    },
+  });
+
+  const inscriptionEventEventMutation = useMutation({
+    mutationFn: inscriptionEvent,
+    onSettled(data, error, variables) {
+      console.log(
+        "========================SUBSCRIBE MUTATION===================="
+      );
+      console.log({ data, error, variables });
+    },
+  });
+
+  const unsubscriptionEventMutation = useMutation({
+    mutationFn: unsubscriptionEvent,
+    onSettled(data, error, variables) {
+      console.log(
+        "========================UNSUBSCRIBE MUTATION===================="
+      );
+      console.log({ data, error, variables });
+    },
+  });
+
+  const handleOnPress = ({ event, type, options }: EventOnChangeType) => {
+    if (type === "creator") {
+      if (!options.reason) return;
+      cancelEventMutation.mutate({
+        motivoCancelamentoEvento: options.reason,
+      } as CancelEventVariables);
+    }
+    if (type === "user") {
+      options.operation === "subscribe"
+        ? inscriptionEventEventMutation.mutate({
+            cdRegistroEvento: event.cdRegistroEvento,
+          } as InscriptionEventVariables)
+        : unsubscriptionEventMutation.mutate({
+            cdRegistroEvento: event.cdRegistroEvento,
+          } as UnsubscriptionEventVariables);
+    }
+  };
+
+  const eventsData = eventsQuery.data as ListEventsResponse;
+  const subscribedEventsData =
+    listSubscribedEventsQuery.data as ListSubscribedEventsResponse;
   const pagination = eventsData?.paginacao ?? defaultPagination;
   const events = eventsData?.eventos ?? [];
+  // const subscibedEvents = subscribedEventsData?.eventos ?? [];
+  const subscibedEvents =
+    events.filter((e) => e.cdRegistroEvento % 2 === 0) ?? [];
+  const idSubscribedEvents = subscibedEvents.map((e) => e.cdRegistroEvento);
 
   const onRefresh = useCallback(() => {
     setFilters(defaultFilter);
@@ -80,7 +166,15 @@ export function Events(props: EventsProps) {
             <Spinner size={55} />
           ) : events.length > 0 ? (
             events.map((event) => (
-              <EventCard key={event.cdRegistroEvento} event={event} />
+              <EventCard
+                key={event.cdRegistroEvento}
+                event={event}
+                isSubscribed={idSubscribedEvents.includes(
+                  event.cdRegistroEvento
+                )}
+                showOnlyMyEvents={!!props.showOnlyMyEvents}
+                handleOnPress={handleOnPress}
+              />
             ))
           ) : (
             <Center flex={1}>
