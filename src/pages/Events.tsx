@@ -8,6 +8,7 @@ import {
   HStack,
 } from "@gluestack-ui/themed";
 import { Feather } from "@expo/vector-icons";
+
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { QK_EVENT_LIST, QK_REGISTERED_EVENT_LIST } from "../utils/constants";
 import { useCallback, useState } from "react";
@@ -147,8 +148,8 @@ export function Events(props: EventsProps) {
       <ScrollView
         refreshControl={
           <RefreshControl
-            colors={["#038c8c66"]}
-            progressBackgroundColor="#084040"
+            colors={["#038c8c"]}
+            progressBackgroundColor="#13F2F2"
             refreshing={eventsQuery.isLoading}
             onRefresh={onRefresh}
           />
@@ -203,7 +204,7 @@ export function Events(props: EventsProps) {
         <HStack gap={10}>
           {pagination.paginaAtual > 0 ? (
             <Button
-              icon={<Feather name="chevron-left" size={24} color="#0B1726" />}
+              icon={<Feather name="chevron-left" size={30} color="#0B1726" />}
               text="Página anterior"
               borderRadius="$md"
               h="$10"
@@ -221,7 +222,7 @@ export function Events(props: EventsProps) {
           ) : null}
           {pagination.temProximaPagina ? (
             <Button
-              icon={<Feather name="chevron-right" size={24} color="#0B1726" />}
+              icon={<Feather name="chevron-right" size={30} color="#0B1726" />}
               text="Próxima página"
               borderRadius="$md"
               h="$10"

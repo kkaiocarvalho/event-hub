@@ -22,6 +22,9 @@ import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
 import {} from "@gluestack-ui/themed";
 import { ChevronsRightIcon } from "@gluestack-ui/themed";
+
+import { AntDesign } from '@expo/vector-icons';
+
 import { useState } from "react";
 import { ButtonGroup } from "@gluestack-ui/themed";
 import { Event } from "../types/event";
@@ -122,10 +125,10 @@ export function EventCard({
     <HStack
       alignItems="flex-start"
       gap={5}
-      w="100%"
+      w="90%"
       bgColor="$lightBackground"
       borderRadius="$md"
-      p="$5"
+      p="$3"
     >
       <AlertDialog
         isOpen={showAlertDialog}
@@ -188,20 +191,20 @@ export function EventCard({
 
       <VStack flex={1}>
         <Box
-          borderRadius="$lg"
-          borderWidth="$0"
-          display="flex"
-          alignItems="flex-start"
-          p="$2"
-          w="$full"
+           borderRadius="$lg"
+           borderWidth="$0"
+           display="flex"
+           alignItems="flex-start"
+           p="$1"
+           w="$full"
         >
           <Text
-            fontSize="$2xl"
+            fontSize="$xl"
             color="$background"
             fontWeight="$bold"
-            numberOfLines={1}
+            numberOfLines={2}
           >
-            {event.nomeEvento}
+          {event.nomeEvento}
           </Text>
         </Box>
         <Box
@@ -209,33 +212,54 @@ export function EventCard({
           borderWidth="$0"
           display="flex"
           alignItems="flex-start"
-          p="$2"
+          p="$1"
           w="$full"
         >
-          <Text fontSize="$xl" color="$background" fontWeight="$bold">
-            Data: {formatDateToShow(event.dtInicio)}
+          <Text fontSize="$2xl" color="$background" fontWeight="$extrabold">
+            {formatDateToShow(event.dtInicio)}
           </Text>
         </Box>
       </VStack>
-      <HStack gap={5}>
+      <VStack gap={5}>
+        <HStack gap={5}>
         <Button
-          h="$24"
+          h="$16"
           w="$16"
           action={getAction()}
           iconSize={24}
           rightIcon={getIcon()}
           isDisabled={isEventClosed}
           onPress={handlePressEventCard}
-        />
+          />
         <Button
-          h="$24"
+          h="$16"
           w="$16"
           variant="link"
           bgColor="$background"
           iconSize={24}
           rightIcon={ChevronsRightIcon}
-        />
-      </HStack>
+          />
+        </HStack>
+
+        {/*<HStack gap={5}>
+        <Button
+          h="$16"
+          w="$16"
+          variant="link"
+          bgColor="$actionColor"
+          iconSize={24}
+          rightIcon={AddIcon}
+          />
+          <Button
+          h="$16"
+          w="$16"
+          variant="link"
+          bgColor="#c2c2c2"
+          iconSize={24}
+          rightIcon={ChevronsRightIcon}
+          />
+              </HStack>*/}
+      </VStack>
     </HStack>
   );
 }
