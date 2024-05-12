@@ -115,6 +115,7 @@ export function Events(props: EventsProps) {
     if (type === "creator") {
       if (!options.reason) return;
       cancelEventMutation.mutate({
+        cdRegistroEvento: event.cdRegistroEvento,
         motivoCancelamentoEvento: options.reason,
       } as CancelEventVariables);
     }

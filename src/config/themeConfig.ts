@@ -11,6 +11,8 @@ export const config = createConfig({
       lightBackground: "#d9d9d9",
       backgroundLogo: "#038c8c66",
       textColor: "#F2F2F2",
+
+      textColorOpacity: "#F2F2F266",
       titleColor: "#ffffff",
       placeholderColor: "#c2c2c2",
       actionColor: "#13F2F2",

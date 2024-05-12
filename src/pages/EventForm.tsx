@@ -1,20 +1,45 @@
-import { Center, VStack } from "@gluestack-ui/themed";
+import {
+  Box,
+  Center,
+  CircleIcon,
+  HStack,
+  Radio,
+  RadioGroup,
+  RadioIcon,
+  RadioIndicator,
+  RadioLabel,
+  Text,
+  VStack,
+} from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
 import { Input } from "../components/Input";
 import { UseFormReturn } from "react-hook-form";
 import { EventFormValues } from "./CreateEvent";
+import { Subtitle } from "../components/Subtitle";
+import { useState } from "react";
+import {
+  formatCurrency,
+  parseCurrency,
+} from "@brazilian-utils/brazilian-utils";
+import { Feather } from "@expo/vector-icons";
 
 type EventFormProps = {
   form: UseFormReturn<EventFormValues>;
 };
 
 export function EventForm({ form }: EventFormProps) {
+  const [isFreeEntrance, setIsFreeEntrance] = useState<"S" | "N">("S");
   const {
     setFocus,
     formState: { errors },
     control,
+    watch,
   } = form;
+
+  const value = watch("eventForm.notifyParticipants");
+  const changeNotifyParticipants = (e: "S" | "N") =>
+    form.setValue("eventForm.notifyParticipants", e);
 
   return (
     <Background withScroll={true}>
@@ -38,7 +63,116 @@ export function EventForm({ form }: EventFormProps) {
               control={control}
               variant="outline"
               errorMessage={errors.eventForm?.complement?.message}
+              // nextInput={() => setFocus("email")}
             />
+            <Text>startDate - Date greather then today</Text>
+            <Text>endDate - Date greather then startDate</Text>
+
+            <Input
+              placeholder="1000"
+              LeftIcon={() => (
+                <Box display="flex" justifyContent="center" pl="$2">
+                  <Feather name="user" size={24} color="#F2F2F2" />
+                </Box>
+              )}
+              label="Nº Max. de Participantes"
+              inputName="eventForm.maxParticipants"
+              control={control}
+              variant="outline"
+              keyboardType="numeric"
+              errorMessage={errors.eventForm?.maxParticipants?.message}
+            />
+            <Subtitle
+              text="Entrada gratuita?"
+              h="$5"
+              pl="$0"
+              mb="$2"
+              fontSize="$sm"
+            />
+            <RadioGroup
+              mb="$4"
+              value={isFreeEntrance}
+              onChange={(e: "S" | "N") => {
+                setIsFreeEntrance(e);
+                e === "N" &&
+                  setTimeout(() => setFocus("eventForm.ticketPrice"), 100);
+              }}
+            >
+              <HStack space="md">
+                <Radio value="S" flex={1}>
+                  <RadioIndicator mr="$2">
+                    <RadioIcon as={CircleIcon} />
+                  </RadioIndicator>
+                  <RadioLabel
+                    color={
+                      isFreeEntrance === "S"
+                        ? "$textColor"
+                        : "$textColorOpacity"
+                    }
+                  >
+                    Sim
+                  </RadioLabel>
+                </Radio>
+                <Radio value="N" flex={1}>
+                  <RadioIndicator mr="$2">
+                    <RadioIcon as={CircleIcon} />
+                  </RadioIndicator>
+                  <RadioLabel
+                    color={
+                      isFreeEntrance === "N"
+                        ? "$textColor"
+                        : "$textColorOpacity"
+                    }
+                  >
+                    Não
+                  </RadioLabel>
+                </Radio>
+              </HStack>
+            </RadioGroup>
+            {isFreeEntrance === "N" ? (
+              <Input
+                placeholder="R$150,00"
+                prefix="R$"
+                label="Valor do ingresso"
+                inputName="eventForm.ticketPrice"
+                control={control}
+                format={(value) => formatCurrency(parseCurrency(value))}
+                variant="outline"
+                keyboardType="numeric"
+                errorMessage={errors.eventForm?.ticketPrice?.message}
+              />
+            ) : null}
+            <Subtitle
+              text="Notificar Participantes?"
+              h="$5"
+              pl="$0"
+              mb="$2"
+              fontSize="$sm"
+            />
+            <RadioGroup value={value} onChange={changeNotifyParticipants}>
+              <HStack space="md">
+                <Radio value="S" flex={1}>
+                  <RadioIndicator mr="$2">
+                    <RadioIcon as={CircleIcon} />
+                  </RadioIndicator>
+                  <RadioLabel
+                    color={value === "S" ? "$textColor" : "$textColorOpacity"}
+                  >
+                    Sim
+                  </RadioLabel>
+                </Radio>
+                <Radio value="N" flex={1}>
+                  <RadioIndicator mr="$2">
+                    <RadioIcon as={CircleIcon} />
+                  </RadioIndicator>
+                  <RadioLabel
+                    color={value === "N" ? "$textColor" : "$textColorOpacity"}
+                  >
+                    Não
+                  </RadioLabel>
+                </Radio>
+              </HStack>
+            </RadioGroup>
           </VStack>
         </Center>
       </VStack>

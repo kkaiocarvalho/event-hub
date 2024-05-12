@@ -9,19 +9,18 @@ import { Subtitle } from "./Subtitle";
 import { Keyboard } from "react-native";
 import { Controller } from "react-hook-form";
 import type { Control, FieldValues, FieldPath } from "react-hook-form";
+import React from "react";
 
 export type InputProps<FormValues> = {
   label: string;
   placeholder?: string;
+  prefix?: string;
   errorMessage?: string;
   keyboardType?: any;
   nextInput?: () => void;
   format?: (value: string, formatOptions: any) => string;
   formatOptions?: any;
-  iconProps?: {
-    iconSize?: any;
-    leftIcon: any;
-  };
+  LeftIcon?: () => React.ReactNode;
   inputFieldProps?: ComponentProps<typeof InputField>;
   control?: Control<FormValues extends FieldValues ? FormValues : any, any>;
   inputName: FieldPath<FormValues extends FieldValues ? FormValues : any>;
@@ -29,8 +28,9 @@ export type InputProps<FormValues> = {
 
 export function Input<T>(inputProps: InputProps<T>) {
   const {
-    iconProps,
     placeholder,
+    LeftIcon,
+    prefix,
     label,
     inputFieldProps,
     control,
@@ -42,7 +42,6 @@ export function Input<T>(inputProps: InputProps<T>) {
     formatOptions,
     ...glueInputProps
   } = inputProps;
-  const iconSizeDefault = iconProps?.iconSize ? iconProps?.iconSize : "$10";
 
   return (
     <VStack h="$24">
@@ -54,14 +53,7 @@ export function Input<T>(inputProps: InputProps<T>) {
         borderColor={errorMessage ? "$error700" : "$primary600"}
         {...glueInputProps}
       >
-        {iconProps?.leftIcon ? (
-          <InputIcon
-            h={iconSizeDefault}
-            w={iconSizeDefault}
-            as={iconProps.leftIcon}
-            mr={placeholder ? "$2" : "$0"}
-          />
-        ) : null}
+        {LeftIcon ? <LeftIcon /> : null}
         <Controller
           control={control}
           name={inputName}
@@ -78,7 +70,7 @@ export function Input<T>(inputProps: InputProps<T>) {
                   ? onChange(format(txt, formatOptions))
                   : onChange(txt.trimStart())
               }
-              value={value}
+              value={prefix ? `${prefix} ${value}` : value}
               ref={ref}
               onSubmitEditing={() =>
                 nextInput ? nextInput() : Keyboard.dismiss()

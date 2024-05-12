@@ -23,6 +23,11 @@ export type EventFormValues = {
   eventForm: {
     name: string;
     complement: string;
+    startDate: Date;
+    endDate: Date;
+    notifyParticipants: "S" | "N";
+    maxParticipants: number;
+    ticketPrice: number;
   };
   addressForm: {
     addressCode: string;
@@ -41,12 +46,29 @@ const schema = yup.object({
       .required("Nome do evento é obrigatório")
       .min(3, "Deve ter no mínimo 3 caracteres")
       .max(50, "Deve ter no máximo 50 caracteres"),
-
     complement: yup
       .string()
       .required("Nome do evento é obrigatório")
       .min(3, "Deve ter no mínimo 3 caracteres")
       .max(50, "Deve ter no máximo 50 caracteres"),
+    startDate: yup
+      .date()
+      .required("Data de início é obrigatório")
+      .min(new Date()),
+    endDate: yup
+      .date()
+      .required("Data de finalização é obrigatório")
+      .min(yup.ref("startDate"), "Data de finalização menor que inicio"),
+    notifyParticipants: yup
+      .string()
+      .oneOf(["S", "N"] as const)
+      .defined(),
+    maxParticipants: yup
+      .number()
+      .positive()
+      .integer()
+      .required("Número máximo é obrigatório"),
+    ticketPrice: yup.number().default(0),
   }),
   addressForm: yup.object({
     addressCode: yup
@@ -79,6 +101,12 @@ export function CreateEvent() {
   const { goBack } = navigateTo();
   const [step, setStep] = useState(1);
   const form = useForm<EventFormValues>({
+    defaultValues: {
+      eventForm: {
+        notifyParticipants: "S",
+        ticketPrice: 0,
+      },
+    },
     resolver: yupResolver(schema),
   });
 
