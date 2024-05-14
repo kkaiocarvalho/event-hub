@@ -62,7 +62,7 @@ export function StartScreen() {
           transition={{ type: "timing", duration: 2300 }}
         >
           <Center>
-            <VStack w="80%" gap="$7">
+            <VStack w="80%" gap="$7" mb="$1/4">
               <Button
                 w="$full"
                 action="primary"

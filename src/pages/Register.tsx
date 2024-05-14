@@ -5,6 +5,8 @@ import {
   ToastTitle,
   useToast,
   VStack,
+  HStack,
+  Box
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
@@ -26,6 +28,9 @@ import {
   isValidCPF,
   isValidPhone,
 } from "@brazilian-utils/brazilian-utils";
+
+import { SvgXml } from "react-native-svg";
+import MiniLogo from "../components/MiniLogo"
 
 type FormValues = {
   name: string;
@@ -146,9 +151,14 @@ export function Register() {
   return (
     <Background withScroll={true}>
       <VStack justifyContent="space-between">
-        <VStack>
-          <Title text="Cadastro" />
-        </VStack>
+      <HStack alignItems="center">
+          <Box>
+          <Title text="Cadastrar" />
+          </Box>
+          <Box>
+          <SvgXml xml={MiniLogo} />
+          </Box>
+        </HStack>
         <Center p="$5">
           <VStack w="$full">
             <VStack>
