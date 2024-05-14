@@ -17,7 +17,10 @@ import {
   ListEventsResponse,
   type ListEventsVariables,
 } from "../api/requests/list-events";
-import { EventCard } from "../components/EventCard";
+//import { EventCard } from "../components/EventCard";
+
+import { EventCardV2 } from "../components/EventCardV2";
+
 import { Button } from "../components/Button";
 import {
   cancelEvent,
@@ -149,8 +152,8 @@ export function Events(props: EventsProps) {
       <ScrollView
         refreshControl={
           <RefreshControl
-            colors={["#038c8c"]}
-            progressBackgroundColor="#13F2F2"
+            colors={["#13F2F2"]}
+            progressBackgroundColor="#111D40"
             refreshing={eventsQuery.isLoading}
             onRefresh={onRefresh}
           />
@@ -168,7 +171,7 @@ export function Events(props: EventsProps) {
             <Spinner size={55} />
           ) : events.length > 0 ? (
             events.map((event) => (
-              <EventCard
+              <EventCardV2
                 key={event.cdRegistroEvento}
                 event={event}
                 isSubscribed={idSubscribedEvents.includes(
@@ -205,11 +208,11 @@ export function Events(props: EventsProps) {
         <HStack gap={10}>
           {pagination.paginaAtual > 0 ? (
             <Button
-              icon={<Feather name="chevron-left" size={30} color="#0B1726" />}
+              icon={<Feather name="chevron-left" size={30} color="#13F2F2" />}
               text="Página anterior"
               borderRadius="$md"
               h="$10"
-              bgColor="$actionColor"
+              bgColor="#111D40"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
@@ -223,11 +226,11 @@ export function Events(props: EventsProps) {
           ) : null}
           {pagination.temProximaPagina ? (
             <Button
-              icon={<Feather name="chevron-right" size={30} color="#0B1726" />}
+              icon={<Feather name="chevron-right" size={30} color="#13F2F2" />}
               text="Próxima página"
               borderRadius="$md"
               h="$10"
-              bgColor="$actionColor"
+              bgColor="#111D40"
               onPress={() =>
                 setFilters((prev) => ({
                   ...prev,
