@@ -53,7 +53,7 @@ export async function request<T = unknown>({
           ? internalErrorSchema
           : status === 400
           ? invalidDataSchema
-          : [401, 404, 422].includes(status)
+          : [401, 404, 403, 422].includes(status)
           ? ruleErrorSchema
           : undefined;
       if (!schema) return Promise.reject(err.response);

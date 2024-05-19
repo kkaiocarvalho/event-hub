@@ -29,7 +29,15 @@ export function formatDateToShow(value: string, options = { withTime: false }) {
 
   const hour = toLocale(date.getHours());
   const minute = toLocale(date.getMinutes());
+
   return `${day}/${month}/${year}${
     options.withTime ? ` ás ${hour}:${minute}` : ""
   }`;
+}
+
+export function formatDateToSave(oldDate: Date): string {
+  const date = oldDate.toLocaleDateString().split("/");
+  const time = oldDate.toLocaleTimeString();
+
+  return `${date[2]}-${date[1]}-${date[0]} ${time}`;
 }

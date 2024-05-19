@@ -23,13 +23,31 @@ import {
   parseCurrency,
 } from "@brazilian-utils/brazilian-utils";
 import { Feather } from "@expo/vector-icons";
+import { Platform } from "react-native";
+import { CustomDateTimePicker } from "../components/CustomDateTimePicker";
+import type { DateTimePickerState } from "../components/CustomDateTimePicker";
 
 type EventFormProps = {
   form: UseFormReturn<EventFormValues>;
 };
 
 export function EventForm({ form }: EventFormProps) {
-  const [isFreeEntrance, setIsFreeEntrance] = useState<"S" | "N">("S");
+  const [isFreeEntrance, setIsFreeEntrance] = useState<"S" | "N">(
+    form.getValues("eventForm.ticketPrice") <= 0 ? "S" : "N"
+  );
+  const [dateTimePickerStart, setDateTimePickerStart] =
+    useState<DateTimePickerState>({
+      show: false,
+      mode: "date",
+    });
+
+  const [dateTimePickerEnd, setDateTimePickerEnd] =
+    useState<DateTimePickerState>({
+      show: false,
+      mode: "date",
+    });
+
+  const isIos = Platform.OS === "ios";
   const {
     setFocus,
     formState: { errors },
@@ -63,11 +81,54 @@ export function EventForm({ form }: EventFormProps) {
               control={control}
               variant="outline"
               errorMessage={errors.eventForm?.complement?.message}
-              // nextInput={() => setFocus("email")}
             />
-            <Text>startDate - Date greather then today</Text>
-            <Text>endDate - Date greather then startDate</Text>
 
+            {isIos ? (
+              <Text>Virá em breve</Text>
+            ) : (
+              <>
+                <CustomDateTimePicker
+                  dateTimePickerState={dateTimePickerStart}
+                  label="Início do evento"
+                  placeholder="12:12 ás 14:27"
+                  datePickerName="eventForm.startDate"
+                  errorMessage={errors.eventForm?.startDate?.message}
+                  control={control}
+                  changeModeDate={() =>
+                    setDateTimePickerStart({ show: true, mode: "date" })
+                  }
+                  changeModeTime={() =>
+                    setDateTimePickerStart({ show: true, mode: "time" })
+                  }
+                  onClose={() =>
+                    setDateTimePickerStart({
+                      show: false,
+                      mode: undefined,
+                    })
+                  }
+                />
+                <CustomDateTimePicker
+                  dateTimePickerState={dateTimePickerEnd}
+                  label="Fim do evento"
+                  placeholder="16:16 ás 18:53"
+                  datePickerName="eventForm.endDate"
+                  errorMessage={errors.eventForm?.endDate?.message}
+                  control={control}
+                  changeModeDate={() =>
+                    setDateTimePickerEnd({ show: true, mode: "date" })
+                  }
+                  changeModeTime={() =>
+                    setDateTimePickerEnd({ show: true, mode: "time" })
+                  }
+                  onClose={() =>
+                    setDateTimePickerEnd({
+                      show: false,
+                      mode: undefined,
+                    })
+                  }
+                />
+              </>
+            )}
             <Input
               placeholder="1000"
               LeftIcon={() => (
@@ -132,11 +193,13 @@ export function EventForm({ form }: EventFormProps) {
             {isFreeEntrance === "N" ? (
               <Input
                 placeholder="R$150,00"
-                prefix="R$"
                 label="Valor do ingresso"
                 inputName="eventForm.ticketPrice"
                 control={control}
-                format={(value) => formatCurrency(parseCurrency(value))}
+                formatToView={(value) =>
+                  `R$ ${formatCurrency(parseCurrency(value.toString()))}`
+                }
+                format={(value: string) => parseCurrency(value)}
                 variant="outline"
                 keyboardType="numeric"
                 errorMessage={errors.eventForm?.ticketPrice?.message}

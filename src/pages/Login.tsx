@@ -11,7 +11,7 @@ import { AuthenticateVariables } from "../api/requests/authenticate";
 import { Subtitle } from "../components/Subtitle";
 import { InteractiveLogo } from "../components/InteractiveLogo";
 import { SvgXml } from "react-native-svg";
-import MiniLogo from "../components/MiniLogo"
+import MiniLogo from "../components/MiniLogo";
 
 type FormValues = {
   email: string;
@@ -45,8 +45,8 @@ export function Login() {
   const submit = (data: FormValues) => {
     if (!data) return;
     const body: AuthenticateVariables = {
-      email: data.email,
-      senha: data.password,
+      email: data.email.trim(),
+      senha: data.password.trim(),
     };
     login(body);
   };
@@ -56,10 +56,10 @@ export function Login() {
       <VStack justifyContent="space-between" mt="$1/4">
         <HStack alignItems="center">
           <Box>
-          <Title text="Login" />
+            <Title text="Login" />
           </Box>
           <Box>
-          <SvgXml xml={MiniLogo} />
+            <SvgXml xml={MiniLogo} />
           </Box>
         </HStack>
         <Center p="$5">

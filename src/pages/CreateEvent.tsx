@@ -6,6 +6,9 @@ import {
   ChevronsRightIcon,
   HStack,
   Text,
+  Toast,
+  ToastDescription,
+  useToast,
   VStack,
 } from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
@@ -14,10 +17,20 @@ import { AddressForm } from "./AdressForm";
 import { EventForm } from "./EventForm";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import type { FieldPath } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { isValidCEP } from "@brazilian-utils/brazilian-utils";
 import { CheckIcon } from "@gluestack-ui/themed";
+import {
+  createEvent,
+  CreateEventResponse,
+  CreateEventVariables,
+} from "../api/requests/create-event";
+import { useMutation } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ToastTitle } from "@gluestack-ui/themed";
+import { formatDateToSave } from "../utils/helpers";
 
 export type EventFormValues = {
   eventForm: {
@@ -30,6 +43,7 @@ export type EventFormValues = {
     ticketPrice: number;
   };
   addressForm: {
+    id?: number;
     addressCode: string;
     uf: string;
     city: string;
@@ -100,6 +114,9 @@ const schema = yup.object({
 export function CreateEvent() {
   const { goBack } = navigateTo();
   const [step, setStep] = useState(1);
+  const configToast = useToast();
+  const insets = useSafeAreaInsets();
+
   const form = useForm<EventFormValues>({
     defaultValues: {
       eventForm: {
@@ -112,13 +129,95 @@ export function CreateEvent() {
 
   const validate = () => {
     form.trigger().then(() => {
-      if (!form.formState.errors.eventForm) setStep(2);
+      if (!form.formState.errors.eventForm) {
+        setStep(2);
+        form.clearErrors();
+        return;
+      }
+
+      const errorFields = Object.keys(form.formState?.errors?.eventForm);
+      const fieldError = errorFields.length && errorFields[0];
+      if (fieldError)
+        form.setFocus(`eventForm.${fieldError}` as FieldPath<EventFormValues>);
     });
   };
 
+  const createEventMutation = useMutation({
+    mutationFn: createEvent,
+    onSuccess(response) {
+      const data = response as CreateEventResponse;
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast
+              nativeID="toasts-show"
+              action="success"
+              variant="accent"
+              top={insets.top}
+            >
+              <VStack space="xs">
+                <ToastTitle>Sucesso</ToastTitle>
+                <ToastDescription>
+                  Evento {data.nomeEvento} cadastrado com sucesso!
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    },
+    onError(error) {
+      if (error.message) {
+        configToast.close("toasts-show");
+        configToast.show({
+          placement: "top",
+          render: () => {
+            return (
+              <Toast
+                nativeID="toasts-show"
+                action="error"
+                variant="accent"
+                top={insets.top}
+              >
+                <VStack space="xs">
+                  <ToastTitle>Erro ao cadastrar evento</ToastTitle>
+                  <ToastDescription>{error.message}</ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
+    },
+  });
+
   const submit = (data: EventFormValues) => {
-    console.log({ cadastrar_evento: data });
+    if (!data) return;
+
+    const body: CreateEventVariables = {
+      nomeEvento: data.eventForm.name,
+      complementoEvento: data.eventForm.complement,
+      dtInicio: formatDateToSave(data.eventForm.startDate),
+      dtEncerramento: formatDateToSave(data.eventForm.endDate),
+      notificarEntradaParticipantes: data.eventForm.notifyParticipants, // "S" | "N"
+      numeroMaximoParticipantes: data.eventForm.maxParticipants,
+      valorIngresso: data.eventForm.ticketPrice,
+      endereco: {
+        ...(data.addressForm.id && { cdEnderecoEvento: data.addressForm.id }),
+        numeroCEP: data.addressForm.addressCode,
+        siglaEstado: data.addressForm.uf,
+        cidade: data.addressForm.city,
+        numero: data.addressForm.number,
+        logradouro: data.addressForm.address,
+        complemento: data.addressForm.complement ?? "",
+      },
+    };
+
+    createEventMutation.mutate(body);
   };
+
+  const isLoading = createEventMutation.isPending;
 
   return (
     <VStack justifyContent="space-between" flex={1} bgColor="$background">
@@ -153,6 +252,7 @@ export function CreateEvent() {
               leftIcon={ChevronsLeftIcon}
               iconSize={25}
               flex={1}
+              isDisabled={isLoading}
               onPress={() => setStep(1)}
             />
             <Button
@@ -160,6 +260,7 @@ export function CreateEvent() {
               rightIcon={CheckIcon}
               iconSize={25}
               flex={1}
+              isDisabled={isLoading}
               onPress={form.handleSubmit(submit)}
             />
           </ButtonGroup>

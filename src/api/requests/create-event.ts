@@ -31,7 +31,7 @@ export type CreateEventVariables = {
   numeroMaximoParticipantes: number;
   valorIngresso: number;
   endereco: {
-    cdEnderecoEvento: number;
+    cdEnderecoEvento?: number;
     numeroCEP: string;
     siglaEstado: string;
     cidade: string;

@@ -1,9 +1,4 @@
-import {
-  InputIcon,
-  InputField,
-  Input as GlueInput,
-  VStack,
-} from "@gluestack-ui/themed";
+import { InputField, Input as GlueInput, VStack } from "@gluestack-ui/themed";
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
 import { Keyboard } from "react-native";
@@ -14,12 +9,13 @@ import React from "react";
 export type InputProps<FormValues> = {
   label: string;
   placeholder?: string;
-  prefix?: string;
   errorMessage?: string;
   keyboardType?: any;
   nextInput?: () => void;
-  format?: (value: string, formatOptions: any) => string;
+  format?: (value: string, formatOptions: any) => string | number;
+  formatToView?: (value: string | number, formatOptions: any) => string;
   formatOptions?: any;
+  formatToViewOptions?: any;
   LeftIcon?: () => React.ReactNode;
   inputFieldProps?: ComponentProps<typeof InputField>;
   control?: Control<FormValues extends FieldValues ? FormValues : any, any>;
@@ -30,7 +26,6 @@ export function Input<T>(inputProps: InputProps<T>) {
   const {
     placeholder,
     LeftIcon,
-    prefix,
     label,
     inputFieldProps,
     control,
@@ -39,7 +34,9 @@ export function Input<T>(inputProps: InputProps<T>) {
     keyboardType,
     nextInput,
     format,
+    formatToView,
     formatOptions,
+    formatToViewOptions,
     ...glueInputProps
   } = inputProps;
 
@@ -65,12 +62,14 @@ export function Input<T>(inputProps: InputProps<T>) {
               keyboardType={keyboardType}
               {...inputFieldProps}
               onBlur={onBlur}
-              onChangeText={(txt) =>
+              onChangeText={(txt) => {
                 format
                   ? onChange(format(txt, formatOptions))
-                  : onChange(txt.trimStart())
+                  : onChange(txt.trimStart());
+              }}
+              value={
+                formatToView ? formatToView(value, formatToViewOptions) : value
               }
-              value={prefix ? `${prefix} ${value}` : value}
               ref={ref}
               onSubmitEditing={() =>
                 nextInput ? nextInput() : Keyboard.dismiss()

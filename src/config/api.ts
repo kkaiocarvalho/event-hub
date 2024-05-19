@@ -36,4 +36,8 @@ apiEvents.interceptors.request.use(onFulfilledRequest, (error) => {
   Promise.reject(error);
 });
 
+api.interceptors.request.use(onFulfilledRequest, (error) => {
+  Promise.reject(error);
+});
+
 export { api, apiEvents, apiCep };

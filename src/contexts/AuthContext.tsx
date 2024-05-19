@@ -74,7 +74,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
                 top={insets.top}
               >
                 <VStack space="xs">
-                  <ToastTitle>Login efetuado </ToastTitle>
+                  <ToastTitle>Login efetuado</ToastTitle>
                   <ToastDescription>Seja bem vindo!</ToastDescription>
                 </VStack>
               </Toast>
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
                   top={insets.top}
                 >
                   <VStack space="xs">
-                    <ToastTitle>Erro durante o Login </ToastTitle>
+                    <ToastTitle>Erro durante o Login</ToastTitle>
                     <ToastDescription>{error.message}</ToastDescription>
                   </VStack>
                 </Toast>

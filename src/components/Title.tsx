@@ -1,8 +1,9 @@
 import { Box, Text } from "@gluestack-ui/themed";
+import { ComponentProps } from "react";
 
 type TitleProps = {
   text: string;
-};
+} & ComponentProps<typeof Text>;
 
 export function Title({ text }: TitleProps) {
   return (
