@@ -5,6 +5,11 @@ import {
   Spinner,
   Text,
   VStack,
+  Divider,
+  Badge,
+  BadgeText,
+  BadgeIcon,
+  GlobeIcon
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
@@ -17,6 +22,9 @@ import { formatDateToShow } from "../utils/helpers";
 import { SvgXml } from "react-native-svg";
 import { Title } from "../components/Title";
 import MiniLogo from "../components/MiniLogo";
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Pressable, Modal, TouchableOpacity } from 'react-native';
+import { useState } from "react";
 
 export function Home({ navigation }: HomeStackProps) {
   const { logout } = useAuth();
@@ -50,14 +58,24 @@ export function Home({ navigation }: HomeStackProps) {
             </Box>
           ) : (
             <>
-              <Text>Usuário: {userData.nome}</Text>
-              <Text>Email: {userData.email}</Text>
-              <Text>Telefone: {userData.telefone}</Text>
-              <Text>Cargo: {userData.permissao}</Text>
-              <Text>
+            <Box backgroundColor="$backgroundLogo" p="$5"  borderTopRightRadius={30} borderBottomRightRadius={10} borderBottomLeftRadius={30} borderTopLeftRadius={10} alignItems="center" justifyContent="center">
+              <HStack p={5} gap={10} alignItems="center" >
+              <FontAwesome5 name="user-astronaut" size={24} color="white" />
+              <Text color="$textColor" fontSize={30}>Meu Perfil</Text>
+              </HStack>
+              <Divider my="$0.5" bgColor="#f2f2f2" w="$4/5"/>
+              <Text color="$textColor" p={5}>Usuário: {userData.nome}</Text>
+              <Text color="$textColor" p={5}>Email: {userData.email}</Text>
+              <Text color="$textColor" p={5}>Telefone: {userData.telefone}</Text>
+              <Badge size="lg" variant="outline" borderRadius="$md" action="info">
+              <BadgeText>Cargo: {userData.permissao}</BadgeText>
+              <BadgeIcon as={GlobeIcon} ml="$1" />
+              </Badge>         
+              <Text color="$textColorOpacity" p={5}>
                 Entrou em:{" "}
                 {formatDateToShow(userData.dataInclusao, { withTime: true })}
               </Text>
+            </Box>
             </>
           )}
         </VStack>

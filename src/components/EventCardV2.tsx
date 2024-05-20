@@ -123,7 +123,8 @@ export function EventCardV2({
       : handleSubmit(submit)();
   };
   return (
-    <Pressable  onPress={() => alert("Socorro")}>
+    <Pressable onLongPress={() => alert("Socorro")}> 
+    {/*Pressione para ver os detalhes = onLongPress*/}
     <HStack
       alignItems="flex-start"
       gap={5}
@@ -221,7 +222,7 @@ export function EventCardV2({
             {formatDateToShow(event.dtInicio)}
           </Text>
         </Box>
-      </VStack>
+      </VStack>      
       <VStack gap={5}>
         <HStack gap={5} flex={1} justifyContent="center" alignItems="center" p="$1">
         <Button
@@ -252,9 +253,9 @@ export function EventCardV2({
           iconSize={24}
           rightIcon={ChevronsRightIcon}
           />
-              </HStack>*/}
+              </HStack>*/}             
       </VStack>
     </HStack>
-    </Pressable>
+    </Pressable>   
   );
 }

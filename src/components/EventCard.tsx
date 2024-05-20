@@ -22,9 +22,6 @@ import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
 import {} from "@gluestack-ui/themed";
 import { ChevronsRightIcon } from "@gluestack-ui/themed";
-
-import { AntDesign } from '@expo/vector-icons';
-
 import { useState } from "react";
 import { ButtonGroup } from "@gluestack-ui/themed";
 import { Event } from "../types/event";
@@ -190,38 +187,38 @@ export function EventCard({
       </AlertDialog>
 
       <VStack flex={1}>
-        <Box
+        <Box 
            borderRadius="$lg"
            borderWidth="$0"
            display="flex"
            alignItems="flex-start"
            p="$1"
-           w="$full"
+           w="$full"          
         >
           <Text
             fontSize="$xl"
             color="$background"
             fontWeight="$bold"
-            numberOfLines={2}
+            numberOfLines={2}            
           >
           {event.nomeEvento}
           </Text>
         </Box>
-        <Box
+        <Box  
           borderRadius="$lg"
           borderWidth="$0"
           display="flex"
           alignItems="flex-start"
           p="$1"
-          w="$full"
+          w="$full"         
         >
           <Text fontSize="$2xl" color="$background" fontWeight="$extrabold">
             {formatDateToShow(event.dtInicio)}
           </Text>
         </Box>
       </VStack>
-      <VStack gap={5}>
-        <HStack gap={5}>
+      <VStack gap={5}>        
+      <HStack gap={5}>
         <Button
           h="$16"
           w="$16"
