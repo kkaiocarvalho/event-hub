@@ -35,7 +35,7 @@ export function Home({ navigation }: HomeStackProps) {
     userData?.permissao === UserPermissions["Organizer"] ||
     userData?.permissao === UserPermissions["Admin"];
 
-  return (
+    return (
     <Background paddingBottomTab>
       <VStack justifyContent="space-between" flex={1}>
         <VStack flex={1}>

@@ -32,9 +32,12 @@ type EventFormProps = {
 };
 
 export function EventForm({ form }: EventFormProps) {
-  const [isFreeEntrance, setIsFreeEntrance] = useState<"S" | "N">(
-    form.getValues("eventForm.ticketPrice") <= 0 ? "S" : "N"
+  const [advancedOptions, setAdvancedOptions] = useState<"true" | "false">(
+    "false"
   );
+  // const [isFreeEntrance, setIsFreeEntrance] = useState<"S" | "N">(
+  //   form.getValues("eventForm.ticketPrice") <= 0 ? "S" : "N"
+  // );
   const [dateTimePickerStart, setDateTimePickerStart] =
     useState<DateTimePickerState>({
       show: false,
@@ -55,9 +58,9 @@ export function EventForm({ form }: EventFormProps) {
     watch,
   } = form;
 
-  const value = watch("eventForm.notifyParticipants");
-  const changeNotifyParticipants = (e: "S" | "N") =>
-    form.setValue("eventForm.notifyParticipants", e);
+  // const value = watch("eventForm.notifyParticipants");
+  // const changeNotifyParticipants = (e: "S" | "N") =>
+  //   form.setValue("eventForm.notifyParticipants", e);
 
   return (
     <Background withScroll={true}>
@@ -82,7 +85,6 @@ export function EventForm({ form }: EventFormProps) {
               variant="outline"
               errorMessage={errors.eventForm?.complement?.message}
             />
-
             {isIos ? (
               <Text>Virá em breve</Text>
             ) : (
@@ -144,29 +146,29 @@ export function EventForm({ form }: EventFormProps) {
               errorMessage={errors.eventForm?.maxParticipants?.message}
             />
             <Subtitle
-              text="Entrada gratuita?"
+              // TODO: when back resolve ticket price and notification remove display: "none"
+              display="none"
+              text="Opções avançadas?"
               h="$5"
               pl="$0"
               mb="$2"
               fontSize="$sm"
             />
             <RadioGroup
+              // TODO: when back resolve ticket price and notification remove display: "none"
+              display="none"
               mb="$4"
-              value={isFreeEntrance}
-              onChange={(e: "S" | "N") => {
-                setIsFreeEntrance(e);
-                e === "N" &&
-                  setTimeout(() => setFocus("eventForm.ticketPrice"), 100);
-              }}
+              value={advancedOptions}
+              onChange={(e: "true" | "false") => setAdvancedOptions(e)}
             >
               <HStack space="md">
-                <Radio value="S" flex={1}>
+                <Radio value="true" flex={1}>
                   <RadioIndicator mr="$2">
                     <RadioIcon as={CircleIcon} />
                   </RadioIndicator>
                   <RadioLabel
                     color={
-                      isFreeEntrance === "S"
+                      advancedOptions === "true"
                         ? "$textColor"
                         : "$textColorOpacity"
                     }
@@ -174,13 +176,13 @@ export function EventForm({ form }: EventFormProps) {
                     Sim
                   </RadioLabel>
                 </Radio>
-                <Radio value="N" flex={1}>
+                <Radio value="false" flex={1}>
                   <RadioIndicator mr="$2">
                     <RadioIcon as={CircleIcon} />
                   </RadioIndicator>
                   <RadioLabel
                     color={
-                      isFreeEntrance === "N"
+                      advancedOptions === "false"
                         ? "$textColor"
                         : "$textColorOpacity"
                     }
@@ -190,52 +192,108 @@ export function EventForm({ form }: EventFormProps) {
                 </Radio>
               </HStack>
             </RadioGroup>
-            {isFreeEntrance === "N" ? (
-              <Input
-                placeholder="R$150,00"
-                label="Valor do ingresso"
-                inputName="eventForm.ticketPrice"
-                control={control}
-                formatToView={(value) =>
-                  `R$ ${formatCurrency(parseCurrency(value.toString()))}`
-                }
-                format={(value: string) => parseCurrency(value)}
-                variant="outline"
-                keyboardType="numeric"
-                errorMessage={errors.eventForm?.ticketPrice?.message}
-              />
+            {advancedOptions === "true" ? (
+              // <>
+              //   <Subtitle
+              //     text="Entrada gratuita?"
+              //     h="$5"
+              //     pl="$0"
+              //     mb="$2"
+              //     fontSize="$sm"
+              //   />
+              //   <RadioGroup
+              //     mb="$4"
+              //     value={isFreeEntrance}
+              //     onChange={(e: "S" | "N") => {
+              //       setIsFreeEntrance(e);
+              //       // e === "N" &&
+              //       //   setTimeout(() => setFocus("eventForm.ticketPrice"), 100);
+              //     }}
+              //   >
+              //     <HStack space="md">
+              //       <Radio value="S" flex={1}>
+              //         <RadioIndicator mr="$2">
+              //           <RadioIcon as={CircleIcon} />
+              //         </RadioIndicator>
+              //         <RadioLabel
+              //           color={
+              //             isFreeEntrance === "S"
+              //               ? "$textColor"
+              //               : "$textColorOpacity"
+              //           }
+              //         >
+              //           Sim
+              //         </RadioLabel>
+              //       </Radio>
+              //       <Radio value="N" flex={1}>
+              //         <RadioIndicator mr="$2">
+              //           <RadioIcon as={CircleIcon} />
+              //         </RadioIndicator>
+              //         <RadioLabel
+              //           color={
+              //             isFreeEntrance === "N"
+              //               ? "$textColor"
+              //               : "$textColorOpacity"
+              //           }
+              //         >
+              //           Não
+              //         </RadioLabel>
+              //       </Radio>
+              //     </HStack>
+              //   </RadioGroup>
+              //   {isFreeEntrance === "N" ? (
+              //     <Input
+              //       placeholder="R$150,00"
+              //       label="Valor do ingresso"
+              //       // inputName="eventForm.ticketPrice"
+              //       control={control}
+              //       formatToView={(value) =>
+              //         `R$ ${formatCurrency(parseCurrency(value.toString()))}`
+              //       }
+              //       format={(value: string) => parseCurrency(value)}
+              //       variant="outline"
+              //       keyboardType="numeric"
+              //       // errorMessage={errors.eventForm?.ticketPrice?.message}
+              //     />
+              //   ) : null}
+              //   <Subtitle
+              //     text="Notificar Participantes?"
+              //     h="$5"
+              //     pl="$0"
+              //     mb="$2"
+              //     fontSize="$sm"
+              //   />
+              //   <RadioGroup value={value} onChange={changeNotifyParticipants}>
+              //     <HStack space="md">
+              //       <Radio value="S" flex={1}>
+              //         <RadioIndicator mr="$2">
+              //           <RadioIcon as={CircleIcon} />
+              //         </RadioIndicator>
+              //         <RadioLabel
+              //           color={
+              //             value === "S" ? "$textColor" : "$textColorOpacity"
+              //           }
+              //         >
+              //           Sim
+              //         </RadioLabel>
+              //       </Radio>
+              //       <Radio value="N" flex={1}>
+              //         <RadioIndicator mr="$2">
+              //           <RadioIcon as={CircleIcon} />
+              //         </RadioIndicator>
+              //         <RadioLabel
+              //           color={
+              //             value === "N" ? "$textColor" : "$textColorOpacity"
+              //           }
+              //         >
+              //           Não
+              //         </RadioLabel>
+              //       </Radio>
+              //     </HStack>
+              //   </RadioGroup>
+              // </>
+              <></>
             ) : null}
-            <Subtitle
-              text="Notificar Participantes?"
-              h="$5"
-              pl="$0"
-              mb="$2"
-              fontSize="$sm"
-            />
-            <RadioGroup value={value} onChange={changeNotifyParticipants}>
-              <HStack space="md">
-                <Radio value="S" flex={1}>
-                  <RadioIndicator mr="$2">
-                    <RadioIcon as={CircleIcon} />
-                  </RadioIndicator>
-                  <RadioLabel
-                    color={value === "S" ? "$textColor" : "$textColorOpacity"}
-                  >
-                    Sim
-                  </RadioLabel>
-                </Radio>
-                <Radio value="N" flex={1}>
-                  <RadioIndicator mr="$2">
-                    <RadioIcon as={CircleIcon} />
-                  </RadioIndicator>
-                  <RadioLabel
-                    color={value === "N" ? "$textColor" : "$textColorOpacity"}
-                  >
-                    Não
-                  </RadioLabel>
-                </Radio>
-              </HStack>
-            </RadioGroup>
           </VStack>
         </Center>
       </VStack>

@@ -34,13 +34,14 @@ import { formatDateToSave } from "../utils/helpers";
 
 export type EventFormValues = {
   eventForm: {
+    // TODO: when back resolve ticket price and notification remove comments
     name: string;
     complement: string;
     startDate: Date;
     endDate: Date;
-    notifyParticipants: "S" | "N";
-    maxParticipants: number;
-    ticketPrice: number;
+    maxParticipants?: number | null;
+    // notifyParticipants: "S" | "N";
+    // ticketPrice: number;
   };
   addressForm: {
     id?: number;
@@ -54,6 +55,7 @@ export type EventFormValues = {
 };
 
 const schema = yup.object({
+  // TODO: when back resolve ticket price and notification remove comments
   eventForm: yup.object({
     name: yup
       .string()
@@ -73,15 +75,16 @@ const schema = yup.object({
       .date()
       .required("Data de finalização é obrigatório")
       .min(yup.ref("startDate"), "Data de finalização menor que inicio"),
-    notifyParticipants: yup
-      .string()
-      .oneOf(["S", "N"] as const)
-      .defined(),
+    // TODO: endDate is not valid when is below startDate
+    // 
+    // notifyParticipants: yup
+    //   .string()
+    //   .oneOf(["S", "N"] as const)
+    //   .defined(),
     maxParticipants: yup
       .number()
       .positive()
-      .integer()
-      .required("Número máximo é obrigatório"),
+      .integer().optional(),
     ticketPrice: yup.number().default(0),
   }),
   addressForm: yup.object({
@@ -118,12 +121,13 @@ export function CreateEvent() {
   const insets = useSafeAreaInsets();
 
   const form = useForm<EventFormValues>({
-    defaultValues: {
-      eventForm: {
-        notifyParticipants: "S",
-        ticketPrice: 0,
-      },
-    },
+    // TODO: when back resolve ticket price and notification remove comments
+    // defaultValues: {
+    //   eventForm: {
+    //     notifyParticipants: "S",
+    //     ticketPrice: 0,
+    //   },
+    // },
     resolver: yupResolver(schema),
   });
 
@@ -200,9 +204,12 @@ export function CreateEvent() {
       complementoEvento: data.eventForm.complement,
       dtInicio: formatDateToSave(data.eventForm.startDate),
       dtEncerramento: formatDateToSave(data.eventForm.endDate),
-      notificarEntradaParticipantes: data.eventForm.notifyParticipants, // "S" | "N"
-      numeroMaximoParticipantes: data.eventForm.maxParticipants,
-      valorIngresso: data.eventForm.ticketPrice,
+      numeroMaximoParticipantes: data.eventForm.maxParticipants ?? null,
+      // TODO: when back resolve ticket price and notification remove comments
+      notificarEntradaParticipantes: "N",
+      valorIngresso: null,
+      // notificarEntradaParticipantes: data.eventForm.notifyParticipants, // "S" | "N"
+      // valorIngresso: data.eventForm.ticketPrice,
       endereco: {
         ...(data.addressForm.id && { cdEnderecoEvento: data.addressForm.id }),
         numeroCEP: data.addressForm.addressCode,

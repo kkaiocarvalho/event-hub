@@ -1,5 +1,6 @@
-import { Box, ScrollView } from "@gluestack-ui/themed";
+import { Box, ScrollView, Pressable } from "@gluestack-ui/themed";
 import type { PropsWithChildren } from "react";
+import { Keyboard } from "react-native";
 
 type BackgroundProp = {
   withScroll?: boolean;
@@ -20,11 +21,13 @@ export function Background({
       p="$10"
       pb={paddingBottomTab ? "$20" : "$10"}
     >
-      {withScroll ? (
-        <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
-      ) : (
-        children
-      )}
+      <Pressable flex={1} onPress={() => Keyboard.dismiss()}>
+        {withScroll ? (
+          <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
+        ) : (
+          children
+        )}
+      </Pressable>
     </Box>
   );
 }

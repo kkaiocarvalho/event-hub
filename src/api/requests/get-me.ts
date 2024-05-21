@@ -10,7 +10,7 @@ const getMeResponseSchema = z.object({
   permissao: z.string(),
   flAtivo: z.string(),
   dataInclusao: z.string(),
-  dataAlteracao: z.string(),
+  dataAlteracao: z.string().nullable(),
 });
 
 export type GetMeResponse = z.infer<typeof getMeResponseSchema>;

@@ -28,7 +28,7 @@ export type CreateEventVariables = {
   dtInicio: string;
   dtEncerramento: string;
   notificarEntradaParticipantes: string; // "S" | "N"
-  numeroMaximoParticipantes: number;
+  numeroMaximoParticipantes: number | null;
   valorIngresso: number;
   endereco: {
     cdEnderecoEvento?: number;
