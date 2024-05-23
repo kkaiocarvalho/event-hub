@@ -8,7 +8,6 @@ import {
   HStack,
 } from "@gluestack-ui/themed";
 import { Feather } from "@expo/vector-icons";
-
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { QK_EVENT_LIST, QK_REGISTERED_EVENT_LIST } from "../utils/constants";
 import { useCallback, useState } from "react";
@@ -71,70 +70,70 @@ export function Events(props: EventsProps) {
     placeholderData: keepPreviousData,
   });
 
-  const listSubscribedEventsQuery = useQuery({
-    queryKey: [QK_REGISTERED_EVENT_LIST],
-    queryFn: () => listSubscribedEvents(filters),
-    placeholderData: keepPreviousData,
-  });
+  // const listSubscribedEventsQuery = useQuery({
+  //   queryKey: [QK_REGISTERED_EVENT_LIST],
+  //   queryFn: () => listSubscribedEvents(filters),
+  //   placeholderData: keepPreviousData,
+  // });
 
-  const cancelEventMutation = useMutation({
-    mutationFn: cancelEvent,
-    onSettled(data, error, variables) {
-      console.log(
-        "========================CANCEL MUTATION===================="
-      );
-      console.log({ data, error, variables });
-    },
-  });
+  // const cancelEventMutation = useMutation({
+  //   mutationFn: cancelEvent,
+  //   onSettled(data, error, variables) {
+  //     console.log(
+  //       "========================CANCEL MUTATION===================="
+  //     );
+  //     console.log({ data, error, variables });
+  //   },
+  // });
 
-  const inscriptionEventEventMutation = useMutation({
-    mutationFn: inscriptionEvent,
-    onSettled(data, error, variables) {
-      console.log(
-        "========================SUBSCRIBE MUTATION===================="
-      );
-      console.log({ data, error, variables });
-    },
-  });
+  // const inscriptionEventEventMutation = useMutation({
+  //   mutationFn: inscriptionEvent,
+  //   onSettled(data, error, variables) {
+  //     console.log(
+  //       "========================SUBSCRIBE MUTATION===================="
+  //     );
+  //     console.log({ data, error, variables });
+  //   },
+  // });
 
-  const unsubscriptionEventMutation = useMutation({
-    mutationFn: unsubscriptionEvent,
-    onSettled(data, error, variables) {
-      console.log(
-        "========================UNSUBSCRIBE MUTATION===================="
-      );
-      console.log({ data, error, variables });
-    },
-  });
+  // const unsubscriptionEventMutation = useMutation({
+  //   mutationFn: unsubscriptionEvent,
+  //   onSettled(data, error, variables) {
+  //     console.log(
+  //       "========================UNSUBSCRIBE MUTATION===================="
+  //     );
+  //     console.log({ data, error, variables });
+  //   },
+  // });
 
-  const handleOnPress = ({ event, type, options }: EventOnChangeType) => {
-    if (type === "creator") {
-      if (!options.reason) return;
-      cancelEventMutation.mutate({
-        cdRegistroEvento: event.cdRegistroEvento,
-        motivoCancelamentoEvento: options.reason,
-      } as CancelEventVariables);
-    }
-    if (type === "user") {
-      options.operation === "subscribe"
-        ? inscriptionEventEventMutation.mutate({
-            cdRegistroEvento: event.cdRegistroEvento,
-          } as InscriptionEventVariables)
-        : unsubscriptionEventMutation.mutate({
-            cdRegistroEvento: event.cdRegistroEvento,
-          } as UnsubscriptionEventVariables);
-    }
-  };
+  // const handleOnPress = ({ event, type, options }: EventOnChangeType) => {
+  //   if (type === "creator") {
+  //     if (!options.reason) return;
+  //     cancelEventMutation.mutate({
+  //       cdRegistroEvento: event.cdRegistroEvento,
+  //       motivoCancelamentoEvento: options.reason,
+  //     } as CancelEventVariables);
+  //   }
+  //   if (type === "user") {
+  //     options.operation === "subscribe"
+  //       ? inscriptionEventEventMutation.mutate({
+  //           cdRegistroEvento: event.cdRegistroEvento,
+  //         } as InscriptionEventVariables)
+  //       : unsubscriptionEventMutation.mutate({
+  //           cdRegistroEvento: event.cdRegistroEvento,
+  //         } as UnsubscriptionEventVariables);
+  //   }
+  // };
 
   const eventsData = eventsQuery.data as ListEventsResponse;
-  const subscribedEventsData =
-    listSubscribedEventsQuery.data as ListSubscribedEventsResponse;
+  // const subscribedEventsData =
+  //   listSubscribedEventsQuery.data as ListSubscribedEventsResponse;
   const pagination = eventsData?.paginacao ?? defaultPagination;
   const events = eventsData?.eventos ?? [];
   // const subscibedEvents = subscribedEventsData?.eventos ?? [];
-  const subscibedEvents =
-    events.filter((e) => e.cdRegistroEvento % 2 === 0) ?? [];
-  const idSubscribedEvents = subscibedEvents.map((e) => e.cdRegistroEvento);
+  // const subscibedEvents =
+  //   events.filter((e) => e.cdRegistroEvento % 2 === 0) ?? [];
+  // const idSubscribedEvents = subscibedEvents.map((e) => e.cdRegistroEvento);
 
   const onRefresh = useCallback(() => {
     setFilters(defaultFilter);
@@ -167,11 +166,11 @@ export function Events(props: EventsProps) {
               <EventCard
                 key={event.cdRegistroEvento}
                 event={event}
-                isSubscribed={idSubscribedEvents.includes(
-                  event.cdRegistroEvento
-                )}
-                showOnlyMyEvents={!!props.showOnlyMyEvents}
-                handleOnPress={handleOnPress}
+                // isSubscribed={idSubscribedEvents.includes(
+                //   event.cdRegistroEvento
+                // )}
+                // showOnlyMyEvents={!!props.showOnlyMyEvents}
+                // handleOnPress={handleOnPress}
               />
             ))
           ) : (

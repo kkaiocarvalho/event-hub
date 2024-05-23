@@ -12,10 +12,11 @@ export enum UserPermissions {
 }
 
 export enum EventStatus {
-  Aberto = "ABERTO",
-  Fechado = "FECHADO",
-  Cancelado = "CANCELADO",
+  OPEN = "ABERTO",
+  CLOSED = "FECHADO",
+  CANCELED = "CANCELADO",
 }
+
 export enum ParticipationStatus {
   "Não registrado" = "NAO_REGISTRADO",
   "Registrado" = "REGISTRADO",

@@ -24,7 +24,7 @@ import {
 } from "@gluestack-ui/themed";
 import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
-import {} from "@gluestack-ui/themed";
+import { } from "@gluestack-ui/themed";
 import { Pressable } from "react-native";
 import { useState } from "react";
 import { ButtonGroup } from "@gluestack-ui/themed";
@@ -39,9 +39,9 @@ import type { Event } from "../api/requests/list-events";
 
 type EventCardType = {
   event: Event;
-  isSubscribed: boolean;
-  showOnlyMyEvents: boolean;
-  handleOnPress: (values: EventOnChangeType) => void;
+  // isSubscribed: boolean;
+  // showOnlyMyEvents: boolean;
+  // handleOnPress: (values: EventOnChangeType) => void;
 };
 
 type FormValues = {
@@ -58,9 +58,9 @@ const schema = yup.object({
 
 export function EventCard({
   event,
-  showOnlyMyEvents,
-  isSubscribed,
-  handleOnPress,
+  // showOnlyMyEvents,
+  // isSubscribed,
+  // handleOnPress,
 }: EventCardType) {
   const {
     control,
@@ -68,26 +68,28 @@ export function EventCard({
     formState: { errors },
     ...form
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
-  const isEventClosed = !!event.motivoCancelamentoEvento;
+
+  const isEventCanceled = event.statusEvento === EventStatus.CANCELED;
+  console.log({ isEventCanceled, statusEvento: event.statusEvento, canceled: EventStatus.CANCELED })
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const getAction = () =>
-    showOnlyMyEvents
-      ? isEventClosed
-        ? "secondary"
-        : "negative"
-      : isSubscribed
-      ? "positive"
-      : "primary";
+    // showOnlyMyEvents ?
+    isEventCanceled
+      ? "secondary"
+      : "negative"
+  // : isSubscribed
+  // ? "positive"
+  // : "primary";
 
   const getIcon = () =>
-    showOnlyMyEvents
-      ? isEventClosed
-        ? CloseCircleIcon
-        : SlashIcon
-      : isSubscribed
-      ? CheckIcon
-      : AddIcon;
+    // showOnlyMyEvents ?
+    isEventCanceled
+      ? CloseCircleIcon
+      : SlashIcon
+  // : isSubscribed
+  // ? CheckIcon
+  // : AddIcon;
 
   // ===> FLUXO
   // meus eventos:
@@ -99,33 +101,38 @@ export function EventCard({
   // posição 1 = inscrito, ao clicar deve abrir dialog para se desiscrever
 
   const submit = (data: FormValues) => {
-    if (showOnlyMyEvents && !data) return;
-    handleOnPress({
-      event,
-      type: showOnlyMyEvents ? "creator" : "user",
-      options: {
-        ...(showOnlyMyEvents && { reason: data.reason }),
-        operation: isSubscribed ? "unsubscribe" : "subscribe",
-      },
-    });
-    showAlertDialog && setShowAlertDialog(false);
+    console.log({ data })
+    // if (showOnlyMyEvents && !data) return;
+    // handleOnPress({
+    //   event,
+    //   type: showOnlyMyEvents ? "creator" : "user",
+    //   options: {
+    //     ...(showOnlyMyEvents && { reason: data.reason }),
+    //     operation: isSubscribed ? "unsubscribe" : "subscribe",
+    //   },
+    // });
+    // showAlertDialog && setShowAlertDialog(false);
   };
 
   const handleConfirmDialog = () => {
-    if (showOnlyMyEvents && !form.getValues("reason")) {
-      form.setError("reason", { message: '"Motivo" é obrigatório' });
-      return;
-    }
-    handleSubmit(submit)();
+    console.log("handleConfirmDialog")
+    // if (showOnlyMyEvents && !form.getValues("reason")) {
+    //   form.setError("reason", { message: '"Motivo" é obrigatório' });
+    //   return;
+    // }
+    // handleSubmit(submit)();
   };
 
   const handlePressEventCard = () => {
-    (showOnlyMyEvents && !isEventClosed) || isSubscribed
-      ? setShowAlertDialog(true)
-      : handleSubmit(submit)();
+    console.log("Handle press event card")
+    // (showOnlyMyEvents && !isEventClosed) || isSubscribed
+    //   ? setShowAlertDialog(true)
+    //   : handleSubmit(submit)();
   };
 
   console.log({ event: event.statusParticipacao });
+
+  const showOnlyMyEvents = false;
 
   return (
     <Pressable onLongPress={() => alert("Socorro")}>
@@ -271,7 +278,7 @@ export function EventCard({
               action={getAction()}
               iconSize={24}
               rightIcon={getIcon()}
-              isDisabled={isEventClosed}
+              isDisabled={isEventCanceled}
               onPress={handlePressEventCard}
             />
           </HStack>
