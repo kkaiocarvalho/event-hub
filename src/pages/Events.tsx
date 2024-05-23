@@ -12,15 +12,9 @@ import { Feather } from "@expo/vector-icons";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { QK_EVENT_LIST, QK_REGISTERED_EVENT_LIST } from "../utils/constants";
 import { useCallback, useState } from "react";
-import {
-  listEvents,
-  ListEventsResponse,
-  type ListEventsVariables,
-} from "../api/requests/list-events";
-//import { EventCard } from "../components/EventCard";
-
-import { EventCardV2 } from "../components/EventCardV2";
-
+import { listEvents, ListEventsResponse } from "../api/requests/list-events";
+import type { ListEventsVariables, Event } from "../api/requests/list-events";
+import { EventCard } from "../components/EventCard";
 import { Button } from "../components/Button";
 import {
   cancelEvent,
@@ -30,7 +24,6 @@ import {
   inscriptionEvent,
   InscriptionEventVariables,
 } from "../api/requests/inscription-event";
-import { Event } from "../types/event";
 import {
   unsubscriptionEvent,
   UnsubscriptionEventVariables,
@@ -171,7 +164,7 @@ export function Events(props: EventsProps) {
             <Spinner size={55} />
           ) : events.length > 0 ? (
             events.map((event) => (
-              <EventCardV2
+              <EventCard
                 key={event.cdRegistroEvento}
                 event={event}
                 isSubscribed={idSubscribedEvents.includes(

@@ -17,19 +17,25 @@ import {
   Icon,
   AlertDialogBody,
   AlertDialogFooter,
+  Divider,
+  BadgeText,
+  BadgeIcon,
+  GlobeIcon,
 } from "@gluestack-ui/themed";
 import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
 import {} from "@gluestack-ui/themed";
-import { ChevronsRightIcon } from "@gluestack-ui/themed";
+import { Pressable } from "react-native";
 import { useState } from "react";
 import { ButtonGroup } from "@gluestack-ui/themed";
-import { Event } from "../types/event";
 import { Input } from "./Input";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { EventOnChangeType } from "../pages/Events";
+import type { EventOnChangeType } from "../pages/Events";
+import { EventStatus } from "../utils/constants";
+import { Badge } from "@gluestack-ui/themed";
+import type { Event } from "../api/requests/list-events";
 
 type EventCardType = {
   event: Event;
@@ -118,145 +124,159 @@ export function EventCard({
       ? setShowAlertDialog(true)
       : handleSubmit(submit)();
   };
+
+  console.log({ event: event.statusParticipacao });
+
   return (
-    <HStack
-      alignItems="flex-start"
-      gap={5}
-      w="90%"
-      bgColor="$lightBackground"
-      borderRadius="$md"
-      p="$3"
-    >
-      <AlertDialog
-        isOpen={showAlertDialog}
-        onClose={() => {
-          setShowAlertDialog(false);
-        }}
+    <Pressable onLongPress={() => alert("Socorro")}>
+      {/*Pressione para ver os detalhes = onLongPress*/}
+      <HStack
+        alignItems="flex-start"
+        gap={5}
+        w="90%"
+        bgColor="$lightBackground"
+        borderRadius="$md"
+        p="$1"
       >
-        <AlertDialogBackdrop />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <Heading size="lg">
-              Cencelar {showOnlyMyEvents ? "Evento" : "Inscrição"}
-            </Heading>
-            <AlertDialogCloseButton>
-              <Icon as={CloseIcon} />
-            </AlertDialogCloseButton>
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            <VStack gap={2}>
-              <Text size="md">Evento: {event.nomeEvento}</Text>
-              <Text size="sm">
-                Ao realizar essa ação seu{" "}
-                {showOnlyMyEvents ? "evento" : "ingresso"} será excluído{" "}
-                {showOnlyMyEvents
-                  ? "e não poderá ser reativado."
-                  : "e sua entrada não poderá ser validada."}
-              </Text>
-              {showOnlyMyEvents ? (
-                <Input
-                  placeholder="Motivo do cancelamento"
-                  label="Motivo"
-                  inputName="reason"
-                  control={control}
-                  errorMessage={errors.reason?.message}
+        <AlertDialog
+          isOpen={showAlertDialog}
+          onClose={() => {
+            setShowAlertDialog(false);
+          }}
+        >
+          <AlertDialogBackdrop />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <Heading size="lg">
+                Cencelar {showOnlyMyEvents ? "Evento" : "Inscrição"}
+              </Heading>
+              <AlertDialogCloseButton>
+                <Icon as={CloseIcon} />
+              </AlertDialogCloseButton>
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <VStack gap={2}>
+                <Text size="md">Evento: {event.nomeEvento}</Text>
+                <Text size="sm">
+                  Ao realizar essa ação seu{" "}
+                  {showOnlyMyEvents ? "evento" : "ingresso"} será excluído{" "}
+                  {showOnlyMyEvents
+                    ? "e não poderá ser reativado."
+                    : "e sua entrada não poderá ser validada."}
+                </Text>
+                {showOnlyMyEvents ? (
+                  <Input
+                    placeholder="Motivo do cancelamento"
+                    label="Motivo"
+                    inputName="reason"
+                    control={control}
+                    errorMessage={errors.reason?.message}
+                  />
+                ) : null}
+              </VStack>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <ButtonGroup space="lg">
+                <Button
+                  variant="outline"
+                  action="secondary"
+                  text="Fechar"
+                  flex={1}
+                  onPress={() => {
+                    setShowAlertDialog(false);
+                  }}
                 />
-              ) : null}
-            </VStack>
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <ButtonGroup space="lg">
-              <Button
-                variant="outline"
-                action="secondary"
-                text="Fechar"
-                flex={1}
-                onPress={() => {
-                  setShowAlertDialog(false);
-                }}
-              />
-              <Button
-                action="negative"
-                text="Confirmar"
-                flex={1}
-                onPress={handleConfirmDialog}
-              />
-            </ButtonGroup>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <VStack flex={1}>
-        <Box 
-           borderRadius="$lg"
-           borderWidth="$0"
-           display="flex"
-           alignItems="flex-start"
-           p="$1"
-           w="$full"          
-        >
-          <Text
-            fontSize="$xl"
-            color="$background"
-            fontWeight="$bold"
-            numberOfLines={2}            
+                <Button
+                  action="negative"
+                  text="Confirmar"
+                  flex={1}
+                  onPress={handleConfirmDialog}
+                />
+              </ButtonGroup>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <VStack flex={1}>
+          <Box
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="center"
+            p="$1"
+            w="$full"
           >
-          {event.nomeEvento}
-          </Text>
-        </Box>
-        <Box  
-          borderRadius="$lg"
-          borderWidth="$0"
-          display="flex"
-          alignItems="flex-start"
-          p="$1"
-          w="$full"         
-        >
-          <Text fontSize="$2xl" color="$background" fontWeight="$extrabold">
-            {formatDateToShow(event.dtInicio)}
-          </Text>
-        </Box>
-      </VStack>
-      <VStack gap={5}>        
-      <HStack gap={5}>
-        <Button
-          h="$16"
-          w="$16"
-          action={getAction()}
-          iconSize={24}
-          rightIcon={getIcon()}
-          isDisabled={isEventClosed}
-          onPress={handlePressEventCard}
-          />
-        <Button
-          h="$16"
-          w="$16"
-          variant="link"
-          bgColor="$background"
-          iconSize={24}
-          rightIcon={ChevronsRightIcon}
-          />
-        </HStack>
-
-        {/*<HStack gap={5}>
-        <Button
-          h="$16"
-          w="$16"
-          variant="link"
-          bgColor="$actionColor"
-          iconSize={24}
-          rightIcon={AddIcon}
-          />
-          <Button
-          h="$16"
-          w="$16"
-          variant="link"
-          bgColor="#c2c2c2"
-          iconSize={24}
-          rightIcon={ChevronsRightIcon}
-          />
-              </HStack>*/}
-      </VStack>
-    </HStack>
+            <Text
+              fontSize="$xl"
+              color="$background"
+              fontWeight="$bold"
+              numberOfLines={1}
+              isTruncated={true}
+            >
+              {event.nomeEvento}
+            </Text>
+            <Divider my="$0.5" bgColor="#000000" w="$4/5" />
+          </Box>
+          <Box
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="center"
+            w="$full"
+          >
+            <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
+              {formatDateToShow(event.dtInicio)}
+            </Text>
+            <Divider my="$0.5" bgColor="#000000" w="$4/5" />
+          </Box>
+          <Box
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="center"
+            w="$full"
+          >
+            <Badge size="lg" variant="outline" borderRadius="$md" action="info">
+              {/* Mudar cor e icone de acordo com o status do evento */}
+              <BadgeText>status evento: {event.statusEvento}</BadgeText>
+              <BadgeIcon as={GlobeIcon} ml="$1" />
+            </Badge>
+          </Box>
+          <Box
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="center"
+            w="$full"
+          >
+            <Badge size="lg" variant="outline" borderRadius="$md" action="info">
+              {/* Mudar cor e icone de acordo com o status do evento */}
+              <BadgeText>
+                status inscrição: {event.statusParticipacao}
+              </BadgeText>
+              <BadgeIcon as={GlobeIcon} ml="$1" />
+            </Badge>
+          </Box>
+        </VStack>
+        <VStack gap={5}>
+          <HStack
+            gap={5}
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
+            p="$1"
+          >
+            <Button
+              h="$12"
+              w="$20"
+              action={getAction()}
+              iconSize={24}
+              rightIcon={getIcon()}
+              isDisabled={isEventClosed}
+              onPress={handlePressEventCard}
+            />
+          </HStack>
+        </VStack>
+      </HStack>
+    </Pressable>
   );
 }

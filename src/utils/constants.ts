@@ -10,3 +10,16 @@ export enum UserPermissions {
   Organizer = "ORGANIZADOR",
   Admin = "ADMINISTRADOR",
 }
+
+export enum EventStatus {
+  Aberto = "ABERTO",
+  Fechado = "FECHADO",
+  Cancelado = "CANCELADO",
+}
+export enum ParticipationStatus {
+  "Não registrado" = "NAO_REGISTRADO",
+  "Registrado" = "REGISTRADO",
+  "Registro Cancelado" = "REGISTRO_CANCELADO",
+  "Faltante" = "FALTANTE",
+  "Presente" = "PRESENTE",
+}
