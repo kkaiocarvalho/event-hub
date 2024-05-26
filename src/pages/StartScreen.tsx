@@ -12,14 +12,13 @@ import { Button } from "../components/Button";
 import { FacebookIcon } from "../icons/Facebook";
 import { GoogleIcon } from "../icons/Google";
 import { LinkedinIcon } from "../icons/Linkedin";
-import { navigateTo } from "../hook/NavigateTo";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ToastDescription } from "@gluestack-ui/themed";
 import { MotiView } from "moti";
 import { InteractiveLogo } from "../components/InteractiveLogo";
+import { RootStackProps } from "../routes/routes";
 
-export function StartScreen() {
-  const { navigate } = navigateTo();
+export function StartScreen({ navigation }: RootStackProps) {
   const configToast = useToast();
   const insets = useSafeAreaInsets();
   const hasIntegration = false;
@@ -59,7 +58,8 @@ export function StartScreen() {
         <MotiView
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ type: "timing", duration: 2300 }}
+          //TODO: remove warning
+          // transition={{ type: "timing", duration: 2300 }}
         >
           <Center>
             <VStack w="80%" gap="$7" mb="$1/4">
@@ -67,14 +67,14 @@ export function StartScreen() {
                 w="$full"
                 action="primary"
                 variant="solid"
-                onPress={() => navigate("Register")}
+                onPress={() => navigation.navigate("Register")}
                 text="Cadastrar"
               />
               <Button
                 w="$full"
                 action="primary"
                 variant="solid"
-                onPress={() => navigate("Login")}
+                onPress={() => navigation.navigate("Login")}
                 text="Entrar"
               />
             </VStack>

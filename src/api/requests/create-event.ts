@@ -10,15 +10,15 @@ const createEventResponseSchema = z.object({
   dtEncerramento: z.string(),
   notificarEntradaParticipantes: z.string(), // "S" | "N"
   numeroMaximoParticipantes: z.number(),
-  valorIngresso: z.number(),
+  valorIngresso: z.number().nullable(),
   endereco: z.object({
     cdEnderecoEvento: z.number(),
     numeroCEP: z.string(),
-    siglaEstado: z.string(),
+    siglaEstado: z.string().optional(),
     cidade: z.string(),
     numero: z.string(),
     logradouro: z.string(),
-    complemento: z.string(),
+    complemento: z.string().nullable(),
   }),
 });
 
@@ -27,9 +27,9 @@ export type CreateEventVariables = {
   complementoEvento: string;
   dtInicio: string;
   dtEncerramento: string;
-  notificarEntradaParticipantes: string; // "S" | "N"
+  notificarEntradaParticipantes: "S" | "N"; // "S" | "N"
   numeroMaximoParticipantes: number | null;
-  valorIngresso: number;
+  valorIngresso: number | null;
   endereco: {
     cdEnderecoEvento?: number;
     numeroCEP: string;
@@ -37,7 +37,7 @@ export type CreateEventVariables = {
     cidade: string;
     numero: string;
     logradouro: string;
-    complemento: string;
+    complemento: string | null;
   };
 };
 

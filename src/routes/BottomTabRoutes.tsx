@@ -7,10 +7,10 @@ import * as P from "./allPages";
 import { NavigationProp } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TabEvents } from "./TabEvents";
+import { EventsStack } from "./EventsStack";
 import { HomeStack } from "./HomeStack";
 
-export const ScreenName = ["TabEvents", "HomeStack", "QRCode"] as const;
+export const ScreenName = ["EventStack", "HomeStack", "QRCode"] as const;
 
 export type ScreenNames = (typeof ScreenName)[number];
 export type Navigation = NavigationProp<RootParamList<ScreenNames>>;
@@ -23,8 +23,8 @@ type RouteType = {
 
 const tabs: RouteType[] = [
   {
-    name: "TabEvents",
-    component: TabEvents,
+    name: "EventStack",
+    component: EventsStack,
     options: () => ({
       title: "Eventos",
       tabBarLabelStyle: { display: "none" },

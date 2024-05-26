@@ -3,6 +3,7 @@ export * from "../pages/Login";
 export * from "../pages/Register";
 export * from "../pages/QRCode";
 export * from "../pages/Events";
-export * from "../pages/Home";
 export * from "../pages/MyEvents";
+export * from "../pages/Home";
 export * from "../pages/CreateEvent";
+export * from "../pages/EventDetails";

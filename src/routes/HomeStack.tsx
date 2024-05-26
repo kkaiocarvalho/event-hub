@@ -6,10 +6,10 @@ import {
 import * as P from "./allPages";
 import { RootParamList } from "./routes";
 
-export const ScreenName = ["Home", "CreateEvent", "MyEvents"] as const;
+export const ScreenName = ["Home", "CreateEvent"] as const;
 export type ScreenNames = (typeof ScreenName)[number];
-export type HomeRootParamList = RootParamList<ScreenNames>;
-export type HomeStackProps = NativeStackScreenProps<HomeRootParamList>;
+export type EventParamStack = RootParamList<ScreenNames>;
+export type EventStackProps = NativeStackScreenProps<EventParamStack>;
 
 type RouteType = {
   name: ScreenNames;
@@ -22,17 +22,9 @@ const homeStack: RouteType[] = [
     name: "Home",
     component: P.Home,
   },
-  {
-    name: "CreateEvent",
-    component: P.CreateEvent,
-  },
-  {
-    name: "MyEvents",
-    component: P.MyEvents,
-  },
 ];
 
-const Stack = createNativeStackNavigator<RootParamList<ScreenNames>>();
+const Stack = createNativeStackNavigator<EventParamStack>();
 
 export function HomeStack() {
   return (

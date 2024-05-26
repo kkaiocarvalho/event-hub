@@ -1,9 +1,9 @@
 import {
   type NativeStackNavigationOptions,
+  NativeStackScreenProps,
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
-import type { NavigationProp } from "@react-navigation/native";
 import { useAuth } from "../hook/useAuth";
 import { BottomTabRoutes } from "./BottomTabRoutes";
 
@@ -16,11 +16,12 @@ export const ScreenName = [
 ] as const;
 export type ScreenNames = (typeof ScreenName)[number];
 export type RootParamList<T> = Record<T extends string ? T : any, undefined>;
-export type Navigation = NavigationProp<RootParamList<ScreenNames>>;
+export type RootStackParamStack = RootParamList<ScreenNames>;
+export type RootStackProps = NativeStackScreenProps<RootStackParamStack>;
 
 type RouteType = {
   name: ScreenNames;
-  component: React.FC;
+  component: any;
   options?: (props: any) => NativeStackNavigationOptions;
 };
 
@@ -39,7 +40,7 @@ const routesLoggedOut: RouteType[] = [
   },
 ];
 
-const Stack = createNativeStackNavigator<RootParamList<ScreenNames>>();
+const Stack = createNativeStackNavigator<RootStackParamStack>();
 
 export function Routes() {
   const { isAuthenticated } = useAuth();

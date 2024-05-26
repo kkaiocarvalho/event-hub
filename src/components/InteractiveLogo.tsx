@@ -29,11 +29,12 @@ export function InteractiveLogo({ withBackgrund }: InteractiveLogoProps) {
       <Pressable onPress={touchAnimation}>
         <MotiView
           state={animationState}
-          transition={{
-            type: "spring",
-            damping: 20,
-            rotateZ: { damping: 15, mass: 3 },
-          }}
+          //TODO: remove warning
+          // transition={{
+          //   type: "spring",
+          //   damping: 20,
+          //   rotateZ: { damping: 15, mass: 3 },
+          // }}
         >
           <SvgXml xml={Logo} />
         </MotiView>
@@ -43,11 +44,12 @@ export function InteractiveLogo({ withBackgrund }: InteractiveLogoProps) {
     <Pressable onPress={touchAnimation}>
       <MotiView
         state={animationState}
-        transition={{
-          type: "spring",
-          damping: 20,
-          rotateZ: { damping: 15, mass: 3 },
-        }}
+        //TODO: remove warning
+        // transition={{
+        //   type: "spring",
+        //   damping: 20,
+        //   rotateZ: { damping: 15, mass: 3 },
+        // }}
       >
         <SvgXml xml={Logo} />
       </MotiView>

@@ -21,6 +21,11 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import type {
+  InvalidDataSchemaResponse,
+  RequestErrorWithMessage,
+  RequestErrorSchema,
+} from "../config/request";
 type AuthError =
   | "UNKNOWN_ERROR"
   | "NETWORK_ERROR"
@@ -51,6 +56,55 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const authenticateMutation = useMutation({
     mutationFn: authenticate,
+    onSuccess(response) {
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast
+              nativeID="toasts-show"
+              action="success"
+              variant="accent"
+              top={insets.top}
+            >
+              <VStack space="xs">
+                <ToastTitle>Login efetuado</ToastTitle>
+                <ToastDescription>Seja bem vindo!</ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      const data = response as AuthenticateResponse;
+      setStorageItem(AUTH_TOKEN, data.token);
+    },
+    onError(error: RequestErrorSchema) {
+      const message =
+        (error as RequestErrorWithMessage)?.message ||
+        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+
+      if (message) {
+        configToast.close("toasts-show");
+        configToast.show({
+          placement: "top",
+          render: () => {
+            return (
+              <Toast
+                nativeID="toasts-show"
+                action="error"
+                variant="accent"
+                top={insets.top}
+              >
+                <VStack space="xs">
+                  <ToastTitle>Erro durante o Login</ToastTitle>
+                  <ToastDescription>{message}</ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
+    },
   });
   const queryClient = useQueryClient();
 
@@ -61,54 +115,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   }, [authenticateMutation.isPending]);
 
   function login(loginData: AuthenticateVariables) {
-    authenticateMutation.mutate(loginData, {
-      onSuccess(response) {
-        configToast.show({
-          placement: "top",
-          render: () => {
-            return (
-              <Toast
-                nativeID="toasts-show"
-                action="success"
-                variant="accent"
-                top={insets.top}
-              >
-                <VStack space="xs">
-                  <ToastTitle>Login efetuado</ToastTitle>
-                  <ToastDescription>Seja bem vindo!</ToastDescription>
-                </VStack>
-              </Toast>
-            );
-          },
-        });
-        const data = response as AuthenticateResponse;
-        setStorageItem(AUTH_TOKEN, data.token);
-      },
-
-      onError(error) {
-        if (error.message) {
-          configToast.close("toasts-show");
-          configToast.show({
-            placement: "top",
-            render: () => {
-              return (
-                <Toast
-                  nativeID="toasts-show"
-                  action="error"
-                  variant="accent"
-                  top={insets.top}
-                >
-                  <VStack space="xs">
-                    <ToastTitle>Erro durante o Login</ToastTitle>
-                    <ToastDescription>{error.message}</ToastDescription>
-                  </VStack>
-                </Toast>
-              );
-            },
-          });
-        }
-      },
-    });
+    authenticateMutation.mutate(loginData);
   }
 
   function logout() {

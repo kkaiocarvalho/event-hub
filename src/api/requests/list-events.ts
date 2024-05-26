@@ -1,7 +1,12 @@
 import { z } from "zod";
 import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
-import { EventStatus, ParticipationStatus } from "../../utils/constants";
+import {
+  EventStatus,
+  FilterEventField,
+  FilterEventOperation,
+  ParticipationStatus,
+} from "../../utils/constants";
 
 const Event = z.object({
   cdRegistroEvento: z.number(),
@@ -24,7 +29,7 @@ const Event = z.object({
     cidade: z.string(),
     numero: z.string(),
     logradouro: z.string(),
-    complemento: z.string(),
+    complemento: z.string().nullable(),
   }),
 });
 
@@ -39,15 +44,15 @@ const listEventsResponseSchema = z.object({
   }),
 });
 
-type FilterType = {
-  campo: string;
-  operacao: string;
+export type FilterType = {
+  campo: FilterEventField;
+  operacao: FilterEventOperation;
   valor: string;
 };
 
 export type ListEventsVariables = {
   filtros: FilterType[];
-  apenasMeusEventos: string; // "S" | "N"
+  apenasMeusEventos: "S" | "N";
   paginacao: {
     pagina: number;
     qntItensPaginados: number;

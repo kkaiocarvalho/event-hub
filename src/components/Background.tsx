@@ -13,17 +13,17 @@ export function Background({
   withScroll = false,
 }: BackgroundProp) {
   return (
-    <Box
-      w="$full"
-      bg="$background"
-      rounded="$none"
-      flex={1}
-      p="$10"
-      pb={paddingBottomTab ? "$20" : "$10"}
-    >
-      <Pressable flex={1} onPress={() => Keyboard.dismiss()}>
+    <Box w="$full" bg="$background" rounded="$none" flex={1}>
+      <Pressable
+        flex={1}
+        onPress={() => Keyboard.dismiss()}
+        p="$6"
+        pb={paddingBottomTab ? "$20" : "$6"}
+      >
         {withScroll ? (
-          <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
         ) : (
           children
         )}

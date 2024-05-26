@@ -1,30 +1,117 @@
-import { ArrowLeftIcon, HStack, Text, VStack } from "@gluestack-ui/themed";
-import { Button } from "../components/Button";
-import { navigateTo } from "../hook/NavigateTo";
-import { Events } from "./Events";
+import { FlatList, RefreshControl, Spinner, Text } from "@gluestack-ui/themed";
+import { Center, HStack, VStack } from "@gluestack-ui/themed";
+import { EventCard } from "../components/EventCard";
+import { QK_EVENT_LIST } from "../utils/constants";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  Event,
+  listEvents,
+  ListEventsResponse,
+  ListEventsVariables,
+} from "../api/requests/list-events";
+import { useCallback, useMemo, useState } from "react";
+import { Box } from "@gluestack-ui/themed";
+import { EventStackProps } from "../routes/EventsStack";
 
-export function MyEvents() {
-  const { goBack } = navigateTo();
+const defaultFilter: ListEventsVariables = {
+  filtros: [],
+  apenasMeusEventos: "S",
+  paginacao: {
+    pagina: 0,
+    qntItensPaginados: 15,
+  },
+};
+
+export function MyEvents({ navigation }: EventStackProps) {
+  const [refreshLoading, setRefreshLoading] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
+
+  const eventsQuery = useQuery({
+    queryKey: [QK_EVENT_LIST, filters],
+    queryFn: () => listEvents(filters),
+    placeholderData: keepPreviousData,
+  });
+
+  const isLoading = eventsQuery.isLoading || eventsQuery.isFetching;
+  const eventsData = eventsQuery.data as ListEventsResponse;
+
+  useMemo(() => {
+    setRefreshLoading(false);
+    const newEvents = eventsData?.eventos ?? [];
+    const filteredEvents = newEvents.filter(
+      (newEvent) =>
+        !events?.some(
+          (event) => event.cdRegistroEvento === newEvent.cdRegistroEvento
+        )
+    );
+    setEvents((prev) => [...prev, ...filteredEvents]);
+  }, [eventsData?.eventos]);
+
+  const loadMoreEvents = () => {
+    if (!eventsData?.paginacao.temProximaPagina) return;
+    setFilters((prev) => ({
+      ...prev,
+      paginacao: {
+        ...prev.paginacao,
+        pagina: prev.paginacao.pagina + 1,
+      },
+    }));
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshLoading(true);
+    setFilters(defaultFilter);
+    setEvents([]);
+    //TODO: on reload not interact with react memo, fix this;
+  }, []);
+
+  const openEvent = (event: Event) => {
+    navigation.navigate("EventDetails", { event });
+  };
 
   return (
-    <VStack justifyContent="space-between" flex={1} bgColor="$background">
-      <HStack bgColor="$titleColor" alignItems="center">
-        <Button
-          leftIcon={ArrowLeftIcon}
-          iconSize={25}
-          text="Voltar"
-          action="primary"
-          variant="outline"
-          borderWidth="$0"
-          p="$0"
-          onPress={() => goBack()}
-        />
-        <Text fontWeight="$bold" fontSize="$2xl">
-          Meus Eventos
-        </Text>
-      </HStack>
-
-      <Events showOnlyMyEvents />
+    <VStack bgColor="$background" flex={1} gap={10} px="$4" pt="$8">
+      <FlatList
+        data={events}
+        keyExtractor={(item) => (item as Event).cdRegistroEvento.toString()}
+        extraData={events}
+        renderItem={({ item }) => (
+          <EventCard event={item as Event} openEvent={openEvent} />
+        )}
+        ItemSeparatorComponent={() => <Box h="$5" />}
+        ListEmptyComponent={
+          <Center flex={1} pt="$full">
+            <Text maxWidth="60%" textAlign="center" color="$textColor">
+              {isLoading
+                ? "Carregando eventos."
+                : "Você ainda não cadastrou nenhum evento :/"}
+            </Text>
+          </Center>
+        }
+        refreshControl={
+          <RefreshControl
+            colors={["#13F2F2"]}
+            progressBackgroundColor="#111D40"
+            refreshing={refreshLoading}
+            onRefresh={onRefresh}
+          />
+        }
+        onEndReached={loadMoreEvents}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={
+          <>
+            {isLoading ? (
+              <Box py="$5">
+                <Spinner size={45} />
+              </Box>
+            ) : null}
+          </>
+        }
+      />
+      <Center pb="$1/5">
+        <HStack gap={10}></HStack>
+      </Center>
     </VStack>
   );
 }

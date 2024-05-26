@@ -1,18 +1,14 @@
 import {
-  ArrowLeftIcon,
   Box,
   ButtonGroup,
   ChevronsLeftIcon,
   ChevronsRightIcon,
-  HStack,
-  Text,
   Toast,
   ToastDescription,
   useToast,
   VStack,
 } from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
-import { navigateTo } from "../hook/NavigateTo";
 import { AddressForm } from "./AdressForm";
 import { EventForm } from "./EventForm";
 import { useState } from "react";
@@ -30,7 +26,13 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ToastTitle } from "@gluestack-ui/themed";
-import { formatDateToSave } from "../utils/helpers";
+import { formatDateToSave, removeMasks } from "../utils/helpers";
+import type {
+  InvalidDataSchemaResponse,
+  RequestErrorSchema,
+  RequestErrorWithMessage,
+} from "../config/request";
+import { EventStackProps } from "../routes/EventsStack";
 
 export type EventFormValues = {
   eventForm: {
@@ -64,7 +66,7 @@ const schema = yup.object({
       .max(50, "Deve ter no máximo 50 caracteres"),
     complement: yup
       .string()
-      .required("Nome do evento é obrigatório")
+      .required("Complemento é obrigatório")
       .min(3, "Deve ter no mínimo 3 caracteres")
       .max(50, "Deve ter no máximo 50 caracteres"),
     startDate: yup
@@ -76,16 +78,13 @@ const schema = yup.object({
       .required("Data de finalização é obrigatório")
       .min(yup.ref("startDate"), "Data de finalização menor que inicio"),
     // TODO: endDate is not valid when is below startDate
-    // 
+    //
     // notifyParticipants: yup
     //   .string()
     //   .oneOf(["S", "N"] as const)
     //   .defined(),
-    maxParticipants: yup
-      .number()
-      .positive()
-      .integer().optional(),
-    ticketPrice: yup.number().default(0),
+    maxParticipants: yup.number().positive().integer().optional().nullable(),
+    // ticketPrice: yup.number().default(0),
   }),
   addressForm: yup.object({
     addressCode: yup
@@ -114,8 +113,7 @@ const schema = yup.object({
   }),
 });
 
-export function CreateEvent() {
-  const { goBack } = navigateTo();
+export function CreateEvent({ navigation }: EventStackProps) {
   const [step, setStep] = useState(1);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
@@ -150,29 +148,37 @@ export function CreateEvent() {
     mutationFn: createEvent,
     onSuccess(response) {
       const data = response as CreateEventResponse;
-      configToast.show({
-        placement: "top",
-        render: () => {
-          return (
-            <Toast
-              nativeID="toasts-show"
-              action="success"
-              variant="accent"
-              top={insets.top}
-            >
-              <VStack space="xs">
-                <ToastTitle>Sucesso</ToastTitle>
-                <ToastDescription>
-                  Evento {data.nomeEvento} cadastrado com sucesso!
-                </ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      if (data) {
+        configToast.close("toasts-show");
+        configToast.show({
+          placement: "top",
+          render: () => {
+            return (
+              <Toast
+                nativeID="toasts-show"
+                action="success"
+                variant="accent"
+                top={insets.top}
+              >
+                <VStack space="xs">
+                  <ToastTitle>Sucesso</ToastTitle>
+                  <ToastDescription>
+                    Evento chamado: "{data.nomeEvento}" cadastrado com sucesso!
+                  </ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
+      setTimeout(() => navigation.navigate("MyEvents"), 3000);
     },
-    onError(error) {
-      if (error.message) {
+    onError(error: RequestErrorSchema) {
+      const message =
+        (error as RequestErrorWithMessage)?.message ||
+        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+
+      if (message) {
         configToast.close("toasts-show");
         configToast.show({
           placement: "top",
@@ -186,7 +192,7 @@ export function CreateEvent() {
               >
                 <VStack space="xs">
                   <ToastTitle>Erro ao cadastrar evento</ToastTitle>
-                  <ToastDescription>{error.message}</ToastDescription>
+                  <ToastDescription>{message}</ToastDescription>
                 </VStack>
               </Toast>
             );
@@ -200,8 +206,8 @@ export function CreateEvent() {
     if (!data) return;
 
     const body: CreateEventVariables = {
-      nomeEvento: data.eventForm.name,
-      complementoEvento: data.eventForm.complement,
+      nomeEvento: data.eventForm.name.trim(),
+      complementoEvento: data.eventForm.complement.trim(),
       dtInicio: formatDateToSave(data.eventForm.startDate),
       dtEncerramento: formatDateToSave(data.eventForm.endDate),
       numeroMaximoParticipantes: data.eventForm.maxParticipants ?? null,
@@ -212,15 +218,16 @@ export function CreateEvent() {
       // valorIngresso: data.eventForm.ticketPrice,
       endereco: {
         ...(data.addressForm.id && { cdEnderecoEvento: data.addressForm.id }),
-        numeroCEP: data.addressForm.addressCode,
+        numeroCEP: removeMasks(data.addressForm.addressCode),
         siglaEstado: data.addressForm.uf,
-        cidade: data.addressForm.city,
+        cidade: data.addressForm.city.trim(),
         numero: data.addressForm.number,
-        logradouro: data.addressForm.address,
-        complemento: data.addressForm.complement ?? "",
+        logradouro: data.addressForm.address.trim(),
+        complemento: data.addressForm.complement
+          ? data.addressForm.complement.trim()
+          : null,
       },
     };
-
     createEventMutation.mutate(body);
   };
 
@@ -228,23 +235,8 @@ export function CreateEvent() {
 
   return (
     <VStack justifyContent="space-between" flex={1} bgColor="$background">
-      <HStack bgColor="$titleColor" alignItems="center">
-        <Button
-          leftIcon={ArrowLeftIcon}
-          iconSize={25}
-          text="Voltar"
-          action="primary"
-          variant="outline"
-          borderWidth="$0"
-          p="$0"
-          onPress={() => goBack()}
-        />
-        <Text fontWeight="$bold" fontSize="$2xl">
-          Criar um evento
-        </Text>
-      </HStack>
       {step === 1 ? <EventForm form={form} /> : <AddressForm form={form} />}
-      <Box w="$full" display="flex" pb="$1/5">
+      <Box w="$full" display="flex" pb="$1/5" px="$6">
         {step === 1 ? (
           <Button
             text="Próximo"

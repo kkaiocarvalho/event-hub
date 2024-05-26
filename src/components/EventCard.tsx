@@ -3,149 +3,154 @@ import {
   HStack,
   Text,
   VStack,
-  CloseIcon,
-  CheckIcon,
   AddIcon,
-  SlashIcon,
   CloseCircleIcon,
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogContent,
-  AlertDialogHeader,
-  Heading,
-  AlertDialogCloseButton,
-  Icon,
-  AlertDialogBody,
-  AlertDialogFooter,
   Divider,
   BadgeText,
   BadgeIcon,
   GlobeIcon,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  InfoIcon,
 } from "@gluestack-ui/themed";
 import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
-import { } from "@gluestack-ui/themed";
 import { Pressable } from "react-native";
 import { useState } from "react";
-import { ButtonGroup } from "@gluestack-ui/themed";
-import { Input } from "./Input";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import type { EventOnChangeType } from "../pages/Events";
 import { EventStatus } from "../utils/constants";
 import { Badge } from "@gluestack-ui/themed";
 import type { Event } from "../api/requests/list-events";
+import { useToast } from "@gluestack-ui/themed";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "@gluestack-ui/themed";
 
-type EventCardType = {
+// type FormValues = {
+//   reason?: string | undefined;
+// };
+
+// const schema = yup.object({
+//   reason: yup
+//     .string()
+//     .min(4, "O motivo deve ter pelo menos 4 caracteres")
+//     .max(255, "O motivo não pode ter mais de 255 caracteres")
+//     .optional(),
+// });
+
+type EventCardProps = {
   event: Event;
-  // isSubscribed: boolean;
-  // showOnlyMyEvents: boolean;
-  // handleOnPress: (values: EventOnChangeType) => void;
+  openEvent: (event: Event) => void;
 };
 
-type FormValues = {
-  reason?: string | undefined;
-};
+export function EventCard({ event, openEvent }: EventCardProps) {
+  const configToast = useToast();
+  const insets = useSafeAreaInsets();
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   formState: { errors },
+  //   ...form
+  // } = useForm<FormValues>({ resolver: yupResolver(schema) });
 
-const schema = yup.object({
-  reason: yup
-    .string()
-    .min(4, "O motivo deve ter pelo menos 4 caracteres")
-    .max(255, "O motivo não pode ter mais de 255 caracteres")
-    .optional(),
-});
+  const isEventActive = event.statusEvento === EventStatus.OPEN;
 
-export function EventCard({
-  event,
-  // showOnlyMyEvents,
-  // isSubscribed,
-  // handleOnPress,
-}: EventCardType) {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    ...form
-  } = useForm<FormValues>({ resolver: yupResolver(schema) });
-
-  const isEventCanceled = event.statusEvento === EventStatus.CANCELED;
-  console.log({ isEventCanceled, statusEvento: event.statusEvento, canceled: EventStatus.CANCELED })
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
-
-  const getAction = () =>
-    // showOnlyMyEvents ?
-    isEventCanceled
-      ? "secondary"
-      : "negative"
+  const getAction = () => {
+    if (!isEventActive) return "secondary";
+    return "primary";
+  };
+  // showOnlyMyEvents ?
+  // !isEventActive ? "secondary" : "negative";
   // : isSubscribed
   // ? "positive"
   // : "primary";
 
-  const getIcon = () =>
-    // showOnlyMyEvents ?
-    isEventCanceled
-      ? CloseCircleIcon
-      : SlashIcon
+  const getIcon = () => {
+    if (!isEventActive) return CloseCircleIcon;
+    return AddIcon;
+  };
+  // showOnlyMyEvents ?
+  // !isEventActive ? CloseCircleIcon : SlashIcon;
   // : isSubscribed
   // ? CheckIcon
   // : AddIcon;
 
-  // ===> FLUXO
-  // meus eventos:
-  // posição 0 = ao clicar deve abrir dialog para fechar o evento
-  // posição 1 = fechado não tem como interagir
+  // const submit = (data: FormValues) => {
+  //   console.log({ data });
+  //   // if (showOnlyMyEvents && !data) return;
+  //   // handleOnPress({
+  //   //   event,
+  //   //   type: showOnlyMyEvents ? "creator" : "user",
+  //   //   options: {
+  //   //     ...(showOnlyMyEvents && { reason: data.reason }),
+  //   //     operation: isSubscribed ? "unsubscribe" : "subscribe",
+  //   //   },
+  //   // });
+  //   // showAlertDialog && setShowAlertDialog(false);
+  // };
 
-  // todos os eventos:
-  // posição 0 = não inscrito, ao clicar deve se inscrever no evento
-  // posição 1 = inscrito, ao clicar deve abrir dialog para se desiscrever
+  // const handleConfirmDialog = () => {
+  //   console.log("handleConfirmDialog");
+  //   // if (showOnlyMyEvents && !form.getValues("reason")) {
+  //   //   form.setError("reason", { message: '"Motivo" é obrigatório' });
+  //   //   return;
+  //   // }
+  //   // handleSubmit(submit)();
+  // };
 
-  const submit = (data: FormValues) => {
-    console.log({ data })
-    // if (showOnlyMyEvents && !data) return;
-    // handleOnPress({
-    //   event,
-    //   type: showOnlyMyEvents ? "creator" : "user",
-    //   options: {
-    //     ...(showOnlyMyEvents && { reason: data.reason }),
-    //     operation: isSubscribed ? "unsubscribe" : "subscribe",
-    //   },
-    // });
-    // showAlertDialog && setShowAlertDialog(false);
+  // const handlePressEventCard = () => {
+  //   console.log("Handle press event card");
+  //   // (showOnlyMyEvents && !isEventClosed) || isSubscribed
+  //   //   ? setShowAlertDialog(true)
+  //   //   : handleSubmit(submit)();
+  // };
+
+  // console.log({ event: event.statusParticipacao });
+
+  const showHelpMessage = () => {
+    configToast.closeAll();
+    configToast.show({
+      placement: "top",
+      render: () => {
+        return (
+          <Toast
+            nativeID="toasts-show"
+            action="info"
+            variant="accent"
+            top={insets.top}
+          >
+            <VStack space="xs">
+              <HStack alignItems="center" gap="$2">
+                <Icon as={InfoIcon} color="$background" />
+                <ToastTitle>Dica</ToastTitle>
+              </HStack>
+              <ToastDescription>
+                Pressione o card para abrir os detalhes do evento!
+              </ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
   };
-
-  const handleConfirmDialog = () => {
-    console.log("handleConfirmDialog")
-    // if (showOnlyMyEvents && !form.getValues("reason")) {
-    //   form.setError("reason", { message: '"Motivo" é obrigatório' });
-    //   return;
-    // }
-    // handleSubmit(submit)();
-  };
-
-  const handlePressEventCard = () => {
-    console.log("Handle press event card")
-    // (showOnlyMyEvents && !isEventClosed) || isSubscribed
-    //   ? setShowAlertDialog(true)
-    //   : handleSubmit(submit)();
-  };
-
-  console.log({ event: event.statusParticipacao });
-
-  const showOnlyMyEvents = false;
 
   return (
-    <Pressable onLongPress={() => alert("Socorro")}>
+    <Pressable
+      onLongPress={() => {
+        configToast.closeAll();
+        openEvent(event);
+      }}
+      onPress={() => showHelpMessage()}
+    >
       {/*Pressione para ver os detalhes = onLongPress*/}
       <HStack
         alignItems="flex-start"
         gap={5}
-        w="90%"
+        flex={1}
         bgColor="$lightBackground"
         borderRadius="$md"
         p="$1"
       >
-        <AlertDialog
+        {/* <AlertDialog
           isOpen={showAlertDialog}
           onClose={() => {
             setShowAlertDialog(false);
@@ -202,7 +207,7 @@ export function EventCard({
               </ButtonGroup>
             </AlertDialogFooter>
           </AlertDialogContent>
-        </AlertDialog>
+        </AlertDialog> */}
         <VStack flex={1}>
           <Box
             borderRadius="$lg"
@@ -278,8 +283,7 @@ export function EventCard({
               action={getAction()}
               iconSize={24}
               rightIcon={getIcon()}
-              isDisabled={isEventCanceled}
-              onPress={handlePressEventCard}
+              isDisabled={!isEventActive}
             />
           </HStack>
         </VStack>

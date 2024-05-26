@@ -15,12 +15,30 @@ export enum EventStatus {
   OPEN = "ABERTO",
   CLOSED = "FECHADO",
   CANCELED = "CANCELADO",
+  SHUT_DOWN = "ENCERRADO",
 }
 
 export enum ParticipationStatus {
-  "Não registrado" = "NAO_REGISTRADO",
-  "Registrado" = "REGISTRADO",
-  "Registro Cancelado" = "REGISTRO_CANCELADO",
-  "Faltante" = "FALTANTE",
-  "Presente" = "PRESENTE",
+  NOT_REGISTERED = "NAO_REGISTRADO",
+  REGISTERED = "REGISTRADO",
+  REGISTRATION_CANCELED = "REGISTRO_CANCELADO",
+  MISSING = "FALTANTE",
+  PRESENT = "PRESENTE",
+}
+
+export enum FilterEventField {
+  START_DATE = "dtInicioEvento",
+  ID = "cdRegistroEvento",
+  EVENT_STATUS = "statusEvento",
+  USER_STATUS = "statusParticipacao",
+}
+
+export enum FilterEventOperation {
+  GREATER = "maior",
+  SMALLER = "menor",
+  EQUAL = "igual",
+  CONTAINS = "contem",
+  GREATER_THAN = "maiorIgual",
+  LESS_THAN = "menorIgual",
+  NOT_CONTAIN = "naoContem",
 }

@@ -23,6 +23,11 @@ export type InvalidDataSchemaResponse = z.infer<typeof invalidDataSchema>;
 export type RuleErrorSchemaResponse = z.infer<typeof ruleErrorSchema>;
 export type InternalErrorSchemaResponse = z.infer<typeof internalErrorSchema>;
 
+export type RequestErrorWithMessage =
+  | RuleErrorSchemaResponse
+  | InternalErrorSchemaResponse
+  | AxiosError;
+
 export type RequestErrorSchema =
   | InvalidDataSchemaResponse
   | RuleErrorSchemaResponse
@@ -41,7 +46,7 @@ export async function request<T = unknown>({
   url,
   body = {},
   schema,
-}: RequestProps): Promise<T | AxiosError> {
+}: RequestProps): Promise<T | RequestErrorSchema> {
   return await method(url, body)
     .then((response) => schema.parse(response.data) as T)
     .catch((err: AxiosError) => {

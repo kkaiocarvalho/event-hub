@@ -1,67 +1,49 @@
 import {
-  Text,
   Center,
   VStack,
-  ScrollView,
   RefreshControl,
-  Spinner,
   HStack,
+  Box,
+  ButtonText,
+  Text,
+  Button as GlueButton,
+  MenuItem,
+  MenuItemLabel,
+  AddIcon,
+  Menu,
+  MenuIcon,
+  Icon,
+  ButtonIcon,
+  PaperclipIcon,
+  Spinner,
 } from "@gluestack-ui/themed";
-import { Feather } from "@expo/vector-icons";
-import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
-import { QK_EVENT_LIST, QK_REGISTERED_EVENT_LIST } from "../utils/constants";
-import { useCallback, useState } from "react";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { QK_EVENT_LIST, QK_ME, UserPermissions } from "../utils/constants";
+import { useCallback, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
 import type { ListEventsVariables, Event } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
-import { Button } from "../components/Button";
-import {
-  cancelEvent,
-  CancelEventVariables,
-} from "../api/requests/cancel-events";
-import {
-  inscriptionEvent,
-  InscriptionEventVariables,
-} from "../api/requests/inscription-event";
-import {
-  unsubscriptionEvent,
-  UnsubscriptionEventVariables,
-} from "../api/requests/unsubscription-event";
-import {
-  listSubscribedEvents,
-  ListSubscribedEventsResponse,
-} from "../api/requests/list-subscribed-events";
+import { EventStackProps } from "../routes/EventsStack";
+import { GetMeResponse } from "../api/requests/get-me";
+import { FlatList } from "@gluestack-ui/themed";
 
-type EventsProps = {
-  showOnlyMyEvents?: boolean;
+const defaultFilter: ListEventsVariables = {
+  filtros: [],
+  apenasMeusEventos: "N",
+  paginacao: {
+    pagina: 0,
+    qntItensPaginados: 15,
+  },
 };
 
-export type EventOnChangeType = {
-  event: Event;
-  type: "creator" | "user";
-  options: {
-    reason?: string;
-    operation?: "subscribe" | "unsubscribe";
-  };
-};
-
-export function Events(props: EventsProps) {
-  const defaultFilter: ListEventsVariables = {
-    filtros: [],
-    apenasMeusEventos: props.showOnlyMyEvents ? "S" : "N",
-    paginacao: {
-      pagina: 0,
-      qntItensPaginados: 10,
-    },
-  };
-
-  const defaultPagination: ListEventsResponse["paginacao"] = {
-    qntItensRetornados: 0,
-    paginaAtual: 0,
-    proximaPagina: 0,
-    temProximaPagina: false,
-  };
-
+export function Events({ navigation }: EventStackProps) {
+  const queryClient = useQueryClient();
+  const [refreshLoading, setRefreshLoading] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
 
   const eventsQuery = useQuery({
@@ -70,171 +52,137 @@ export function Events(props: EventsProps) {
     placeholderData: keepPreviousData,
   });
 
-  // const listSubscribedEventsQuery = useQuery({
-  //   queryKey: [QK_REGISTERED_EVENT_LIST],
-  //   queryFn: () => listSubscribedEvents(filters),
-  //   placeholderData: keepPreviousData,
-  // });
-
-  // const cancelEventMutation = useMutation({
-  //   mutationFn: cancelEvent,
-  //   onSettled(data, error, variables) {
-  //     console.log(
-  //       "========================CANCEL MUTATION===================="
-  //     );
-  //     console.log({ data, error, variables });
-  //   },
-  // });
-
-  // const inscriptionEventEventMutation = useMutation({
-  //   mutationFn: inscriptionEvent,
-  //   onSettled(data, error, variables) {
-  //     console.log(
-  //       "========================SUBSCRIBE MUTATION===================="
-  //     );
-  //     console.log({ data, error, variables });
-  //   },
-  // });
-
-  // const unsubscriptionEventMutation = useMutation({
-  //   mutationFn: unsubscriptionEvent,
-  //   onSettled(data, error, variables) {
-  //     console.log(
-  //       "========================UNSUBSCRIBE MUTATION===================="
-  //     );
-  //     console.log({ data, error, variables });
-  //   },
-  // });
-
-  // const handleOnPress = ({ event, type, options }: EventOnChangeType) => {
-  //   if (type === "creator") {
-  //     if (!options.reason) return;
-  //     cancelEventMutation.mutate({
-  //       cdRegistroEvento: event.cdRegistroEvento,
-  //       motivoCancelamentoEvento: options.reason,
-  //     } as CancelEventVariables);
-  //   }
-  //   if (type === "user") {
-  //     options.operation === "subscribe"
-  //       ? inscriptionEventEventMutation.mutate({
-  //           cdRegistroEvento: event.cdRegistroEvento,
-  //         } as InscriptionEventVariables)
-  //       : unsubscriptionEventMutation.mutate({
-  //           cdRegistroEvento: event.cdRegistroEvento,
-  //         } as UnsubscriptionEventVariables);
-  //   }
-  // };
-
+  const isLoading = eventsQuery.isLoading || eventsQuery.isFetching;
   const eventsData = eventsQuery.data as ListEventsResponse;
-  // const subscribedEventsData =
-  //   listSubscribedEventsQuery.data as ListSubscribedEventsResponse;
-  const pagination = eventsData?.paginacao ?? defaultPagination;
-  const events = eventsData?.eventos ?? [];
-  // const subscibedEvents = subscribedEventsData?.eventos ?? [];
-  // const subscibedEvents =
-  //   events.filter((e) => e.cdRegistroEvento % 2 === 0) ?? [];
-  // const idSubscribedEvents = subscibedEvents.map((e) => e.cdRegistroEvento);
+
+  useMemo(() => {
+    setRefreshLoading(false);
+    const newEvents = eventsData?.eventos ?? [];
+    const filteredEvents = newEvents.filter(
+      (newEvent) =>
+        !events?.some(
+          (event) => event.cdRegistroEvento === newEvent.cdRegistroEvento
+        )
+    );
+    setEvents((prev) => [...prev, ...filteredEvents]);
+  }, [eventsData?.eventos]);
+
+  const loadMoreEvents = () => {
+    if (!eventsData?.paginacao.temProximaPagina) return;
+    setFilters((prev) => ({
+      ...prev,
+      paginacao: {
+        ...prev.paginacao,
+        pagina: prev.paginacao.pagina + 1,
+      },
+    }));
+  };
 
   const onRefresh = useCallback(() => {
+    setRefreshLoading(true);
     setFilters(defaultFilter);
+    setEvents([]);
+    //TODO: on reload not interact with react memo, fix this;
   }, []);
 
+  const userData = queryClient.getQueryData<GetMeResponse>([QK_ME]);
+
+  const hasOrganizerPermission =
+    userData?.permissao === UserPermissions["Organizer"] ||
+    userData?.permissao === UserPermissions["Admin"];
+
+  const openEvent = (event: Event) => {
+    navigation.navigate("EventDetails", { event });
+  };
+
   return (
-    <VStack bgColor="$background" flex={1} gap={10}>
-      <ScrollView
+    <VStack bgColor="$background" flex={1} gap={10} px="$4" pt="$8">
+      <FlatList
+        data={events}
+        keyExtractor={(item) => (item as Event).cdRegistroEvento.toString()}
+        extraData={events}
+        renderItem={({ item }) => (
+          <EventCard event={item as Event} openEvent={openEvent} />
+        )}
+        ItemSeparatorComponent={() => <Box h="$5" />}
+        ListEmptyComponent={
+          <Center flex={1} pt="$full">
+            <Text maxWidth="60%" textAlign="center" color="$textColor">
+              {isLoading
+                ? "Carregando eventos."
+                : "Nenhum evento cadastrado até o momento :/"}
+            </Text>
+          </Center>
+        }
         refreshControl={
           <RefreshControl
             colors={["#13F2F2"]}
             progressBackgroundColor="#111D40"
-            refreshing={eventsQuery.isLoading}
+            refreshing={refreshLoading}
             onRefresh={onRefresh}
           />
         }
-        contentContainerStyle={{
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 15,
-          paddingBottom: 0,
-          gap: 15,
-        }}
-      >
-        {
-          eventsQuery.isLoading ? (
-            <Spinner size={55} />
-          ) : events.length > 0 ? (
-            events.map((event) => (
-              <EventCard
-                key={event.cdRegistroEvento}
-                event={event}
-                // isSubscribed={idSubscribedEvents.includes(
-                //   event.cdRegistroEvento
-                // )}
-                // showOnlyMyEvents={!!props.showOnlyMyEvents}
-                // handleOnPress={handleOnPress}
-              />
-            ))
-          ) : (
-            <Center flex={1}>
-              <Text maxWidth="60%" textAlign="center">
-                Ainda não temos nenhum evento cadastrado :/
-              </Text>
-            </Center>
-          )
-          // FLAT LIST WITHOUT STYLE
-          // <FlatList
-          //   data={events}
-          //   keyExtractor={(item) => item.cdRegistroEvento.toString()}
-          //   extraData={events}
-          //   renderItem={({ item }) => <EventCard event={item} />}
-          //   ListEmptyComponent={
-          //     <Center flex={1}>
-          //       <Text maxWidth="60%" textAlign="center">
-          //         Ainda não temos nenhum evento cadastrado :/
-          //       </Text>
-          //     </Center>
-          //   }
-          // />
+        onEndReached={loadMoreEvents}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={
+          <>
+            {isLoading ? (
+              <Box py="$5">
+                <Spinner size={45} />
+              </Box>
+            ) : null}
+          </>
         }
-      </ScrollView>
+      />
+      {hasOrganizerPermission ? (
+        <Box
+          display="flex"
+          alignItems="flex-end"
+          position="absolute"
+          right="$4"
+          bottom="$20"
+          mb="$2"
+        >
+          <Menu
+            placement="top right"
+            bgColor="$background"
+            borderColor="$primary400"
+            borderWidth="$2"
+            mb="$1"
+            trigger={({ ...triggerProps }) => {
+              return (
+                <GlueButton {...triggerProps} gap="$2" borderRadius="$3xl">
+                  <ButtonText>Options</ButtonText>
+                  <ButtonIcon as={MenuIcon} />
+                </GlueButton>
+              );
+            }}
+          >
+            <MenuItem
+              key="my-events"
+              textValue="my-events"
+              onPress={() => navigation.navigate("MyEvents")}
+            >
+              <Icon as={PaperclipIcon} size="sm" mr="$2" color="$primary400" />
+              <MenuItemLabel size="sm" color="$primary400">
+                Meus eventos criados
+              </MenuItemLabel>
+            </MenuItem>
+            <MenuItem
+              key="add-event"
+              textValue="add-event"
+              onPress={() => navigation.navigate("CreateEvent")}
+            >
+              <Icon as={AddIcon} size="sm" mr="$2" color="$primary400" />
+              <MenuItemLabel size="sm" color="$primary400">
+                Adicionar um evento
+              </MenuItemLabel>
+            </MenuItem>
+          </Menu>
+        </Box>
+      ) : null}
       <Center pb="$1/5">
-        <HStack gap={10}>
-          {pagination.paginaAtual > 0 ? (
-            <Button
-              icon={<Feather name="chevron-left" size={30} color="#13F2F2" />}
-              text="Página anterior"
-              borderRadius="$md"
-              h="$10"
-              bgColor="#111D40"
-              onPress={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  paginacao: {
-                    ...prev.paginacao,
-                    pagina: prev.paginacao.pagina - 1,
-                  },
-                }))
-              }
-            />
-          ) : null}
-          {pagination.temProximaPagina ? (
-            <Button
-              icon={<Feather name="chevron-right" size={30} color="#13F2F2" />}
-              text="Próxima página"
-              borderRadius="$md"
-              h="$10"
-              bgColor="#111D40"
-              onPress={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  paginacao: {
-                    ...prev.paginacao,
-                    pagina: prev.paginacao.pagina + 1,
-                  },
-                }))
-              }
-            />
-          ) : null}
-        </HStack>
+        <HStack gap={10}></HStack>
       </Center>
     </VStack>
   );

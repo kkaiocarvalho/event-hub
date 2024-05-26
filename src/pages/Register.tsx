@@ -6,7 +6,7 @@ import {
   useToast,
   VStack,
   HStack,
-  Box
+  Box,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
@@ -28,9 +28,14 @@ import {
   isValidCPF,
   isValidPhone,
 } from "@brazilian-utils/brazilian-utils";
-
 import { SvgXml } from "react-native-svg";
-import MiniLogo from "../components/MiniLogo"
+import MiniLogo from "../components/MiniLogo";
+import type {
+  RequestErrorSchema,
+  InvalidDataSchemaResponse,
+  RequestErrorWithMessage,
+} from "../config/request";
+import { RootStackProps } from "../routes/routes";
 
 type FormValues = {
   name: string;
@@ -72,7 +77,7 @@ const schema = yup.object({
     ),
 });
 
-export function Register() {
+export function Register({ navigation }: RootStackProps) {
   const [toastId, setToastId] = useState<string | null>(null);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
@@ -110,28 +115,35 @@ export function Register() {
           );
         },
       });
+      navigation.navigate("Login");
     },
-    onError(error) {
-      configToast.close(toastId);
-      configToast.show({
-        placement: "top",
-        render: ({ id }) => {
-          setToastId("toast-" + id);
-          return (
-            <Toast
-              nativeID={"toast-" + id}
-              action="error"
-              variant="accent"
-              top={insets.top}
-            >
-              <VStack space="xs">
-                <ToastTitle>Erro durante o Cadastro </ToastTitle>
-                <ToastDescription>{error.message}</ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+    onError(error: RequestErrorSchema) {
+      const message =
+        (error as RequestErrorWithMessage)?.message ||
+        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+
+      if (message) {
+        configToast.close(toastId);
+        configToast.show({
+          placement: "top",
+          render: ({ id }) => {
+            setToastId("toast-" + id);
+            return (
+              <Toast
+                nativeID={"toast-" + id}
+                action="error"
+                variant="accent"
+                top={insets.top}
+              >
+                <VStack space="xs">
+                  <ToastTitle>Erro durante o Cadastro </ToastTitle>
+                  <ToastDescription>{message}</ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
     },
   });
 
@@ -151,12 +163,12 @@ export function Register() {
   return (
     <Background withScroll={true}>
       <VStack justifyContent="space-between">
-      <HStack alignItems="center">
+        <HStack alignItems="center">
           <Box>
-          <Title text="Cadastrar" />
+            <Title text="Cadastrar" />
           </Box>
           <Box>
-          <SvgXml xml={MiniLogo} />
+            <SvgXml xml={MiniLogo} />
           </Box>
         </HStack>
         <Center p="$5">
