@@ -69,7 +69,7 @@ export function EventForm({ form }: EventFormProps) {
         <Center p="$3">
           <VStack w="$full">
             <Input
-              placeholder="Cineminha"
+              placeholder="Semana Acadêmica"
               label="Nome do evento"
               inputName="eventForm.name"
               control={control}
@@ -78,7 +78,7 @@ export function EventForm({ form }: EventFormProps) {
               nextInput={() => setFocus("eventForm.complement")}
             />
             <Input
-              placeholder="Uma noite cheia de filmes"
+              placeholder="Mercado de TI e Inovações"
               label="Complemento do evento"
               inputName="eventForm.complement"
               control={control}
@@ -92,7 +92,7 @@ export function EventForm({ form }: EventFormProps) {
                 <CustomDateTimePicker
                   dateTimePickerState={dateTimePickerStart}
                   label="Início do evento"
-                  placeholder="12:12 ás 14:27"
+                  placeholder="12/12/2024 às 14:27"
                   datePickerName="eventForm.startDate"
                   errorMessage={errors.eventForm?.startDate?.message}
                   control={control}
@@ -112,7 +112,7 @@ export function EventForm({ form }: EventFormProps) {
                 <CustomDateTimePicker
                   dateTimePickerState={dateTimePickerEnd}
                   label="Fim do evento"
-                  placeholder="16:16 ás 18:53"
+                  placeholder="12/12/2024 às 18:53"
                   datePickerName="eventForm.endDate"
                   errorMessage={errors.eventForm?.endDate?.message}
                   control={control}

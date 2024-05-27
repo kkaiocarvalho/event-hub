@@ -36,6 +36,7 @@ import type {
   RequestErrorWithMessage,
 } from "../config/request";
 import { RootStackProps } from "../routes/routes";
+import { LoopMiniLogo } from "../components/LoopMiniLogo";
 
 type FormValues = {
   name: string;
@@ -167,9 +168,7 @@ export function Register({ navigation }: RootStackProps) {
           <Box>
             <Title text="Cadastrar" />
           </Box>
-          <Box>
-            <SvgXml xml={MiniLogo} />
-          </Box>
+          <LoopMiniLogo />
         </HStack>
         <Center p="$5">
           <VStack w="$full">

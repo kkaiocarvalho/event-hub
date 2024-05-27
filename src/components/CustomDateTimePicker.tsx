@@ -50,8 +50,8 @@ export function CustomDateTimePicker<T>({
           <Subtitle text={label} h="$5" pl="$0" mb="$2" fontSize="$sm" />
           <GlueInput
             h="$10"
-            variant="outline"
-            bgColor="$primary600"
+            w="$1/2"
+            variant="underlined"
             isReadOnly
             borderColor={errorMessage ? "$error700" : "$primary600"}
           >
