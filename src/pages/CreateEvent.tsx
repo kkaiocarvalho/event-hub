@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
-import { AddressForm } from "./AdressForm";
+import { AddressForm } from "./AddressForm";
 import { EventForm } from "./EventForm";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -148,6 +148,7 @@ export function CreateEvent({ navigation }: EventStackProps) {
     mutationFn: createEvent,
     onSuccess(response) {
       const data = response as CreateEventResponse;
+      console.log({data})
       if (data) {
         configToast.close("toasts-show");
         configToast.show({

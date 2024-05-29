@@ -13,6 +13,7 @@ import {
   ToastTitle,
   ToastDescription,
   InfoIcon,
+  ChevronRightIcon,
 } from "@gluestack-ui/themed";
 import { formatDateToShow } from "../utils/helpers";
 import { Button } from "./Button";
@@ -24,6 +25,9 @@ import type { Event } from "../api/requests/list-events";
 import { useToast } from "@gluestack-ui/themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "@gluestack-ui/themed";
+import { LoopMiniLogo } from "./LoopMiniLogo";
+import { ArrowLeftIcon } from "@gluestack-ui/themed";
+import AntDesign from "@expo/vector-icons/AntDesign"
 
 // type FormValues = {
 //   reason?: string | undefined;
@@ -141,16 +145,122 @@ export function EventCard({ event, openEvent }: EventCardProps) {
       }}
       onPress={() => showHelpMessage()}
     >
-      {/*Pressione para ver os detalhes = onLongPress*/}
+
       <HStack
         alignItems="flex-start"
         gap={5}
         flex={1}
         bgColor="$lightBackground"
         borderRadius="$md"
-        p="$1"
+        p="$2"
+        borderLeftWidth={6}
+        borderLeftColor="#038c8c" // você pode trocar a cor conforme necessário
       >
-        {/* <AlertDialog
+        <VStack flex={1}>
+          <Box
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="baseline"
+            p="$1"
+            w="$full"
+          >
+            <Text
+              fontSize="$xl"
+              color="$background"
+              fontWeight="$bold"
+              numberOfLines={1}
+              isTruncated={true}
+            >
+              {event.nomeEvento}
+            </Text>
+          </Box>
+
+          <HStack>
+            <Box flexDirection="row" flex={1} alignItems="center" justifyContent="space-between">
+              <HStack  gap={4} >
+              <Badge size="sm" variant="outline" borderRadius="$md" action="info" >
+                <BadgeText>{event.statusEvento}</BadgeText>
+              </Badge>
+              <Badge size="sm" variant="outline" borderRadius="$md" action="info">
+                <BadgeText>
+                  {event.statusParticipacao}
+                </BadgeText>
+              </Badge>
+              </HStack>
+             
+              <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
+                {formatDateToShow(event.dtInicio)}
+              </Text>
+
+              {/*<Box // box de um badge esquesito
+            flex={1}
+            borderRadius="$sm"
+            borderWidth="$0"
+            alignItems="baseline"
+            w="$full"
+          >
+            <Badge size="sm" variant="outline" borderRadius="$md" action="info">
+              <BadgeText>
+                {event.statusParticipacao}
+              </BadgeText>
+            </Badge>
+          </Box>*/}
+
+              {/*<Box //box da data
+            borderRadius="$lg"
+            borderWidth="$0"
+            display="flex"
+            alignItems="flex-end"
+            w="$full"
+          ></Box>*/}
+
+            </Box>
+          </HStack>
+
+        </VStack>
+        <VStack >
+          <Box
+            ml="$2"
+            pl="$2"
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
+            p="$1"
+            borderLeftWidth={2}
+            borderLeftColor="black" // você pode trocar a cor conforme necessário7
+            borderStyle="dashed"
+          >
+            <AntDesign name="right" size={24} color="black" />
+          </Box>
+        </VStack>
+
+
+        {/*<VStack gap={5}>
+          <HStack
+            gap={5}
+            flex={1}
+            justifyContent="center"
+            
+            alignItems="center"
+            p="$1"
+          >
+            <Button
+              h="$12"
+              w="$20"
+              action={getAction()}
+              iconSize={24}
+              rightIcon={getIcon()}
+              isDisabled={!isEventActive}
+            />
+          </HStack>
+        </VStack>*/}
+      </HStack>
+    </Pressable>
+  );
+}
+
+{/* <AlertDialog
           isOpen={showAlertDialog}
           onClose={() => {
             setShowAlertDialog(false);
@@ -207,87 +317,4 @@ export function EventCard({ event, openEvent }: EventCardProps) {
               </ButtonGroup>
             </AlertDialogFooter>
           </AlertDialogContent>
-        </AlertDialog> */}
-        <VStack flex={1}>
-          <Box
-            borderRadius="$lg"
-            borderWidth="$0"
-            display="flex"
-            alignItems="center"
-            p="$1"
-            w="$full"
-          >
-            <Text
-              fontSize="$xl"
-              color="$background"
-              fontWeight="$bold"
-              numberOfLines={1}
-              isTruncated={true}
-            >
-              {event.nomeEvento}
-            </Text>
-            <Divider my="$0.5" bgColor="#000000" w="$4/5" />
-          </Box>
-          <Box
-            borderRadius="$lg"
-            borderWidth="$0"
-            display="flex"
-            alignItems="center"
-            w="$full"
-          >
-            <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
-              {formatDateToShow(event.dtInicio)}
-            </Text>
-            <Divider my="$0.5" bgColor="#000000" w="$4/5" />
-          </Box>
-          <Box
-            borderRadius="$lg"
-            borderWidth="$0"
-            display="flex"
-            alignItems="center"
-            w="$full"
-          >
-            <Badge size="lg" variant="outline" borderRadius="$md" action="info">
-              {/* Mudar cor e icone de acordo com o status do evento */}
-              <BadgeText>status evento: {event.statusEvento}</BadgeText>
-              <BadgeIcon as={GlobeIcon} ml="$1" />
-            </Badge>
-          </Box>
-          <Box
-            borderRadius="$lg"
-            borderWidth="$0"
-            display="flex"
-            alignItems="center"
-            w="$full"
-          >
-            <Badge size="lg" variant="outline" borderRadius="$md" action="info">
-              {/* Mudar cor e icone de acordo com o status do evento */}
-              <BadgeText>
-                status inscrição: {event.statusParticipacao}
-              </BadgeText>
-              <BadgeIcon as={GlobeIcon} ml="$1" />
-            </Badge>
-          </Box>
-        </VStack>
-        <VStack gap={5}>
-          <HStack
-            gap={5}
-            flex={1}
-            justifyContent="center"
-            alignItems="center"
-            p="$1"
-          >
-            <Button
-              h="$12"
-              w="$20"
-              action={getAction()}
-              iconSize={24}
-              rightIcon={getIcon()}
-              isDisabled={!isEventActive}
-            />
-          </HStack>
-        </VStack>
-      </HStack>
-    </Pressable>
-  );
-}
+        </AlertDialog> */}

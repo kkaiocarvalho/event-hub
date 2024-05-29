@@ -22,7 +22,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { QK_EVENT_LIST, QK_ME, UserPermissions } from "../utils/constants";
+import { FilterEventField, QK_EVENT_LIST, QK_ME, UserPermissions, FilterEventOperation } from "../utils/constants";
 import { useCallback, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
 import type { ListEventsVariables, Event } from "../api/requests/list-events";
@@ -30,9 +30,14 @@ import { EventCard } from "../components/EventCard";
 import { EventStackProps } from "../routes/EventsStack";
 import { GetMeResponse } from "../api/requests/get-me";
 import { FlatList } from "@gluestack-ui/themed";
+import { formatDateToSave } from "../utils/helpers";
 
 const defaultFilter: ListEventsVariables = {
-  filtros: [],
+  filtros: [{
+    operacao: FilterEventOperation.GREATER_THAN,
+    campo: FilterEventField.START_DATE,
+    valor: formatDateToSave(new Date)
+  }],
   apenasMeusEventos: "N",
   paginacao: {
     pagina: 0,
