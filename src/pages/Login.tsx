@@ -53,7 +53,7 @@ export function Login() {
   };
 
   return (
-    <Background withScroll={true}>
+    <Background withScroll={true} withKeyboardDimiss>
       <VStack justifyContent="space-between" mt="$1/4">
         <HStack alignItems="center">
           <Box>

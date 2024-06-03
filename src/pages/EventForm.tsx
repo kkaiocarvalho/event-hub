@@ -63,7 +63,7 @@ export function EventForm({ form }: EventFormProps) {
   //   form.setValue("eventForm.notifyParticipants", e);
 
   return (
-    <Background withScroll={true}>
+    <Background withScroll={true} withKeyboardDimiss>
       <VStack justifyContent="space-between">
         <Title text="Dados do Evento" />
         <Center p="$3">

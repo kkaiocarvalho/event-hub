@@ -167,7 +167,7 @@ export function AddressForm({ form }: AddressFormProps) {
   const isDisabled = !isAddressCodeValid || getAddressByCodeMutation.isPending;
 
   return (
-    <Background withScroll={true}>
+    <Background withScroll={true} withKeyboardDimiss>
       {recentAddresses.length ? (
         <VStack>
           <Title text="Ultimos endereços" />

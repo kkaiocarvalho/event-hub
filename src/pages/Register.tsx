@@ -162,7 +162,7 @@ export function Register({ navigation }: RootStackProps) {
   };
 
   return (
-    <Background withScroll={true}>
+    <Background withScroll={true} withKeyboardDimiss>
       <VStack justifyContent="space-between">
         <HStack alignItems="center">
           <Box>
