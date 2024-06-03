@@ -1,6 +1,7 @@
 export const AUTH_TOKEN = "@token";
 
 export const QK_EVENT_LIST = "qk:event-list";
+export const QK_EVENT = "qk:event";
 export const QK_EVENT_PARTICIPANTS = "qk:event-participants";
 export const QK_ME = "qk:me";
 export const QK_REGISTERED_EVENT_LIST = "qk:registered-event-list";

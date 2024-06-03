@@ -35,7 +35,6 @@ const Event = z.object({
 
 const listEventsResponseSchema = z.object({
   eventos: z.array(Event),
-
   paginacao: z.object({
     qntItensRetornados: z.number(),
     paginaAtual: z.number(),

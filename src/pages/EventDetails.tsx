@@ -10,22 +10,35 @@ import {
   CloseCircleIcon,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
-import { Event } from "../api/requests/list-events";
+import {
+  Event,
+  listEvents,
+  ListEventsResponse,
+  ListEventsVariables,
+} from "../api/requests/list-events";
 import { EventStackProps } from "../routes/EventsStack";
 import { Button } from "../components/Button";
 import { formatDateToShow } from "../utils/helpers";
 import { useUser } from "../hook/useUser";
 import { useUserDndEventRelationship } from "../hook/useUserDndEventRelationship";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { manageSubscriptionEvent } from "../api/requests/manage-subscription-event";
+import {
+  manageSubscriptionEvent,
+  ManageSubscriptionEventResponse,
+} from "../api/requests/manage-subscription-event";
 import {
   InvalidDataSchemaResponse,
   RequestErrorWithMessage,
   RequestErrorSchema,
 } from "../config/request";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  FilterEventField,
+  FilterEventOperation,
+  QK_EVENT,
+} from "../utils/constants";
 
 type EventInfo = {
   title: string;
@@ -33,23 +46,55 @@ type EventInfo = {
 } & ComponentProps<typeof Text>;
 
 export function EventDetails({ route, navigation }: EventStackProps) {
-  //TODO: update get of event (not pass for props, make a get)
+  //TODO: multiple render because params and set event data,
+  // must be fixed when event get endpoint is finished.
+  const queryClient = useQueryClient();
+  const routeEvent = (route.params as { event: Event }).event as Event;
+  const [event, setEvent] = useState(routeEvent);
   const { hasOrganizerPermission, userData } = useUser();
-  const event = (route.params as { event: Event }).event as Event;
+  const configToast = useToast();
+  const insets = useSafeAreaInsets();
+  const { cdRegistroEvento } = routeEvent;
+
+  const defaultFilter: ListEventsVariables = {
+    filtros: [
+      {
+        operacao: FilterEventOperation.EQUAL,
+        campo: FilterEventField.ID,
+        valor: cdRegistroEvento.toString(),
+      },
+    ],
+    apenasMeusEventos: "N",
+    paginacao: {
+      pagina: 0,
+      qntItensPaginados: 10,
+    },
+  };
+
+  const eventsQuery = useQuery({
+    queryKey: [QK_EVENT, defaultFilter],
+    queryFn: () => listEvents(defaultFilter),
+  });
+
+  const eventData = eventsQuery.data as ListEventsResponse;
+
+  useEffect(() => {
+    if (!eventData?.eventos.length) return setEvent(routeEvent);
+    if (event !== eventData.eventos[0]) return setEvent(eventData.eventos[0]);
+  }, [eventData, routeEvent]);
+
   const {
     userEventStatus,
     interactionButtonTitle,
+    interactionButtonAction,
     interactionButtonIcon,
     canInteractWithButton,
     interactWithEventBody,
   } = useUserDndEventRelationship(event);
 
-  const configToast = useToast();
-  const insets = useSafeAreaInsets();
-
   const manageSubscriptionEventMutation = useMutation({
     mutationFn: manageSubscriptionEvent,
-    onSuccess() {
+    onSuccess(response) {
       configToast.close("toasts-show");
       configToast.show({
         placement: "top",
@@ -64,13 +109,18 @@ export function EventDetails({ route, navigation }: EventStackProps) {
               <VStack space="xs">
                 <ToastTitle>Sucesso</ToastTitle>
                 <ToastDescription>
-                  {userEventStatus} com sucesso!
+                  {
+                    (response as ManageSubscriptionEventResponse)
+                      .statusInscricaoEvento
+                  }
+                  com sucesso!
                 </ToastDescription>
               </VStack>
             </Toast>
           );
         },
       });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT] });
     },
     onError(error: RequestErrorSchema) {
       const message =
@@ -132,8 +182,15 @@ export function EventDetails({ route, navigation }: EventStackProps) {
         ? formatDateToShow(event?.dtEncerramento, { withTime: true })
         : "-",
     },
-    { title: "Status", textAlign: "center", value: userEventStatus },
+    {
+      title: "Status",
+      textAlign: "center",
+      value: userEventStatus,
+    },
   ];
+
+  const isLoading =
+    manageSubscriptionEventMutation.isPending || eventsQuery.isLoading;
 
   const RenderInfo = ({ title, value, ...props }: EventInfo) => (
     <VStack gap={4} key={title}>
@@ -219,8 +276,10 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                 flex={1}
                 text={interactionButtonTitle}
                 iconSize={24}
+                action={interactionButtonAction}
                 rightIcon={interactionButtonIcon}
                 isDisabled={!canInteractWithButton}
+                isLoading={isLoading}
                 onPress={() => handleEventInteract()}
               />
             )}

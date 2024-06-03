@@ -12,6 +12,14 @@ enum UserStatusRelationToEvent {
   PRESENTE = "Presente",
 }
 
+enum UserButtonActionInteractToEvent {
+  NAO_REGISTRADO = "positive",
+  REGISTRADO = "negative",
+  REGISTRO_CANCELADO = "positive",
+  FALTANTE = "primary",
+  PRESENTE = "primary",
+}
+
 enum UserButtonTextInteractToEvent {
   NAO_REGISTRADO = "Se inscrever",
   REGISTRADO = "Remover inscrição",
@@ -40,10 +48,12 @@ export function useUserDndEventRelationship(event: Event) {
   // ("Disponível" and "Cheio" must be compared with number max of participans and atual count of participans)
 
   const userEventStatus = UserStatusRelationToEvent[event.statusParticipacao];
-  const interactionButtonTitle =
-    UserButtonTextInteractToEvent[event.statusParticipacao];
+  const interactionButtonAction =
+    UserButtonActionInteractToEvent[event.statusParticipacao];
   const canInteractWithButton = EventStatus.OPEN === event.statusEvento;
   const interactionButtonIcon = icons[event.statusParticipacao];
+  const interactionButtonTitle =
+    UserButtonTextInteractToEvent[event.statusParticipacao];
 
   const interactWithEventBody = () => {
     if (!canInteractWithButton) return;
@@ -63,6 +73,7 @@ export function useUserDndEventRelationship(event: Event) {
     interactionButtonTitle,
     interactionButtonIcon,
     canInteractWithButton,
+    interactionButtonAction,
     interactWithEventBody,
   };
 }

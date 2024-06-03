@@ -35,7 +35,7 @@ export function Button({
       {...props}
       isDisabled={isDisabled || isLoading}
     >
-      {leftIcon ? (
+      {leftIcon && !isLoading ? (
         <ButtonIcon
           h={iconSizeDefault}
           w={iconSizeDefault}
@@ -50,7 +50,7 @@ export function Button({
       ) : text ? (
         <ButtonText>{text}</ButtonText>
       ) : null}
-      {rightIcon ? (
+      {rightIcon && !isLoading ? (
         <ButtonIcon
           h={iconSizeDefault}
           w={iconSizeDefault}
