@@ -209,7 +209,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
             {isEventCreator ? (
               <Button
                 flex={1}
-                text="Canelar"
+                text="Cancelar"
                 iconSize={24}
                 rightIcon={CloseCircleIcon}
                 action="negative"
