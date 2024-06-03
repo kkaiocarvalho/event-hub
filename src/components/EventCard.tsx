@@ -5,29 +5,22 @@ import {
   VStack,
   AddIcon,
   CloseCircleIcon,
-  Divider,
   BadgeText,
-  BadgeIcon,
-  GlobeIcon,
   Toast,
   ToastTitle,
   ToastDescription,
   InfoIcon,
-  ChevronRightIcon,
 } from "@gluestack-ui/themed";
 import { formatDateToShow } from "../utils/helpers";
-import { Button } from "./Button";
 import { Pressable } from "react-native";
-import { useState } from "react";
 import { EventStatus } from "../utils/constants";
 import { Badge } from "@gluestack-ui/themed";
 import type { Event } from "../api/requests/list-events";
 import { useToast } from "@gluestack-ui/themed";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "@gluestack-ui/themed";
-import { LoopMiniLogo } from "./LoopMiniLogo";
-import { ArrowLeftIcon } from "@gluestack-ui/themed";
-import AntDesign from "@expo/vector-icons/AntDesign"
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useUserDndEventRelationship } from "../hook/useUserDndEventRelationship";
 
 // type FormValues = {
 //   reason?: string | undefined;
@@ -47,6 +40,7 @@ type EventCardProps = {
 };
 
 export function EventCard({ event, openEvent }: EventCardProps) {
+  const { userEventStatus } = useUserDndEventRelationship(event);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
   // const {
@@ -122,15 +116,17 @@ export function EventCard({ event, openEvent }: EventCardProps) {
             variant="accent"
             top={insets.top}
           >
-            <VStack space="xs">
-              <HStack alignItems="center" gap="$2">
-                <Icon as={InfoIcon} color="$background" />
-                <ToastTitle>Dica</ToastTitle>
-              </HStack>
-              <ToastDescription>
-                Pressione o card para abrir os detalhes do evento!
-              </ToastDescription>
-            </VStack>
+            <Pressable onPress={() => configToast.closeAll()}>
+              <VStack space="xs">
+                <HStack alignItems="center" gap="$2">
+                  <Icon as={InfoIcon} color="$background" />
+                  <ToastTitle>Dica</ToastTitle>
+                </HStack>
+                <ToastDescription>
+                  Pressione o card para abrir os detalhes do evento!
+                </ToastDescription>
+              </VStack>
+            </Pressable>
           </Toast>
         );
       },
@@ -145,7 +141,6 @@ export function EventCard({ event, openEvent }: EventCardProps) {
       }}
       onPress={() => showHelpMessage()}
     >
-
       <HStack
         alignItems="flex-start"
         gap={5}
@@ -177,18 +172,34 @@ export function EventCard({ event, openEvent }: EventCardProps) {
           </Box>
 
           <HStack>
-            <Box flexDirection="row" flex={1} alignItems="center" justifyContent="space-between">
-              <HStack  gap={4} >
-              <Badge size="sm" variant="outline" borderRadius="$md" action="info" >
-                <BadgeText>{event.statusEvento}</BadgeText>
-              </Badge>
-              <Badge size="sm" variant="outline" borderRadius="$md" action="info">
-                <BadgeText>
-                  {event.statusParticipacao}
-                </BadgeText>
-              </Badge>
+            <Box
+              flexDirection="row"
+              flex={1}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <HStack gap={4}>
+                <Badge
+                  size="sm"
+                  variant="outline"
+                  borderRadius="$md"
+                  action="info"
+                >
+                  <BadgeText textTransform="capitalize">
+                    {event.statusEvento}
+                  </BadgeText>
+                </Badge>
+                <Badge
+                  size="sm"
+                  variant="outline"
+                  borderRadius="$md"
+                  action="info"
+                >
+                  <BadgeText textTransform="capitalize">
+                    {userEventStatus}
+                  </BadgeText>
+                </Badge>
               </HStack>
-             
               <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
                 {formatDateToShow(event.dtInicio)}
               </Text>
@@ -214,12 +225,10 @@ export function EventCard({ event, openEvent }: EventCardProps) {
             alignItems="flex-end"
             w="$full"
           ></Box>*/}
-
             </Box>
           </HStack>
-
         </VStack>
-        <VStack >
+        <VStack>
           <Box
             ml="$2"
             pl="$2"
@@ -234,7 +243,6 @@ export function EventCard({ event, openEvent }: EventCardProps) {
             <AntDesign name="right" size={24} color="black" />
           </Box>
         </VStack>
-
 
         {/*<VStack gap={5}>
           <HStack
@@ -260,7 +268,8 @@ export function EventCard({ event, openEvent }: EventCardProps) {
   );
 }
 
-{/* <AlertDialog
+{
+  /* <AlertDialog
           isOpen={showAlertDialog}
           onClose={() => {
             setShowAlertDialog(false);
@@ -317,4 +326,5 @@ export function EventCard({ event, openEvent }: EventCardProps) {
               </ButtonGroup>
             </AlertDialogFooter>
           </AlertDialogContent>
-        </AlertDialog> */}
+        </AlertDialog> */
+}

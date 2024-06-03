@@ -17,27 +17,29 @@ import {
   PaperclipIcon,
   Spinner,
 } from "@gluestack-ui/themed";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { FilterEventField, QK_EVENT_LIST, QK_ME, UserPermissions, FilterEventOperation } from "../utils/constants";
+  FilterEventField,
+  QK_EVENT_LIST,
+  FilterEventOperation,
+} from "../utils/constants";
 import { useCallback, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
 import type { ListEventsVariables, Event } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
 import { EventStackProps } from "../routes/EventsStack";
-import { GetMeResponse } from "../api/requests/get-me";
 import { FlatList } from "@gluestack-ui/themed";
 import { formatDateToSave } from "../utils/helpers";
+import { useUser } from "../hook/useUser";
 
 const defaultFilter: ListEventsVariables = {
-  filtros: [{
-    operacao: FilterEventOperation.GREATER_THAN,
-    campo: FilterEventField.START_DATE,
-    valor: formatDateToSave(new Date)
-  }],
+  filtros: [
+    {
+      operacao: FilterEventOperation.GREATER_THAN,
+      campo: FilterEventField.START_DATE,
+      valor: formatDateToSave(new Date()),
+    },
+  ],
   apenasMeusEventos: "N",
   paginacao: {
     pagina: 0,
@@ -46,7 +48,7 @@ const defaultFilter: ListEventsVariables = {
 };
 
 export function Events({ navigation }: EventStackProps) {
-  const queryClient = useQueryClient();
+  const { hasOrganizerPermission } = useUser();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
@@ -89,12 +91,6 @@ export function Events({ navigation }: EventStackProps) {
     setEvents([]);
     //TODO: on reload not interact with react memo, fix this;
   }, []);
-
-  const userData = queryClient.getQueryData<GetMeResponse>([QK_ME]);
-
-  const hasOrganizerPermission =
-    userData?.permissao === UserPermissions["Organizer"] ||
-    userData?.permissao === UserPermissions["Admin"];
 
   const openEvent = (event: Event) => {
     navigation.navigate("EventDetails", { event });

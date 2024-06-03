@@ -148,7 +148,6 @@ export function CreateEvent({ navigation }: EventStackProps) {
     mutationFn: createEvent,
     onSuccess(response) {
       const data = response as CreateEventResponse;
-      console.log({data})
       if (data) {
         configToast.close("toasts-show");
         configToast.show({
