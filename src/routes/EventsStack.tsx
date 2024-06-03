@@ -11,6 +11,7 @@ export const ScreenName = [
   "MyEvents",
   "CreateEvent",
   "EventDetails",
+  "EventParticipants",
 ] as const;
 export type ScreenNames = (typeof ScreenName)[number];
 export type EventParamStack = {
@@ -18,6 +19,7 @@ export type EventParamStack = {
   MyEvents: undefined;
   CreateEvent: undefined;
   EventDetails: { event: Event };
+  EventParticipants: { event: Event };
 };
 export type EventStackProps = NativeStackScreenProps<EventParamStack>;
 
@@ -56,6 +58,13 @@ const eventStack: RouteEventsType[] = [
       title: "Detalhe do Evento",
     }),
   },
+  {
+    name: "EventParticipants",
+    component: P.EventParticipants,
+    options: () => ({
+      title: "Participantes",
+    }),
+  },
 ];
 
 const Stack = createNativeStackNavigator<EventParamStack>();
@@ -65,7 +74,14 @@ export function EventsStack() {
     <Stack.Navigator
       initialRouteName="Events"
       screenOptions={{
-        headerShown: false,
+        headerStyle: {
+          backgroundColor: "#111D40",
+        },
+        headerTitleAlign: "center",
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
       }}
     >
       {eventStack.map(({ name, component, options }) => (

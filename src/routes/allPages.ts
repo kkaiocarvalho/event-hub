@@ -7,3 +7,4 @@ export * from "../pages/MyEvents";
 export * from "../pages/Home";
 export * from "../pages/CreateEvent";
 export * from "../pages/EventDetails";
+export * from "../pages/EventParticipants";
