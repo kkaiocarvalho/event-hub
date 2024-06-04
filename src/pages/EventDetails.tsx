@@ -8,6 +8,11 @@ import {
   ToastTitle,
   ToastDescription,
   CloseCircleIcon,
+  ModalBody,
+  ModalFooter,
+  CopyIcon,
+  Spinner,
+  Box,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import {
@@ -32,13 +37,25 @@ import {
   RequestErrorWithMessage,
   RequestErrorSchema,
 } from "../config/request";
-import { ComponentProps, useEffect, useState } from "react";
+import {
+  ComponentProps,
+  useEffect,
+  useState,
+} from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   FilterEventField,
   FilterEventOperation,
   QK_EVENT,
 } from "../utils/constants";
+import { Modal } from "../components/Modal";
+import {
+  QrCodeGenerateResponse,
+  QrCodeGenerateVariables,
+  qrCodeGenerate,
+} from "../api/requests/qr-code-generate";
+import { Image } from "react-native";
+import * as Clipboard from 'expo-clipboard';
 
 type EventInfo = {
   title: string;
@@ -48,6 +65,8 @@ type EventInfo = {
 export function EventDetails({ route, navigation }: EventStackProps) {
   //TODO: multiple render because params and set event data,
   // must be fixed when event get endpoint is finished.
+  const [showModal, setShowModal] = useState(false);
+  const [qrCode64, setQrCode64] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const routeEvent = (route.params as { event: Event }).event as Event;
   const [event, setEvent] = useState(routeEvent);
@@ -95,7 +114,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
   const manageSubscriptionEventMutation = useMutation({
     mutationFn: manageSubscriptionEvent,
     onSuccess(response) {
-      configToast.close("toasts-show");
+      configToast.closeAll;
       configToast.show({
         placement: "top",
         render: () => {
@@ -128,7 +147,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
         (error as InvalidDataSchemaResponse)?.errors.join(", ");
 
       if (message) {
-        configToast.close("toasts-show");
+        configToast.closeAll;
         configToast.show({
           placement: "top",
           render: () => {
@@ -141,6 +160,65 @@ export function EventDetails({ route, navigation }: EventStackProps) {
               >
                 <VStack space="xs">
                   <ToastTitle>Erro ao interagir com evento</ToastTitle>
+                  <ToastDescription>{message}</ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
+    },
+  });
+
+  const qrCodeGenerateMutation = useMutation({
+    mutationFn: qrCodeGenerate,
+    onSuccess(response) {
+      const data = response as QrCodeGenerateResponse;
+      console.log({ data });
+      setQrCode64(data.qrcode);
+      configToast.closeAll;
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast
+              nativeID="toasts-show"
+              action="success"
+              variant="accent"
+              top={insets.top}
+            >
+              <VStack space="xs">
+                <ToastTitle>Sucesso</ToastTitle>
+                <ToastDescription>
+                  {data.mensagem}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT] });
+    },
+    onError(error: RequestErrorSchema) {
+      console.log({ error });
+      const message =
+        (error as RequestErrorWithMessage)?.message ||
+        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+
+      if (message) {
+        configToast.closeAll;
+        configToast.show({
+          placement: "top",
+          render: () => {
+            return (
+              <Toast
+                nativeID="toasts-show"
+                action="error"
+                variant="accent"
+                top={insets.top}
+              >
+                <VStack space="xs">
+                  <ToastTitle>Erro ao criar codigo QR do evento</ToastTitle>
                   <ToastDescription>{message}</ToastDescription>
                 </VStack>
               </Toast>
@@ -192,6 +270,14 @@ export function EventDetails({ route, navigation }: EventStackProps) {
   const isLoading =
     manageSubscriptionEventMutation.isPending || eventsQuery.isLoading;
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+    const body: QrCodeGenerateVariables = {
+      cdRegistroEvento: event.cdRegistroEvento,
+    };
+    qrCodeGenerateMutation.mutate(body);
+  };
+
   const RenderInfo = ({ title, value, ...props }: EventInfo) => (
     <VStack gap={4} key={title}>
       <Text color="black" fontWeight="$bold">
@@ -213,9 +299,82 @@ export function EventDetails({ route, navigation }: EventStackProps) {
       </Text>
     </VStack>
   );
-
+  console.log({ qrCodeGenerateMutation });
   return (
     <Background>
+      <Modal
+        isOpen={showModal}
+        title="QR Code"
+        withCloseButton
+        onClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <ModalBody>
+          {!qrCodeGenerateMutation.isPending && qrCode64 ? (
+            <Box>
+              <Box flex={1} alignItems="center">
+                <Box alignItems="center" borderRadius="$lg" borderWidth="$4" overflow="hidden">
+                  <Image
+                    source={{ uri: `data:image/png;base64,${qrCode64}` }}
+                    width={240}
+                    height={240}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          ) : (
+            <Box py="$8">
+              <Spinner size={45} />
+            </Box>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <HStack
+            flex={1}
+            bgColor="$ambar300"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Button
+              action="primary"
+              p="$4"
+              h="$12"
+              flex={1}
+              text="Copiar"
+              iconSize={18}
+              rightIcon={CopyIcon}
+              isDisabled={!qrCode64}
+              onPress={async () => {
+                if(!qrCode64) return;
+                //TODO: fix copy to clipboard qr code in base64
+                await Clipboard.setImageAsync(`data:image/png;base64,${qrCode64}`).then(() => {
+                  configToast.closeAll;
+                  configToast.show({
+                    placement: "top",
+                    render: () => {
+                      return (
+                        <Toast
+                          nativeID="toasts-show"
+                          action="info"
+                          variant="accent"
+                          top={insets.top}
+                        >
+                          <VStack space="xs">
+                            <ToastTitle>Copiado!</ToastTitle>
+                            <ToastDescription>Qr Code copiado com sucesso!</ToastDescription>
+                          </VStack>
+                        </Toast>
+                      );
+                    },
+                  });
+                });
+                setShowModal(false);
+              }}
+            />
+          </HStack>
+        </ModalFooter>
+      </Modal>
       <VStack flex={1} pb="$12" gap={8}>
         <VStack
           flex={1}
@@ -251,6 +410,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                 h="$16"
                 text="Gerar QR code"
                 iconSize={24}
+                onPress={handleOpenModal}
                 rightIcon={() => (
                   <MaterialCommunityIcons
                     name="qrcode"

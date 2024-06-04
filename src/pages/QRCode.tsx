@@ -15,7 +15,7 @@ export function QRCode() {
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-
+  //TODO: timeout to off camera
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
