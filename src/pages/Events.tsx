@@ -25,12 +25,13 @@ import {
 } from "../utils/constants";
 import { useCallback, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
-import type { ListEventsVariables, Event } from "../api/requests/list-events";
+import type { ListEventsVariables } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
 import { EventStackProps } from "../routes/EventsStack";
 import { FlatList } from "@gluestack-ui/themed";
 import { formatDateToSave } from "../utils/helpers";
 import { useUser } from "../hook/useUser";
+import { Event } from "../api/types";
 
 const defaultFilter: ListEventsVariables = {
   filtros: [
@@ -93,7 +94,7 @@ export function Events({ navigation }: EventStackProps) {
   }, []);
 
   const openEvent = (event: Event) => {
-    navigation.navigate("EventDetails", { event });
+    navigation.navigate("EventDetails", { eventId: event.cdRegistroEvento });
   };
 
   return (

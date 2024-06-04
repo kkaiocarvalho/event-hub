@@ -94,27 +94,17 @@ export function Register({ navigation }: RootStackProps) {
   const createUserMutation = useMutation({
     mutationFn: createUser,
     onSuccess() {
-      configToast.close(toastId);
+      configToast.closeAll();
       configToast.show({
         placement: "top",
-        render: ({ id }) => {
-          setToastId("toast-" + id);
-          return (
-            <Toast
-              nativeID={"toast-" + id}
-              action="success"
-              variant="accent"
-              top={insets.top}
-            >
-              <VStack space="xs">
-                <ToastTitle>Cadastro realizado com sucesso. </ToastTitle>
-                <ToastDescription>
-                  Seja bem vindo ao Event Hub!
-                </ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
+        render: () => (
+          <Toast action="success" variant="accent" top={insets.top}>
+            <VStack space="xs">
+              <ToastTitle>Cadastro realizado com sucesso. </ToastTitle>
+              <ToastDescription>Seja bem vindo ao Event Hub!</ToastDescription>
+            </VStack>
+          </Toast>
+        ),
       });
       navigation.navigate("Login");
     },
@@ -124,25 +114,17 @@ export function Register({ navigation }: RootStackProps) {
         (error as InvalidDataSchemaResponse)?.errors.join(", ");
 
       if (message) {
-        configToast.close(toastId);
+        configToast.closeAll();
         configToast.show({
           placement: "top",
-          render: ({ id }) => {
-            setToastId("toast-" + id);
-            return (
-              <Toast
-                nativeID={"toast-" + id}
-                action="error"
-                variant="accent"
-                top={insets.top}
-              >
-                <VStack space="xs">
-                  <ToastTitle>Erro durante o Cadastro </ToastTitle>
-                  <ToastDescription>{message}</ToastDescription>
-                </VStack>
-              </Toast>
-            );
-          },
+          render: () => (
+            <Toast action="error" variant="accent" top={insets.top}>
+              <VStack space="xs">
+                <ToastTitle>Erro durante o Cadastro </ToastTitle>
+                <ToastDescription>{message}</ToastDescription>
+              </VStack>
+            </Toast>
+          ),
         });
       }
     },

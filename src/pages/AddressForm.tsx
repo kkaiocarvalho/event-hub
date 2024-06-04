@@ -120,17 +120,12 @@ export function AddressForm({ form }: AddressFormProps) {
     },
     onError(error) {
       if (error.message) {
-        configToast.close("toasts-show");
+        configToast.closeAll();
         configToast.show({
           placement: "top",
           render: () => {
             return (
-              <Toast
-                nativeID="toasts-show"
-                action="error"
-                variant="accent"
-                top={insets.top}
-              >
+              <Toast action="error" variant="accent" top={insets.top}>
                 <VStack space="xs">
                   <ToastTitle>Erro durante a busca do CEP </ToastTitle>
                   <ToastDescription>

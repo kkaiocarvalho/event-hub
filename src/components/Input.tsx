@@ -1,4 +1,9 @@
-import { InputField, Input as GlueInput, VStack } from "@gluestack-ui/themed";
+import {
+  InputField,
+  Input as GlueInput,
+  VStack,
+  Text,
+} from "@gluestack-ui/themed";
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
 import { Keyboard } from "react-native";
@@ -9,6 +14,7 @@ import React from "react";
 export type InputProps<FormValues> = {
   label: string;
   placeholder?: string;
+  color?: string;
   errorMessage?: string;
   keyboardType?: any;
   nextInput?: () => void;
@@ -18,6 +24,7 @@ export type InputProps<FormValues> = {
   formatToViewOptions?: any;
   LeftIcon?: () => React.ReactNode;
   inputFieldProps?: ComponentProps<typeof InputField>;
+  subtitleProps?: ComponentProps<typeof Text>;
   control?: Control<FormValues extends FieldValues ? FormValues : any, any>;
   inputName: FieldPath<FormValues extends FieldValues ? FormValues : any>;
 } & ComponentProps<typeof GlueInput>;
@@ -25,9 +32,11 @@ export type InputProps<FormValues> = {
 export function Input<T>(inputProps: InputProps<T>) {
   const {
     placeholder,
+    color,
     LeftIcon,
     label,
     inputFieldProps,
+    subtitleProps,
     control,
     inputName,
     errorMessage,
@@ -42,7 +51,14 @@ export function Input<T>(inputProps: InputProps<T>) {
 
   return (
     <VStack h="$24">
-      <Subtitle text={label} h="$5" pl="$0" mb="$2" fontSize="$sm" />
+      <Subtitle
+        text={label}
+        h="$5"
+        pl="$0"
+        mb="$2"
+        fontSize="$sm"
+        {...subtitleProps}
+      />
       <GlueInput
         h="$10"
         variant="outline"
@@ -56,7 +72,7 @@ export function Input<T>(inputProps: InputProps<T>) {
           name={inputName}
           render={({ field: { onBlur, onChange, value, ref } }) => (
             <InputField
-              color="$textColor"
+              color={color ? color : "$textColor"}
               placeholderTextColor="$placeholderColor"
               placeholder={placeholder}
               keyboardType={keyboardType}

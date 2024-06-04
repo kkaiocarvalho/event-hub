@@ -4,7 +4,6 @@ import { EventCard } from "../components/EventCard";
 import { QK_EVENT_LIST } from "../utils/constants";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  Event,
   listEvents,
   ListEventsResponse,
   ListEventsVariables,
@@ -12,6 +11,7 @@ import {
 import { useCallback, useMemo, useState } from "react";
 import { Box } from "@gluestack-ui/themed";
 import { EventStackProps } from "../routes/EventsStack";
+import { Event } from "../api/types";
 
 const defaultFilter: ListEventsVariables = {
   filtros: [],
@@ -67,7 +67,7 @@ export function MyEvents({ navigation }: EventStackProps) {
   }, []);
 
   const openEvent = (event: Event) => {
-    navigation.navigate("EventDetails", { event });
+    navigation.navigate("EventDetails", { eventId: event.cdRegistroEvento });
   };
 
   return (

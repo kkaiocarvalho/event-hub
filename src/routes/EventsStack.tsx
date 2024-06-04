@@ -4,7 +4,6 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
-import { Event } from "../api/requests/list-events";
 
 export const ScreenName = [
   "Events",
@@ -18,8 +17,8 @@ export type EventParamStack = {
   Events: undefined;
   MyEvents: undefined;
   CreateEvent: undefined;
-  EventDetails: { event: Event };
-  EventParticipants: { event: Event };
+  EventDetails: { eventId: number };
+  EventParticipants: { eventId: number };
 };
 export type EventStackProps = NativeStackScreenProps<EventParamStack>;
 

@@ -149,17 +149,12 @@ export function CreateEvent({ navigation }: EventStackProps) {
     onSuccess(response) {
       const data = response as CreateEventResponse;
       if (data) {
-        configToast.close("toasts-show");
+        configToast.closeAll();
         configToast.show({
           placement: "top",
           render: () => {
             return (
-              <Toast
-                nativeID="toasts-show"
-                action="success"
-                variant="accent"
-                top={insets.top}
-              >
+              <Toast action="success" variant="accent" top={insets.top}>
                 <VStack space="xs">
                   <ToastTitle>Sucesso</ToastTitle>
                   <ToastDescription>
@@ -179,17 +174,12 @@ export function CreateEvent({ navigation }: EventStackProps) {
         (error as InvalidDataSchemaResponse)?.errors.join(", ");
 
       if (message) {
-        configToast.close("toasts-show");
+        configToast.closeAll();
         configToast.show({
           placement: "top",
           render: () => {
             return (
-              <Toast
-                nativeID="toasts-show"
-                action="error"
-                variant="accent"
-                top={insets.top}
-              >
+              <Toast action="error" variant="accent" top={insets.top}>
                 <VStack space="xs">
                   <ToastTitle>Erro ao cadastrar evento</ToastTitle>
                   <ToastDescription>{message}</ToastDescription>

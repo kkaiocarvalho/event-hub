@@ -5,11 +5,11 @@ import { QK_ME, UserPermissions } from "../utils/constants";
 export function useUser() {
   const queryClient = useQueryClient();
   // queryClient.refetchQueries({ queryKey: [QK_ME] });
-  const userData = queryClient.getQueryData<GetMeResponse>([QK_ME]);
+  const user = queryClient.getQueryData<GetMeResponse>([QK_ME]);
 
   const hasOrganizerPermission =
-    userData?.permissao === UserPermissions["Organizer"] ||
-    userData?.permissao === UserPermissions["Admin"];
+    user?.permissao === UserPermissions["Organizer"] ||
+    user?.permissao === UserPermissions["Admin"];
 
-  return { userData, hasOrganizerPermission };
+  return { user, hasOrganizerPermission };
 }

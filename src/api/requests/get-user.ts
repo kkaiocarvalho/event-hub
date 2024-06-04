@@ -18,15 +18,15 @@ const getUserResponseSchema = z.object({
 });
 
 export type GetUserVariables = {
-  id: string;
+  userId: string;
 };
 
 export type GetUserResponse = z.infer<typeof getUserResponseSchema>;
 
-export async function getUser(id: GetUserVariables) {
+export async function getUser({ userId }: GetUserVariables) {
   return await request({
     method: api.get,
-    url: `/dados-cadastrais/buscar-usuario/${id}`,
+    url: `/dados-cadastrais/buscar-usuario/${userId}`,
     schema: getUserResponseSchema,
   });
 }

@@ -24,17 +24,12 @@ export function StartScreen({ navigation }: RootStackProps) {
   const hasIntegration = false;
 
   const showToast = () => {
-    configToast.close("toasts-show");
+    configToast.closeAll();
     configToast.show({
       placement: "top",
       render: () => {
         return (
-          <Toast
-            nativeID="toasts-show"
-            action="error"
-            variant="accent"
-            top={insets.top}
-          >
+          <Toast action="error" variant="accent" top={insets.top}>
             <VStack space="xs">
               <ToastTitle>👷 Em andamento</ToastTitle>
               <ToastDescription>

@@ -61,12 +61,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         placement: "top",
         render: () => {
           return (
-            <Toast
-              nativeID="toasts-show"
-              action="success"
-              variant="accent"
-              top={insets.top}
-            >
+            <Toast action="success" variant="accent" top={insets.top}>
               <VStack space="xs">
                 <ToastTitle>Login efetuado</ToastTitle>
                 <ToastDescription>Seja bem vindo!</ToastDescription>
@@ -84,17 +79,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         (error as InvalidDataSchemaResponse)?.errors.join(", ");
 
       if (message) {
-        configToast.close("toasts-show");
+        configToast.closeAll();
         configToast.show({
           placement: "top",
           render: () => {
             return (
-              <Toast
-                nativeID="toasts-show"
-                action="error"
-                variant="accent"
-                top={insets.top}
-              >
+              <Toast action="error" variant="accent" top={insets.top}>
                 <VStack space="xs">
                   <ToastTitle>Erro durante o Login</ToastTitle>
                   <ToastDescription>{message}</ToastDescription>

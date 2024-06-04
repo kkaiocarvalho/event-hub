@@ -1,5 +1,4 @@
 import { Background } from "../components/Background";
-import { Event } from "../api/requests/list-events";
 import { EventStackProps } from "../routes/EventsStack";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QK_EVENT_PARTICIPANTS } from "../utils/constants";
@@ -12,6 +11,7 @@ import { Box, Center, FlatList } from "@gluestack-ui/themed";
 import { Text } from "@gluestack-ui/themed";
 import { RefreshControl } from "@gluestack-ui/themed";
 import { UserCard } from "../components/UserCard";
+import { Event } from "../api/types";
 
 const mockParticipants: SubscribedUser[] = [
   {

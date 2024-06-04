@@ -1,8 +1,8 @@
 import { CheckIcon, CloseCircleIcon, CloseIcon } from "@gluestack-ui/themed";
-import { Event } from "../api/requests/list-events";
 import { useUser } from "./useUser";
 import { EventStatus } from "../utils/constants";
 import { ManageSubscriptionEventVariables } from "../api/requests/manage-subscription-event";
+import { useEvent } from "./useEvent";
 
 enum UserStatusRelationToEvent {
   NAO_REGISTRADO = "Não inscrito",
@@ -28,8 +28,9 @@ enum UserButtonTextInteractToEvent {
   PRESENTE = "Compareceu",
 }
 
-export function useUserDndEventRelationship(event: Event) {
-  const { userData } = useUser();
+export function useUserAndEventRelationship(eventId: number) {
+  const { user } = useUser();
+  const { event, eventQuery } = useEvent(eventId);
 
   const icons = {
     NAO_REGISTRADO: CheckIcon,
@@ -47,16 +48,26 @@ export function useUserDndEventRelationship(event: Event) {
   // EVENT STATE: "Inscrito", "Insc. Removida", "Dispoível" and "Cheio".
   // ("Disponível" and "Cheio" must be compared with number max of participans and atual count of participans)
 
-  const userEventStatus = UserStatusRelationToEvent[event.statusParticipacao];
-  const interactionButtonAction =
-    UserButtonActionInteractToEvent[event.statusParticipacao];
-  const canInteractWithButton = EventStatus.OPEN === event.statusEvento;
-  const interactionButtonIcon = icons[event.statusParticipacao];
-  const interactionButtonTitle =
-    UserButtonTextInteractToEvent[event.statusParticipacao];
+  const userEventStatus = event
+    ? UserStatusRelationToEvent[event.statusParticipacao]
+    : UserStatusRelationToEvent.NAO_REGISTRADO;
+
+  const interactionButtonAction = event
+    ? UserButtonActionInteractToEvent[event.statusParticipacao]
+    : UserButtonActionInteractToEvent.NAO_REGISTRADO;
+
+  const canInteractWithEvent = EventStatus.OPEN === event?.statusEvento;
+
+  const interactionButtonIcon = event
+    ? icons[event.statusParticipacao]
+    : icons.NAO_REGISTRADO;
+
+  const interactionButtonTitle = event
+    ? UserButtonTextInteractToEvent[event.statusParticipacao]
+    : UserButtonTextInteractToEvent.NAO_REGISTRADO;
 
   const interactWithEventBody = () => {
-    if (!canInteractWithButton) return;
+    if (!canInteractWithEvent) return;
 
     const body: ManageSubscriptionEventVariables = {
       cdRegistroEvento: event.cdRegistroEvento,
@@ -68,12 +79,15 @@ export function useUserDndEventRelationship(event: Event) {
     return body;
   };
 
+  const isLoadingRelations = eventQuery.isLoading;
+
   return {
     userEventStatus,
     interactionButtonTitle,
     interactionButtonIcon,
-    canInteractWithButton,
+    canInteractWithEvent,
     interactionButtonAction,
     interactWithEventBody,
+    isLoadingRelations,
   };
 }
