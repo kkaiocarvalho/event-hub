@@ -188,7 +188,7 @@ export function CancelEventButton({ eventId }: CancelEventButtonProps) {
       <Button
         flex={1}
         text={
-          canInteractWithEvent ? "Cancelar Evento" : "Cancelado ou Finalizado"
+          canInteractWithEvent ? "Cancelar" : "Cancelado ou Finalizado"
         }
         onPress={() => setShowAlertDialog(true)}
         iconSize={24}

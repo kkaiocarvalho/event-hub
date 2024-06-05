@@ -182,7 +182,7 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
       </Modal>
       <Button
         h="$16"
-        text="Gerar QR code"
+        //text="Gerar QR code"
         iconSize={24}
         onPress={handleOpenModal}
         isDisabled={!canInteractWithEvent}
@@ -191,7 +191,7 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
             name="qrcode"
             size={24}
             color="#F2F2F2"
-            style={{ marginLeft: 8 }}
+            //style={{ marginLeft: 8 }}
           />
         )}
       />

@@ -4,6 +4,8 @@ import {
   ScrollView,
   Spinner,
   Center,
+  Box,
+  HStack,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { EventStackProps } from "../routes/EventsStack";
@@ -19,7 +21,6 @@ import { Button } from "../components/Button";
 import { GenerateQrCodeButton } from "../components/GenerateQrCodeButton";
 import { CancelEventButton } from "../components/CancelEventButton";
 import { ManageSubscriptionButton } from "../components/ManageSubscriptionButton";
-import { HStack } from "@gluestack-ui/themed";
 
 type EventInfo = {
   title: string;
@@ -37,53 +38,61 @@ export function EventDetails({ route, navigation }: EventStackProps) {
   const isEventCreator = hasOrganizerPermission && event?.meuEvento;
 
   const eventInfo: EventInfo[] = [
-    { title: "Nome do Evento:", value: event?.nomeEvento ?? "-", pl: "$4" },
     {
-      title: "Complemento:",
+      title: "- Nome do Evento",
+      value: event?.nomeEvento ?? "-",
+      pl: "$4",
+      textAlign: "left",
+    },
+    {
+      title: "- Complemento",
       verticalAlign: "top",
+      textAlign: "left",
       pl: "$4",
       value: event?.complementoEvento ?? "-",
     },
     {
-      title: "Início:",
+      title: "- Início",
       textAlign: "center",
+      pl: "$4",
       value: event?.dtInicio
         ? formatDateToShow(event?.dtInicio, { withTime: true })
         : "-",
     },
     {
-      title: "Final:",
+      title: "- Final",
       textAlign: "center",
+      pl: "$4",
       value: event?.dtEncerramento
         ? formatDateToShow(event?.dtEncerramento, { withTime: true })
         : "-",
     },
     {
-      title: "Status",
-      textAlign: "center",
+      title: "- Status",
+      textAlign: "left",
+      pl: "$4",
       value: userEventStatus,
     },
   ];
 
   const RenderInfo = ({ title, value, ...props }: EventInfo) => (
     <VStack gap={4} key={title}>
-      <Text color="black" fontWeight="$bold">
+      <Text color="#111D40" fontWeight="$bold" fontSize={25} >
         {title}
       </Text>
-      <Text
-        color="$textColor"
-        borderColor="$primary400"
-        borderWidth="$4"
-        bgColor="$background"
-        p="$2"
-        borderRadius="$xl"
-        lineHeight="$sm"
-        fontSize="$sm"
-        textAlignVertical="center"
-        {...props}
-      >
-        {value}
-      </Text>
+      <Box>
+        <Text
+          color="$background"
+          pb="$5"
+          borderRadius="$xl"
+          lineHeight="$md"
+          fontSize="$2xl"
+          textAlignVertical="center"
+          {...props}
+        >
+          {value}
+        </Text>
+      </Box>
     </VStack>
   );
 
@@ -94,23 +103,26 @@ export function EventDetails({ route, navigation }: EventStackProps) {
           <Spinner size={45} />
         </Center>
       ) : (
-        <VStack flex={1} pb="$12" gap={8}>
+        <VStack flex={1} pb="$12" gap={8} >
           <VStack
             flex={1}
-            borderWidth="$4"
-            borderColor="$primary400"
-            borderRadius="$3xl"
-            p="$4"
+            borderRadius="$2xl"
+            p="$6"
             bgColor="$textColor"
           >
-            <ScrollView>{eventInfo.map((e) => RenderInfo(e))}</ScrollView>
+            <ScrollView borderTopWidth="$2" borderBottomWidth="$2" borderStyle="dashed" paddingTop={20}
+            borderColor="$background">
+              {eventInfo.map((info) => (
+                <RenderInfo key={info.title} {...info} />
+              ))}
+            </ScrollView>
           </VStack>
           <VStack gap={8}>
             {isEventCreator ? (
-              <>
+              <HStack gap={4} justifyContent="space-between">
                 <Button
                   h="$16"
-                  text="Participantes"
+                  //text="Participantes"
                   action="positive"
                   iconSize={24}
                   onPress={() =>
@@ -121,20 +133,18 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                       name="account-group"
                       size={24}
                       color="#F2F2F2"
-                      style={{ marginLeft: 8 }}
+                      //style={{ marginLeft: 8,}}
                     />
                   )}
                 />
                 <GenerateQrCodeButton eventId={eventId} />
-              </>
-            ) : null}
-            <HStack gap={8}>
-              {isEventCreator ? (
                 <CancelEventButton eventId={eventId} />
-              ) : (
+              </HStack>
+            ) : (
+              <HStack gap={4}>
                 <ManageSubscriptionButton eventId={eventId} />
-              )}
-            </HStack>
+              </HStack>
+            )}
           </VStack>
         </VStack>
       )}
