@@ -10,12 +10,13 @@ import { Button } from "../components/Button";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScannerOverlay } from "../components/ScannerOverlay";
+import { qrCodeCheckIn, QrCodeCheckInVariables } from "../api/requests/qr-code-check-in"; 
 
 export function QRCode() {
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-  //TODO: timeout to off camera
+
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -25,9 +26,29 @@ export function QRCode() {
     getCameraPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }: BarcodeScanningResult) => {
+  const handleBarCodeScanned = async ({ type, data }: BarcodeScanningResult) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    try {
+
+      const qrCodeData = JSON.parse(data);
+      
+
+      const { cdRegistroEvento, tipoSolicitacao, formaSolicitacao, chaveQRCode, cpfParticipante } = qrCodeData;
+      
+ 
+      await qrCodeCheckIn({
+        cdRegistroEvento,
+        tipoSolicitacao: "CHECKIN",
+        formaSolicitacao: "QRCODE",
+        chaveQRCode,
+        cpfParticipante
+      });
+      
+      alert(`Check-in realizado com sucesso!`);
+    } catch (error) {
+      console.error("Erro ao realizar check-in:", error);
+      alert("Erro ao realizar check-in. Por favor, tente novamente.");
+    }
   };
 
   if (hasPermission === null) {
