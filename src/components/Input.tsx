@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   InputField,
   Input as GlueInput,
@@ -9,7 +10,6 @@ import { Subtitle } from "./Subtitle";
 import { Keyboard } from "react-native";
 import { Controller } from "react-hook-form";
 import type { Control, FieldValues, FieldPath } from "react-hook-form";
-import React from "react";
 
 export type InputProps<FormValues> = {
   label: string;
@@ -27,6 +27,7 @@ export type InputProps<FormValues> = {
   subtitleProps?: ComponentProps<typeof Text>;
   control?: Control<FormValues extends FieldValues ? FormValues : any, any>;
   inputName: FieldPath<FormValues extends FieldValues ? FormValues : any>;
+  secureTextEntry?: boolean;
 } & ComponentProps<typeof GlueInput>;
 
 export function Input<T>(inputProps: InputProps<T>) {
@@ -46,8 +47,15 @@ export function Input<T>(inputProps: InputProps<T>) {
     formatToView,
     formatOptions,
     formatToViewOptions,
+    secureTextEntry,
     ...glueInputProps
   } = inputProps;
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <VStack h="$24">
@@ -76,6 +84,7 @@ export function Input<T>(inputProps: InputProps<T>) {
               placeholderTextColor="$placeholderColor"
               placeholder={placeholder}
               keyboardType={keyboardType}
+              secureTextEntry={!showPassword && secureTextEntry}
               {...inputFieldProps}
               onBlur={onBlur}
               onChangeText={(txt) => {
@@ -105,6 +114,11 @@ export function Input<T>(inputProps: InputProps<T>) {
           pl="$0"
           fontSize="$sm"
         />
+      ) : null}
+      {secureTextEntry ? (
+        <Text onPress={toggleShowPassword} color="$primary500" fontSize="$md" mt={10}>
+          {showPassword ? "Hide Password" : "Show Password"}
+        </Text>
       ) : null}
     </VStack>
   );

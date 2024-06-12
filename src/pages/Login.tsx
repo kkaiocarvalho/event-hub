@@ -78,6 +78,7 @@ export function Login() {
                 label="Senha"
                 inputName="password"
                 control={control}
+                secureTextEntry={true}
                 errorMessage={errors.password?.message}
               />
             </VStack>

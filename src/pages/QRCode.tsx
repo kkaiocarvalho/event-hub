@@ -10,12 +10,17 @@ import { Button } from "../components/Button";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScannerOverlay } from "../components/ScannerOverlay";
-import { qrCodeCheckIn, QrCodeCheckInVariables } from "../api/requests/qr-code-check-in"; 
+import { qrCodeCheckIn } from "../api/requests/qr-code-check-in"; 
+
+import { CustomAlertDialog } from "../components/AlertCheckIn";
 
 export function QRCode() {
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
+
+  const [alertInfo, setAlertInfo] = useState({ isOpen: false, title: '', message: '' });
+  const [backendError, setBackendError] = useState(null);
 
   useEffect(() => {
     const getCameraPermissions = async () => {
@@ -29,13 +34,8 @@ export function QRCode() {
   const handleBarCodeScanned = async ({ type, data }: BarcodeScanningResult) => {
     setScanned(true);
     try {
-
       const qrCodeData = JSON.parse(data);
-      
-
       const { cdRegistroEvento, tipoSolicitacao, formaSolicitacao, chaveQRCode, cpfParticipante } = qrCodeData;
-      
- 
       await qrCodeCheckIn({
         cdRegistroEvento,
         tipoSolicitacao: "CHECKIN",
@@ -43,13 +43,23 @@ export function QRCode() {
         chaveQRCode,
         cpfParticipante
       });
-      
-      alert(`Check-in realizado com sucesso!`);
+      setAlertInfo({ isOpen: true, title: 'Success', message: 'Check-in realizado com sucesso!' });
     } catch (error) {
       console.error("Erro ao realizar check-in:", error);
-      alert("Erro ao realizar check-in. Por favor, tente novamente.");
+      if (error.response && error.response.data && error.response.data.message) {
+        setBackendError(error.response.data.message);
+      } else {
+        setAlertInfo({ isOpen: true, title: 'Error', message: 'Erro ao realizar check-in. Por favor, tente novamente.' });
+      }
     }
   };
+
+  useEffect(() => {
+    if (backendError) {
+      alert(backendError);
+      setBackendError(null);
+    }
+  }, [backendError]);
 
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
@@ -91,6 +101,12 @@ export function QRCode() {
           />
         </Center>
       )}
+      <CustomAlertDialog
+        isOpen={alertInfo.isOpen}
+        onClose={() => setAlertInfo({ ...alertInfo, isOpen: false })}
+        title={alertInfo.title}
+        message={alertInfo.message}
+      />
     </View>
   ) : (
     <Center flex={1} bgColor="$background">

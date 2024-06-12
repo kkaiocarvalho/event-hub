@@ -7,6 +7,7 @@ const getDrawnParticipantsResponseSchema = z.array(
     cdParticipanteEvento: z.number(),
     nuInscricaoEvento: z.number(),
     nomeParticipante: z.string(),
+    emailParticipante: z.string()
   })
 );
 
@@ -16,8 +17,11 @@ export type GetDrawnParticipantsResponse = z.infer<
 
 export async function getDrawnParticipants(idEvent: string) {
   return await request({
-    method: apiEvents.get,
+    //method: apiEvents.get,
+    method: apiEvents.post,
     url: `/participantes/buscar-participantes-sorteados/${idEvent}`,
     schema: getDrawnParticipantsResponseSchema,
   });
 }
+
+
