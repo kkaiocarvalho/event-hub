@@ -68,6 +68,35 @@ export function EventDetails({ route, navigation }: EventStackProps) {
         : "-",
     },
     {
+      title: "- Cidade",
+      verticalAlign: "top",
+      textAlign: "left",
+      pl: "$4",
+      value: event?.endereco.cidade ?? "-",
+    },
+    {
+      title: "- Logradouro",
+      verticalAlign: "top",
+      textAlign: "left",
+      pl: "$4",
+      value: event?.endereco.logradouro ?? "-",
+    },
+    {
+      title: "- Número ",
+      verticalAlign: "top",
+      textAlign: "left",
+      pl: "$4",
+      value: event?.endereco.numero ?? "-",
+    },
+
+    {
+      title: "- Estado ",
+      verticalAlign: "top",
+      textAlign: "left",
+      pl: "$4",
+      value: event?.endereco.estado ?? "-",
+    },
+    {
       title: "- Status",
       textAlign: "left",
       pl: "$4",
@@ -77,7 +106,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
 
   const RenderInfo = ({ title, value, ...props }: EventInfo) => (
     <VStack gap={4} key={title}>
-      <Text color="#111D40" fontWeight="$bold" fontSize={25} >
+      <Text color="#111D40" fontWeight="$bold" fontSize={15} >
         {title}
       </Text>
       <Box>
@@ -86,7 +115,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
           pb="$5"
           borderRadius="$xl"
           lineHeight="$md"
-          fontSize="$2xl"
+          fontSize="$lg"
           textAlignVertical="center"
           {...props}
         >
