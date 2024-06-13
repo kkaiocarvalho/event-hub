@@ -13,6 +13,7 @@ import { InteractiveLogo } from "../components/InteractiveLogo";
 import { SvgXml } from "react-native-svg";
 import MiniLogo from "../components/MiniLogo";
 import { LoopMiniLogo } from "../components/LoopMiniLogo";
+import { LoopMiniLogoV2 } from "../components/Mini Logo V2/MiniLogoV2";
 
 type FormValues = {
   email: string;
@@ -59,7 +60,7 @@ export function Login() {
           <Box>
             <Title text="Login" />
           </Box>
-          <LoopMiniLogo />
+          <LoopMiniLogoV2 />
           
         </HStack>
         <Center p="$5">
