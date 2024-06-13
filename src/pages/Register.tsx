@@ -196,6 +196,7 @@ export function Register({ navigation }: RootStackProps) {
                 label="Senha"
                 inputName="password"
                 control={control}
+                secureTextEntry={true}
                 errorMessage={errors.password?.message}
                 nextInput={() => setFocus("confirmPassword")}
               />
@@ -204,6 +205,7 @@ export function Register({ navigation }: RootStackProps) {
                 label="Confirmar Senha"
                 inputName="confirmPassword"
                 control={control}
+                secureTextEntry={true}
                 errorMessage={errors.confirmPassword?.message}
               />
             </VStack>

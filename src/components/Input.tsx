@@ -7,7 +7,7 @@ import {
 } from "@gluestack-ui/themed";
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
-import { Keyboard } from "react-native";
+import { Keyboard, Pressable, TouchableOpacity } from "react-native";
 import { Controller } from "react-hook-form";
 import type { Control, FieldValues, FieldPath } from "react-hook-form";
 
@@ -116,9 +116,10 @@ export function Input<T>(inputProps: InputProps<T>) {
         />
       ) : null}
       {secureTextEntry ? (
-        <Text onPress={toggleShowPassword} color="$primary500" fontSize="$md" mt={10}>
+        <Text onPress={toggleShowPassword} color="$textColor" fontSize="$md" mt={10} textAlign="right"  >
           {showPassword ? "Hide Password" : "Show Password"}
         </Text>
+
       ) : null}
     </VStack>
   );
