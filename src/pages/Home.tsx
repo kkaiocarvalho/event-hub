@@ -12,17 +12,13 @@ import {
   GlobeIcon,
 } from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
-import { Button } from "../components/Button";
 import { useAuth } from "../hook/useAuth";
 import { QK_ME } from "../utils/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getMe, GetMeResponse } from "../api/requests/get-me";
 import { formatDateToShow } from "../utils/helpers";
-import { SvgXml } from "react-native-svg";
-import { Title } from "../components/Title";
-import MiniLogo from "../components/MiniLogo";
-import { FontAwesome5 } from "@expo/vector-icons";
-
+import { Button } from "../components/Button";
+import { FontAwesome5, AntDesign, Entypo  } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import { Pressable, useWindowDimensions } from "react-native";
 import { useTouchAnimation } from "../hook/useTouchAnimation";
@@ -34,6 +30,7 @@ export function Home() {
   const { touchAnimation, animationState } = useTouchAnimation();
 
   const { logout } = useAuth();
+
   const getMeQuery = useQuery({ queryKey: [QK_ME], queryFn: getMe });
   const userData: GetMeResponse | undefined =
     (getMeQuery.data as GetMeResponse) || undefined;
@@ -43,12 +40,14 @@ export function Home() {
       <VStack justifyContent="space-between" flex={1}>
         <VStack flex={1}>
           <HStack alignItems="center">
+         {/*
             <Box>
               <Title text="Home" />
             </Box>
             <Box>
               <SvgXml xml={MiniLogo} />
             </Box>
+         */}
           </HStack>
           {getMeQuery.isLoading ? (
             <Box
@@ -89,15 +88,34 @@ export function Home() {
                 </HStack>
                 <Divider my="$0.5" bgColor="#f2f2f2" w="$4/5" />
                 <Box>
-                  <Text color="$textColor" fontSize={28} p={5} paddingTop={30}>
-                    Usuário: {userData.nome}
-                  </Text>
-                  <Text color="$textColor" fontSize={28} p={5}>
-                    Email: {userData.email}
-                  </Text>
-                  <Text color="$textColor" fontSize={28} p={5}>
-                    Telefone: {userData.telefone}
-                  </Text>
+
+                  <Box alignItems="center" justifyContent="center">
+                    <HStack p={10}>
+                      <AntDesign name="idcard" size={20} color="white"/>
+                        <Text color="$textColor" fontSize={20} marginLeft={10}>
+                          {userData.nome}
+                        </Text>
+                    </HStack>
+                  </Box>
+
+                  <Box alignItems="center" justifyContent="center">
+                    <HStack p={10}>
+                    <Entypo name="email" size={20} color="white" />
+                      <Text color="$textColor" fontSize={20} marginLeft={10}>
+                        {userData.email}
+                      </Text>
+                    </HStack>
+                  </Box>
+
+                  <Box alignItems="center" justifyContent="center">
+                    <HStack p={10}>
+                    <Entypo name="phone" size={20} color="white" />
+                      <Text color="$textColor" fontSize={20} marginLeft={10}>
+                        {userData.telefone}
+                      </Text>
+                    </HStack>
+                  </Box>
+          
                   <Box alignItems="center" padding={10}>
                     <Badge
                       size="lg"
@@ -105,12 +123,12 @@ export function Home() {
                       borderRadius="$md"
                       action="info"
                     >
-                      <BadgeText fontSize={20}>
+                      <BadgeText fontSize={15}>
                         Cargo: {userData.permissao}
                       </BadgeText>
                       <BadgeIcon as={GlobeIcon} ml="$1" />
                     </Badge>
-                    <Text color="$textColorOpacity" fontSize={20} p={5} paddingTop={15}>
+                    <Text color="$textColorOpacity" fontSize={15} p={5} paddingTop={15}>
                       Entrou em:{" "}
                       {formatDateToShow(userData.dataInclusao, {
                         withTime: true,
@@ -123,14 +141,14 @@ export function Home() {
             </>
           )}
         </VStack>
-        <Center gap="$7">
+    {/*    <Center gap="$7">
           <Button
             w="$full"
             text="Sair"
             action="negative"
             onPress={() => logout()}
           />
-        </Center>
+        </Center>*/}
       </VStack>
     </Background>
   );

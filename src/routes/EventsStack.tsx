@@ -5,6 +5,9 @@ import {
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
 
+import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 export const ScreenName = [
   "Events",
   "MyEvents",
@@ -34,6 +37,7 @@ const eventStack: RouteEventsType[] = [
     component: P.Events,
     options: () => ({
       title: "Eventos",
+      headerLeft: () => <ProfileScreen />
     }),
   },
   {
@@ -92,5 +96,16 @@ export function EventsStack() {
         />
       ))}
     </Stack.Navigator>
+  );
+}
+
+const ProfileScreen = () => {
+
+  const navigation = useNavigation();
+
+  return (
+    <>
+      <FontAwesome5 name="user-astronaut" size={24} color="white" onPress={() => navigation.navigate('Home')}/>
+    </>
   );
 }
