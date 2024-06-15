@@ -19,7 +19,7 @@ import {
   ToastDescription,
 } from "@gluestack-ui/themed";
 import { Button } from "./Button";
-import {
+import type {
   InvalidDataSchemaResponse,
   RequestErrorWithMessage,
   RequestErrorSchema,
@@ -187,9 +187,7 @@ export function CancelEventButton({ eventId }: CancelEventButtonProps) {
       </AlertDialog>
       <Button
         flex={1}
-        text={
-          canInteractWithEvent ? "Cancelar" : "Cancelado ou Finalizado"
-        }
+        text={canInteractWithEvent ? "Cancelar" : "Cancelado ou Finalizado"}
         onPress={() => setShowAlertDialog(true)}
         iconSize={24}
         rightIcon={CloseCircleIcon}

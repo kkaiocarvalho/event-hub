@@ -10,63 +10,98 @@ import { Button } from "../components/Button";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScannerOverlay } from "../components/ScannerOverlay";
-import { qrCodeCheckIn } from "../api/requests/qr-code-check-in"; 
-
+import { qrCodeCheckIn } from "../api/requests/qr-code-check-in";
+import type { QrCodeCheckInVariables } from "../api/requests/qr-code-check-in";
 import { CustomAlertDialog } from "../components/AlertCheckIn";
+import { Background } from "../components/Background";
+import { useMutation } from "@tanstack/react-query";
+import type {
+  InvalidDataSchemaResponse,
+  RequestErrorWithMessage,
+  RequestErrorSchema,
+} from "../config/request";
 
 export function QRCode() {
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
 
-  const [alertInfo, setAlertInfo] = useState({ isOpen: false, title: '', message: '' });
-  const [backendError, setBackendError] = useState(null);
+  const [alertInfo, setAlertInfo] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
-  useEffect(() => {
-    const getCameraPermissions = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === PermissionStatus.GRANTED);
-    };
-
-    getCameraPermissions();
-  }, []);
-
-  const handleBarCodeScanned = async ({ type, data }: BarcodeScanningResult) => {
-    setScanned(true);
-    try {
-      const qrCodeData = JSON.parse(data);
-      const { cdRegistroEvento, tipoSolicitacao, formaSolicitacao, chaveQRCode, cpfParticipante } = qrCodeData;
-      await qrCodeCheckIn({
-        cdRegistroEvento,
-        tipoSolicitacao: "CHECKIN",
-        formaSolicitacao: "QRCODE",
-        chaveQRCode,
-        cpfParticipante
-      });
-      setAlertInfo({ isOpen: true, title: 'Success', message: 'Check-in realizado com sucesso!' });
-    } catch (error) {
-      console.error("Erro ao realizar check-in:", error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setBackendError(error.response.data.message);
-      } else {
-        setAlertInfo({ isOpen: true, title: 'Error', message: 'Erro ao realizar check-in. Por favor, tente novamente.' });
-      }
-    }
+  const getCameraPermissions = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasPermission(status === PermissionStatus.GRANTED);
   };
 
   useEffect(() => {
-    if (backendError) {
-      alert(backendError);
-      setBackendError(null);
-    }
-  }, [backendError]);
+    getCameraPermissions();
+  }, []);
+
+  const qrCodeCheckInMutation = useMutation({
+    mutationFn: qrCodeCheckIn,
+    onSuccess() {
+      setAlertInfo({
+        isOpen: true,
+        title: "Success",
+        message: "Check-in realizado com sucesso!",
+      });
+    },
+    onError(error: RequestErrorSchema) {
+      const message =
+        (error as RequestErrorWithMessage)?.message ||
+        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+      setAlertInfo({
+        isOpen: true,
+        title: "Error",
+        message:
+          message ?? "Erro ao realizar check-in. Por favor, tente novamente.",
+      });
+    },
+  });
+
+  const handleBarCodeScanned = async (scanner: BarcodeScanningResult) => {
+    const { data } = scanner;
+    setScanned(true);
+    const { cdRegistroEvento, chaveQRCode, cpfParticipante } = JSON.parse(data);
+    const body: QrCodeCheckInVariables = {
+      cdRegistroEvento,
+      tipoSolicitacao: "CHECKIN",
+      formaSolicitacao: "QRCODE",
+      chaveQRCode,
+      cpfParticipante,
+    };
+
+    qrCodeCheckInMutation.mutate(body);
+  };
 
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
+    return (
+      <Background>
+        <Center flex={1}>
+          <Text color="$textColor">Requisitando acesso a câmera</Text>
+        </Center>
+      </Background>
+    );
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    //TODO: make request access work
+    return (
+      <Background>
+        <Center flex={1} gap={15}>
+          <Text color="$textColor">Sem acesso a câmera</Text>
+          <Button
+            onPress={() => getCameraPermissions()}
+            text="Solicitar Acesso"
+          />
+        </Center>
+      </Background>
+    );
   }
+
   return !showCamera ? (
     <View style={{ flex: 1 }}>
       <CameraView

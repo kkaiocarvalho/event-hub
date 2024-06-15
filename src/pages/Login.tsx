@@ -8,11 +8,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useAuth } from "../hook/useAuth";
 import { AuthenticateVariables } from "../api/requests/authenticate";
-import { Subtitle } from "../components/Subtitle";
-import { InteractiveLogo } from "../components/InteractiveLogo";
-import { SvgXml } from "react-native-svg";
-import MiniLogo from "../components/MiniLogo";
-import { LoopMiniLogo } from "../components/LoopMiniLogo";
 import { LoopMiniLogoV2 } from "../components/Mini Logo V2/MiniLogoV2";
 
 type FormValues = {
@@ -33,8 +28,6 @@ const schema = yup.object({
 
 export function Login() {
   const { login, loading } = useAuth();
-  //TODO: improvement in input to pass password boolean props
-  //TODO: add max and min for inputs
   const {
     formState: { errors },
     control,
@@ -54,14 +47,13 @@ export function Login() {
   };
 
   return (
-    <Background withScroll={true} withKeyboardDimiss>
+    <Background withScroll={true}>
       <VStack justifyContent="space-between" mt="$1/4">
         <HStack alignItems="center">
           <Box>
             <Title text="Login" />
           </Box>
           <LoopMiniLogoV2 />
-          
         </HStack>
         <Center p="$5">
           <VStack w="$full">

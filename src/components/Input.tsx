@@ -4,6 +4,10 @@ import {
   Input as GlueInput,
   VStack,
   Text,
+  InputSlot,
+  EyeIcon,
+  EyeOffIcon,
+  InputIcon,
 } from "@gluestack-ui/themed";
 import type { ComponentProps } from "react";
 import { Subtitle } from "./Subtitle";
@@ -51,11 +55,8 @@ export function Input<T>(inputProps: InputProps<T>) {
     ...glueInputProps
   } = inputProps;
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleState = () => setShowPassword((prev) => !prev);
 
   return (
     <VStack h="$24">
@@ -104,6 +105,15 @@ export function Input<T>(inputProps: InputProps<T>) {
             />
           )}
         />
+        {secureTextEntry ? (
+          <InputSlot px="$3" onPress={handleState}>
+            <InputIcon
+              as={showPassword ? EyeIcon : EyeOffIcon}
+              color="$primary200"
+              size="lg"
+            />
+          </InputSlot>
+        ) : null}
       </GlueInput>
       {errorMessage ? (
         <Subtitle
@@ -114,12 +124,6 @@ export function Input<T>(inputProps: InputProps<T>) {
           pl="$0"
           fontSize="$sm"
         />
-      ) : null}
-      {secureTextEntry ? (
-        <Text onPress={toggleShowPassword} color="$textColor" fontSize="$md" mt={10} textAlign="right"  >
-          {showPassword ? "Hide Password" : "Show Password"}
-        </Text>
-
       ) : null}
     </VStack>
   );
