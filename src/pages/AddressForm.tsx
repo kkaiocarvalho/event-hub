@@ -279,23 +279,28 @@ export function AddressForm({ form }: AddressFormProps) {
               isDisabled={isDisabled}
               errorMessage={errors.addressForm?.address?.message}
             />
-
-            <Input
-              placeholder="Ex.: MG"
-              label="Sigla do Estado"
-              inputName="addressForm.uf"
-              control={control}
-              isDisabled={isDisabled}
-              errorMessage={errors.addressForm?.uf?.message}
-            />
-            <Input
-              placeholder="Ex.: 0000"
-              label="Número"
-              inputName="addressForm.number"
-              isDisabled={isDisabled}
-              control={control}
-              errorMessage={errors.addressForm?.number?.message}
-            />
+            <HStack justifyContent="space-between" gap="$4" >
+            <Box w="$1/3">
+              <Input
+                placeholder="Ex.: MG"
+                label="Sigla do Estado"
+                inputName="addressForm.uf"
+                control={control}
+                isDisabled={isDisabled}
+                errorMessage={errors.addressForm?.uf?.message}
+              />
+            </Box>
+            <Box w="$1/2">
+              <Input
+                placeholder="Ex.: 0000"
+                label="Número"
+                inputName="addressForm.number"
+                isDisabled={isDisabled}
+                control={control}
+                errorMessage={errors.addressForm?.number?.message}
+              />
+            </Box>
+            </HStack>
             <Input
               placeholder="Centro de convenções"
               label="Complemento"
