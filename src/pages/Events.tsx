@@ -76,7 +76,7 @@ export function Events({ navigation }: EventStackProps) {
   }, [eventsData?.eventos]);
 
   const loadMoreEvents = () => {
-    if (!eventsData?.paginacao.temProximaPagina) return;
+    if (!eventsData?.paginacao?.temProximaPagina) return;
     setFilters((prev) => ({
       ...prev,
       paginacao: {

@@ -6,10 +6,12 @@ import {
   Input as GlueInput,
   HStack,
   VStack,
+  Box,
 } from "@gluestack-ui/themed";
 import { Button } from "./Button";
 import { formatDateToShow } from "../utils/helpers";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { FontAwesome } from "@expo/vector-icons";
 
 export type DateTimePickerMode = "date" | "time" | undefined;
 
@@ -46,51 +48,59 @@ export function CustomDateTimePicker<T>({
       name={datePickerName}
       control={control}
       render={({ field }) => (
-        <VStack h="$40">
+        <VStack minHeight="$40" flex={1} justifyContent="center">
           <Subtitle text={label} h="$5" pl="$0" mb="$2" fontSize="$sm" />
-          <GlueInput
+          <Box>
+            <GlueInput
+              h="$10"
+              w="$full"
+              variant="underlined"
+              isReadOnly
+              borderColor={errorMessage ? "$error700" : "$primary600"}
+            >
+              <InputField
+                color="$textColor"
+                placeholderTextColor="$placeholderColor"
+                placeholder={placeholder}
+                fontSize="$sm"
+                textAlign="center"
+                value={
+                  field.value
+                    ? formatDateToShow((field.value as Date).toISOString(), {
+                        withTime: true,
+                      })
+                    : undefined
+                }
+                blurOnSubmit={false}
+                autoCapitalize="none"
+              />
+            </GlueInput>
+          </Box>
+          <HStack
+            display="flex"
             h="$10"
-            w="$1/2"
-            variant="underlined"
-            isReadOnly
-            borderColor={errorMessage ? "$error700" : "$primary600"}
+            gap="$4"
+            mt="$4"
+            alignItems="center"
+            justifyContent="center"
           >
-            <InputField
-              color="$textColor"
-              placeholderTextColor="$placeholderColor"
-              placeholder={placeholder}
-              value={
-                field.value
-                  ? formatDateToShow((field.value as Date).toISOString(), {
-                      withTime: true,
-                    })
-                  : undefined
-              }
-              blurOnSubmit={false}
-              autoCapitalize="none"
-            />
-          </GlueInput>
-          <HStack gap="$4" mt="$4">
             <Button
-              flex={1}
               h="$12"
+              flex={1}
               onPress={changeModeDate}
-              text="Alterar data"
-            />
-            <Button
-              flex={1}
-              h="$12"
-              onPress={changeModeTime}
-              text="Alterar hora"
+              text="  Horário"
+              leftIcon={() => (
+                <FontAwesome name="clock-o" size={24} color="#F2F2F2" />
+              )}
             />
           </HStack>
           {errorMessage ? (
             <Subtitle
               color="$error400"
               text={errorMessage}
-              h="$5"
+              h="$10"
               mt="$1"
-              pl="$0"
+              pl="$1"
               fontSize="$sm"
             />
           ) : null}
@@ -101,7 +111,9 @@ export function CustomDateTimePicker<T>({
               mode={dateTimePickerState.mode}
               is24Hour={true}
               onChange={(_, value) => {
-                onClose();
+                dateTimePickerState.mode === "date"
+                  ? changeModeTime()
+                  : onClose();
                 return field.onChange(value);
               }}
             />

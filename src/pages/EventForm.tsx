@@ -89,6 +89,7 @@ export function EventForm({ form }: EventFormProps) {
               <Text>Virá em breve</Text>
             ) : (
               <>
+                <HStack gap="$4" w="$full" mb="$10">
                 <CustomDateTimePicker
                   dateTimePickerState={dateTimePickerStart}
                   label="Início do evento"
@@ -129,6 +130,7 @@ export function EventForm({ form }: EventFormProps) {
                     })
                   }
                 />
+                </HStack>
               </>
             )}
             <Input
@@ -248,7 +250,7 @@ export function EventForm({ form }: EventFormProps) {
               //       // inputName="eventForm.ticketPrice"
               //       control={control}
               //       formatToView={(value) =>
-              //         `R$ ${formatCurrency(parseCurrency(value.toString()))}`
+              //         R$ ${formatCurrency(parseCurrency(value.toString()))}
               //       }
               //       format={(value: string) => parseCurrency(value)}
               //       variant="outline"

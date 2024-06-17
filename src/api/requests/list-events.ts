@@ -10,7 +10,7 @@ const listEventsResponseSchema = z.object({
     qntItensRetornados: z.number(),
     paginaAtual: z.number(),
     proximaPagina: z.number().nullable(),
-    temProximaPagina: z.boolean(),
+    temProximaPagina: z.boolean().optional(),
   }),
 });
 
