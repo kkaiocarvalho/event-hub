@@ -59,9 +59,8 @@ const schema = yup.object({
 export function CancelEventButton({ eventId }: CancelEventButtonProps) {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const configToast = useToast();
-  const { canInteractWithEvent } = useUserAndEventRelationship(eventId);
-
   const insets = useSafeAreaInsets();
+  const { canInteractWithEvent } = useUserAndEventRelationship(eventId);
   const queryClient = useQueryClient();
 
   const cancelEventMutation = useMutation({

@@ -48,7 +48,10 @@ export async function request<T = unknown>({
   schema,
 }: RequestProps): Promise<T | RequestErrorSchema> {
   return await method(url, body)
-    .then((response) => schema.parse(response.data) as T)
+    .then((response) => {
+      const data = schema.parse(response.data);
+      return data as T;
+    })
     .catch((err: AxiosError) => {
       const response = err.response;
       if (!response) return err;
