@@ -36,7 +36,6 @@ const eventStack: RouteEventsType[] = [
     component: P.Events,
     options: () => ({
       title: "Eventos",
-      headerLeft: () => <ProfileScreen />,
     }),
   },
   {
@@ -97,16 +96,3 @@ export function EventsStack() {
     </Stack.Navigator>
   );
 }
-
-const ProfileScreen = () => {
-  const navigation = useNavigation();
-  //TODO: Fix warning
-  return (
-    <FontAwesome5
-      name="user-astronaut"
-      size={24}
-      color="white"
-      onPress={() => navigation.navigate("Home")}
-    />
-  );
-};
