@@ -111,10 +111,12 @@ export function EventParticipants({ route }: EventStackProps) {
   };
 
   const isLoading = participantsQuery.isLoading;
-  const isEventClosed = event
-    ? !(new Date(event.dtEncerramento) < new Date()) ||
-      !!event.motivoCancelamentoEvento
-    : true;
+
+  const isEventOpen = event
+    ? new Date(event.dtEncerramento) < new Date() &&
+      new Date(event.dtInicio) > new Date() &&
+      !event.motivoCancelamentoEvento
+    : false;
 
   return (
     <Background>
@@ -146,7 +148,7 @@ export function EventParticipants({ route }: EventStackProps) {
           }
         />
         <Center>
-          {!isEventClosed ? (
+          {isEventOpen ? (
             <Button
               text="Sortear"
               width="$full"

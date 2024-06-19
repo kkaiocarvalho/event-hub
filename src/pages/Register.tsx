@@ -21,22 +21,20 @@ import {
   type CreateUserVariables,
 } from "../api/requests/create-user";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useState } from "react";
 import { formatPhone, removeMasks } from "../utils/helpers";
 import {
   formatCPF,
   isValidCPF,
   isValidPhone,
 } from "@brazilian-utils/brazilian-utils";
-import { SvgXml } from "react-native-svg";
-import MiniLogo from "../components/MiniLogo";
 import type {
   RequestErrorSchema,
   InvalidDataSchemaResponse,
   RequestErrorWithMessage,
 } from "../config/request";
 import { RootStackProps } from "../routes/routes";
-import { LoopMiniLogo } from "../components/LoopMiniLogo";
+import { ArrowLeftIcon } from "@gluestack-ui/themed";
+import { LoopMiniLogoV2 } from "../components/MiniLogoV2";
 
 type FormValues = {
   name: string;
@@ -79,7 +77,6 @@ const schema = yup.object({
 });
 
 export function Register({ navigation }: RootStackProps) {
-  const [toastId, setToastId] = useState<string | null>(null);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
   const {
@@ -147,10 +144,18 @@ export function Register({ navigation }: RootStackProps) {
     <Background withScroll={true} withKeyboardDimiss>
       <VStack justifyContent="space-between">
         <HStack alignItems="center">
+          <Button
+            leftIcon={ArrowLeftIcon}
+            iconSize={24}
+            borderRadius="$full"
+            w="$6"
+            sx={{ backgroundColor: "transparent" }}
+            onPress={() => navigation.goBack()}
+          />
           <Box>
             <Title text="Cadastrar" />
           </Box>
-          <LoopMiniLogo />
+          <LoopMiniLogoV2 />
         </HStack>
         <Center p="$5">
           <VStack w="$full">

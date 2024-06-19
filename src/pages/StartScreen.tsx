@@ -49,12 +49,10 @@ export function StartScreen({ navigation }: RootStackProps) {
         <Center py="$10">
           <InteractiveLogo withBackgrund />
         </Center>
-
         <MotiView
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          //TODO: remove warning
-          // transition={{ type: "timing", duration: 2300 }}
+          transition={{ type: "timing", duration: 2300 }}
         >
           <Center>
             <VStack w="80%" gap="$7" mb="$1/4">
@@ -78,11 +76,11 @@ export function StartScreen({ navigation }: RootStackProps) {
         {hasIntegration ? (
           <Center mt="$5">
             <Text color="$textColor">Entrar com</Text>
-            <HStack gap="$8" my="$8" /*bg="$secondary200"*/ borderRadius="$lg">
+            <HStack gap="$8" my="$8" borderRadius="$lg">
               <Button
                 leftIcon={FacebookIcon}
                 variant="link"
-                action="positive"
+                action="primary"
                 p="$0"
                 h="$full"
                 onPress={() => showToast()}
@@ -90,7 +88,7 @@ export function StartScreen({ navigation }: RootStackProps) {
               <Button
                 leftIcon={GoogleIcon}
                 variant="link"
-                action="positive"
+                action="primary"
                 p="$0"
                 h="$full"
                 onPress={() => showToast()}
@@ -98,7 +96,7 @@ export function StartScreen({ navigation }: RootStackProps) {
               <Button
                 leftIcon={LinkedinIcon}
                 variant="link"
-                action="positive"
+                action="primary"
                 p="$0"
                 h="$full"
                 onPress={() => showToast()}

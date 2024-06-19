@@ -5,11 +5,8 @@ import {
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
 import { RootParamList } from "./routes";
-import { SvgXml } from "react-native-svg";
-import MiniLogo from "../components/MiniLogo";
 import { LoopMiniLogo } from "../components/LoopMiniLogo";
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogBackdrop,
@@ -19,13 +16,10 @@ import {
   AlertDialogFooter,
   AlertDialogBody,
   Text,
-} from '@gluestack-ui/themed';
-
+} from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
-
 import { useAuth } from "../hook/useAuth";
-
-import { MaterialCommunityIcons } from '@expo/vector-icons';  
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const ScreenName = ["Home", "CreateEvent"] as const;
 export type ScreenNames = (typeof ScreenName)[number];
@@ -44,7 +38,7 @@ const homeStack: RouteType[] = [
     component: P.Home,
     options: ({ navigation }) => ({
       headerTitle: () => <LoopMiniLogo />,
-      headerRight: () => <LogoutButton />
+      headerRight: () => <LogoutButton />,
     }),
   },
 ];
@@ -52,13 +46,12 @@ const homeStack: RouteType[] = [
 const Stack = createNativeStackNavigator<EventParamStack>();
 
 export function HomeStack() {
-
   return (
     <Stack.Navigator
       initialRouteName={homeStack[0].name}
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: '#111D40' },
+        headerStyle: { backgroundColor: "#111D40" },
         headerShadowVisible: false,
         headerTransparent: false,
         headerTitleAlign: "center",
@@ -85,13 +78,28 @@ const LogoutButton = () => {
 
   return (
     <>
-      <MaterialCommunityIcons name="logout" size={24} color="white" onPress={onOpen} />
+      <MaterialCommunityIcons
+        name="logout"
+        size={24}
+        color="white"
+        onPress={onOpen}
+      />
       <CustomAlertDialog isOpen={isOpen} onClose={onClose} logout={logout} />
     </>
   );
 };
 
-const CustomAlertDialog = ({ isOpen, onClose, logout }) => {
+type CustomAlertDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  logout: () => void;
+};
+
+const CustomAlertDialog = ({
+  isOpen,
+  onClose,
+  logout,
+}: CustomAlertDialogProps) => {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialogBackdrop />

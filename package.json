@@ -28,9 +28,10 @@
     "axios": "^1.6.8",
     "expo": "^51.0.8",
     "expo-camera": "~15.0.9",
+    "expo-clipboard": "~6.0.3",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.4",
-    "moti": "^0.28.1",
+    "moti": "^0.29.0",
     "react": "18.2.0",
     "react-hook-form": "^7.51.2",
     "react-native": "0.74.1",
@@ -46,8 +47,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3",
     "yup": "^1.4.0",
-    "zod": "^3.22.4",
-    "expo-clipboard": "~6.0.3"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

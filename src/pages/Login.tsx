@@ -1,4 +1,10 @@
-import { Center, VStack, HStack, Box } from "@gluestack-ui/themed";
+import {
+  Center,
+  VStack,
+  HStack,
+  Box,
+  ArrowLeftIcon,
+} from "@gluestack-ui/themed";
 import { Background } from "../components/Background";
 import { Title } from "../components/Title";
 import { Input } from "../components/Input";
@@ -9,6 +15,7 @@ import * as yup from "yup";
 import { useAuth } from "../hook/useAuth";
 import { AuthenticateVariables } from "../api/requests/authenticate";
 import { LoopMiniLogoV2 } from "../components/MiniLogoV2";
+import { RootStackProps } from "../routes/routes";
 
 type FormValues = {
   email: string;
@@ -26,7 +33,7 @@ const schema = yup.object({
     .required('"Senha"  é um campo obrigatório'),
 });
 
-export function Login() {
+export function Login({ navigation }: RootStackProps) {
   const { login, loading } = useAuth();
   const {
     formState: { errors },
@@ -50,6 +57,14 @@ export function Login() {
     <Background withScroll={true}>
       <VStack justifyContent="space-between" mt="$1/4">
         <HStack alignItems="center">
+          <Button
+            leftIcon={ArrowLeftIcon}
+            iconSize={24}
+            borderRadius="$full"
+            w="$6"
+            sx={{ backgroundColor: "transparent" }}
+            onPress={() => navigation.goBack()}
+          />
           <Box>
             <Title text="Login" />
           </Box>
