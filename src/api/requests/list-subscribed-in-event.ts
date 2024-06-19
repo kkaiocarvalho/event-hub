@@ -6,7 +6,7 @@ const SubscribedUser = z.object({
   nomeParticipante: z.string(),
   nuRegistroParticipacao: z.number(),
   statusParticipacao: z.string(),
-  formaEntrada: z.string(),
+  formaEntrada: z.string().nullable(),
   formaSaida: z.string(),
   dtEntradaEvento: z.string(),
   dtSaidaEvento: z.string(),
@@ -32,7 +32,7 @@ export async function listSubscribedInEvent(
 ) {
   return await request({
     method: apiEvents.get,
-    url: `/eventos/detalhe-participantes-evento/${variables.cdRegistroEvento}`,
+    url: `/eventos/detalhe-participantes-evento?cdRegistroEvento=${variables.cdRegistroEvento}`,
     schema: listSubscribedInEventResponseSchema,
   });
 }

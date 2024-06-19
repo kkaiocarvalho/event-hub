@@ -4,9 +4,8 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
-
-import { FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export const ScreenName = [
   "Events",
@@ -37,7 +36,7 @@ const eventStack: RouteEventsType[] = [
     component: P.Events,
     options: () => ({
       title: "Eventos",
-      headerLeft: () => <ProfileScreen />
+      headerLeft: () => <ProfileScreen />,
     }),
   },
   {
@@ -100,12 +99,14 @@ export function EventsStack() {
 }
 
 const ProfileScreen = () => {
-
   const navigation = useNavigation();
-
+  //TODO: Fix warning
   return (
-    <>
-      <FontAwesome5 name="user-astronaut" size={24} color="white" onPress={() => navigation.navigate('Home')}/>
-    </>
+    <FontAwesome5
+      name="user-astronaut"
+      size={24}
+      color="white"
+      onPress={() => navigation.navigate("Home")}
+    />
   );
-}
+};

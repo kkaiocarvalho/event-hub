@@ -1,7 +1,7 @@
 import { Background } from "../components/Background";
 import { EventStackProps } from "../routes/EventsStack";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { QK_EVENT_PARTICIPANTS } from "../utils/constants";
+import { QK_EVENT, QK_EVENT_PARTICIPANTS } from "../utils/constants";
 import {
   listSubscribedInEvent,
   ListSubscribedInEventResponse,
@@ -11,151 +11,30 @@ import { Box, Center, FlatList } from "@gluestack-ui/themed";
 import { Text } from "@gluestack-ui/themed";
 import { RefreshControl } from "@gluestack-ui/themed";
 import { UserCard } from "../components/UserCard";
-import { Event } from "../api/types";
-
-const mockParticipants: SubscribedUser[] = [
-  {
-    nuRegistroParticipacao: 1,
-    nomeParticipante: "Pedro",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 2,
-    nomeParticipante: "Maria",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 3,
-    nomeParticipante: "João",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 4,
-    nomeParticipante: "José",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 5,
-    nomeParticipante: "Maria",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 6,
-    nomeParticipante: "João",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 7,
-    nomeParticipante: "José",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 8,
-    nomeParticipante: "Maria",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 9,
-    nomeParticipante: "João",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 10,
-    nomeParticipante: "José",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 11,
-    nomeParticipante: "Maria",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-  {
-    nuRegistroParticipacao: 12,
-    nomeParticipante: "João",
-    statusParticipacao: "REGISTRADO",
-    formaEntrada: "MANUAL",
-    formaSaida: "MANUAL",
-    dtEntradaEvento: "2025-12-24 20:40:00",
-    dtSaidaEvento: "2026-12-24 20:40:00",
-    sorteado: "N",
-  },
-];
+import { GetEventResponse } from "../api/requests/get-event";
+import { Button } from "../components/Button";
 
 export function EventParticipants({ route }: EventStackProps) {
   const queryClient = useQueryClient();
-  const event = (route.params as { event: Event }).event as Event;
+  const eventId = (route.params as { eventId: number }).eventId as number;
+  const event = queryClient.getQueryData<GetEventResponse>([QK_EVENT, eventId]);
 
   const participantsQuery = useQuery({
-    queryKey: [QK_EVENT_PARTICIPANTS],
+    queryKey: [QK_EVENT_PARTICIPANTS, event],
     queryFn: () =>
-      listSubscribedInEvent({ cdRegistroEvento: event.cdRegistroEvento }),
+      listSubscribedInEvent({ cdRegistroEvento: event!.cdRegistroEvento }),
+    enabled: !!event,
   });
 
   const onRefresh = () => {
-    queryClient.refetchQueries({ queryKey: [QK_EVENT_PARTICIPANTS] });
+    queryClient.refetchQueries({ queryKey: [QK_EVENT_PARTICIPANTS, event] });
   };
 
   const participants =
-    mockParticipants ??
-    (participantsQuery.data as ListSubscribedInEventResponse).participantes ??
+    (participantsQuery.data as ListSubscribedInEventResponse)?.participantes ??
     [];
 
-  const isLoading = participantsQuery.isLoading || participantsQuery.isFetching;
+  const isLoading = participantsQuery.isLoading;
 
   return (
     <Background>
@@ -186,6 +65,9 @@ export function EventParticipants({ route }: EventStackProps) {
             />
           }
         />
+        <Center>
+          <Button text="Sortear" width="$full" />
+        </Center>
       </Box>
     </Background>
   );

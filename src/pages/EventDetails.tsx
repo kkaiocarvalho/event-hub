@@ -106,7 +106,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
 
   const RenderInfo = ({ title, value, ...props }: EventInfo) => (
     <VStack gap={4} key={title}>
-      <Text color="#111D40" fontWeight="$bold" fontSize={15} >
+      <Text color="#111D40" fontWeight="$bold" fontSize={15}>
         {title}
       </Text>
       <Box>
@@ -132,15 +132,15 @@ export function EventDetails({ route, navigation }: EventStackProps) {
           <Spinner size={45} />
         </Center>
       ) : (
-        <VStack flex={1} pb="$12" gap={8} >
-          <VStack
-            flex={1}
-            borderRadius="$2xl"
-            p="$6"
-            bgColor="$textColor"
-          >
-            <ScrollView borderTopWidth="$2" borderBottomWidth="$2" borderStyle="dashed" paddingTop={20}
-            borderColor="$background">
+        <VStack flex={1} pb="$12" gap={8}>
+          <VStack flex={1} borderRadius="$2xl" p="$6" bgColor="$textColor">
+            <ScrollView
+              borderTopWidth="$2"
+              borderBottomWidth="$2"
+              borderStyle="dashed"
+              paddingTop={20}
+              borderColor="$background"
+            >
               {eventInfo.map((info) => (
                 <RenderInfo key={info.title} {...info} />
               ))}
@@ -151,7 +151,6 @@ export function EventDetails({ route, navigation }: EventStackProps) {
               <HStack gap={4} justifyContent="space-between">
                 <Button
                   h="$16"
-                  //text="Participantes"
                   action="positive"
                   iconSize={24}
                   onPress={() =>
@@ -162,7 +161,6 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                       name="account-group"
                       size={24}
                       color="#F2F2F2"
-                      //style={{ marginLeft: 8,}}
                     />
                   )}
                 />

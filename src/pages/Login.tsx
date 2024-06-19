@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useAuth } from "../hook/useAuth";
 import { AuthenticateVariables } from "../api/requests/authenticate";
-import { LoopMiniLogoV2 } from "../components/Mini Logo V2/MiniLogoV2";
+import { LoopMiniLogoV2 } from "../components/MiniLogoV2";
 
 type FormValues = {
   email: string;
