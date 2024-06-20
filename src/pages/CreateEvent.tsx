@@ -83,8 +83,8 @@ const schema = yup.object({
     //   .string()
     //   .oneOf(["S", "N"] as const)
     //   .defined(),
-    maxParticipants: yup.number().positive().integer().optional().nullable(),
     // ticketPrice: yup.number().default(0),
+    maxParticipants: yup.number().positive().integer().optional().nullable(),
   }),
   addressForm: yup.object({
     addressCode: yup
@@ -99,7 +99,7 @@ const schema = yup.object({
       .string()
       .required("Cidade é obrigatória")
       .min(3, "Deve ter no mínimo 3 caracteres")
-      .max(50, "Cidade deve ter no máximo 50 caracteres"),
+      .max(255, "Cidade deve ter no máximo 255 caracteres"),
     number: yup.string().required("Número é obrigatório"),
     address: yup
       .string()

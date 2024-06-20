@@ -111,10 +111,13 @@ export function CustomDateTimePicker<T>({
               mode={dateTimePickerState.mode}
               is24Hour={true}
               onChange={(_, value) => {
-                dateTimePickerState.mode === "date"
-                  ? changeModeTime()
-                  : onClose();
-                return field.onChange(value);
+                const changeDate = () => {
+                  field.onChange(value);
+                  changeModeTime();
+                };
+
+                dateTimePickerState.mode === "date" ? changeDate() : onClose();
+                field.onChange(value);
               }}
             />
           ) : null}
