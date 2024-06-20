@@ -1,7 +1,5 @@
 import axios from "axios";
 import type { InternalAxiosRequestConfig } from "axios";
-import { getAuthToken } from "../utils/helpers";
-import { useAuth } from "../hook/useAuth";
 import { getStorageItem } from "../utils/storage";
 import { AUTH_TOKEN } from "../utils/constants";
 

@@ -5,7 +5,7 @@ import {
 import type { RootParamList } from "./routes";
 import * as P from "./allPages";
 import { NavigationProp } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { EventsStack } from "./EventsStack";
 import { HomeStack } from "./HomeStack";
@@ -23,6 +23,17 @@ type RouteType = {
 
 const tabs: RouteType[] = [
   {
+    name: "QRCode",
+    component: P.QRCode,
+    options: () => ({
+      title: "QR-Code",
+      tabBarLabelStyle: { display: "none" },
+      tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="qrcode-scan" size={size} color={color} />
+      ),
+    }),
+  },
+  {
     name: "EventStack",
     component: EventsStack,
     options: () => ({
@@ -33,6 +44,9 @@ const tabs: RouteType[] = [
           name="ticket-confirmation-outline"
           size={size}
           color={color}
+          style={{
+            transform: "rotateZ(-45deg)",
+          }}
         />
       ),
     }),
@@ -44,18 +58,7 @@ const tabs: RouteType[] = [
       title: "Ínicio",
       tabBarLabelStyle: { display: "none" },
       tabBarIcon: ({ color, size }) => (
-        <Feather name="home" size={size} color={color} />
-      ),
-    }),
-  },
-  {
-    name: "QRCode",
-    component: P.QRCode,
-    options: () => ({
-      title: "QR-Code",
-      tabBarLabelStyle: { display: "none" },
-      tabBarIcon: ({ color, size }) => (
-        <MaterialCommunityIcons name="qrcode-scan" size={size} color={color} />
+        <FontAwesome5 name="user-astronaut" size={size} color={color} />
       ),
     }),
   },
@@ -66,7 +69,7 @@ const Tab = createBottomTabNavigator<RootParamList<ScreenNames>>();
 export function BottomTabRoutes() {
   return (
     <Tab.Navigator
-      initialRouteName="HomeStack"
+      initialRouteName="EventStack"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#13F2F2",

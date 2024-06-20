@@ -20,7 +20,7 @@ import { MotiView } from "moti";
 import { Pressable, useWindowDimensions } from "react-native";
 import { useTouchAnimation } from "../hook/useTouchAnimation";
 
-export function Home() {
+export function Profile() {
   const { height } = useWindowDimensions();
   const { touchAnimation, animationState } = useTouchAnimation();
   const getMeQuery = useQuery({ queryKey: [QK_ME], queryFn: getMe });
@@ -58,12 +58,11 @@ export function Home() {
                   rotateY: "0deg",
                   rotateX: "0deg",
                 }}
-                //TODO: FIX TRANSITION
-                // transition={{
-                //   type: "spring",
-                //   damping: 20,
-                //   rotateZ: { damping: 15, mass: 3 },
-                // }}
+                transition={{
+                  type: "spring",
+                  damping: 20,
+                  rotateZ: { damping: 15, mass: 3 },
+                }}
               >
                 <Box
                   backgroundColor="$backgroundLogo"
@@ -96,7 +95,6 @@ export function Home() {
                         </Text>
                       </HStack>
                     </Box>
-
                     <Box alignItems="center" justifyContent="center">
                       <HStack p={10}>
                         <Entypo name="email" size={20} color="white" />
@@ -105,7 +103,6 @@ export function Home() {
                         </Text>
                       </HStack>
                     </Box>
-
                     <Box alignItems="center" justifyContent="center">
                       <HStack p={10}>
                         <Entypo name="phone" size={20} color="white" />

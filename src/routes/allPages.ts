@@ -4,7 +4,7 @@ export * from "../pages/Register";
 export * from "../pages/QRCode";
 export * from "../pages/Events";
 export * from "../pages/MyEvents";
-export * from "../pages/Home";
+export * from "../pages/Profile";
 export * from "../pages/CreateEvent";
 export * from "../pages/EventDetails";
 export * from "../pages/EventParticipants";

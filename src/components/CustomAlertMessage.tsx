@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AlertDialog,
   AlertDialogBackdrop,
@@ -9,9 +9,21 @@ import {
   AlertDialogBody,
   Button,
   Text,
-} from '@gluestack-ui/themed';
+} from "@gluestack-ui/themed";
 
-export const CustomAlertDialog = ({ isOpen, onClose, title, message }) => {
+type CustomAlertMessageProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+};
+
+export const CustomAlertMessage = ({
+  isOpen,
+  onClose,
+  title,
+  message,
+}: CustomAlertMessageProps) => {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialogBackdrop />
@@ -24,8 +36,8 @@ export const CustomAlertDialog = ({ isOpen, onClose, title, message }) => {
           <Text fontSize={20}>{message}</Text>
         </AlertDialogBody>
         <AlertDialogFooter>
-          <Button onPress={onClose} bgColor='$primary400'>
-            <Text color='$textColor'>OK</Text>
+          <Button onPress={onClose} bgColor="$primary400">
+            <Text color="$textColor">OK</Text>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -8,23 +8,64 @@ import { RootParamList } from "./routes";
 import { LoopMiniLogo } from "../components/LoopMiniLogo";
 import React, { useState } from "react";
 import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogCloseButton,
   AlertDialogFooter,
   AlertDialogBody,
   Text,
+  ButtonGroup,
 } from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
 import { useAuth } from "../hook/useAuth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { CustomAlertDialog } from "../components/CustomAlertDialog";
 
-export const ScreenName = ["Home", "CreateEvent"] as const;
+export const ScreenName = ["Profile"] as const;
 export type ScreenNames = (typeof ScreenName)[number];
 export type EventParamStack = RootParamList<ScreenNames>;
 export type EventStackProps = NativeStackScreenProps<EventParamStack>;
+
+const LogoutButton = () => {
+  const { logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onClose = () => setIsOpen(false);
+  const onOpen = () => setIsOpen(true);
+
+  return (
+    <>
+      <MaterialCommunityIcons
+        name="logout"
+        size={24}
+        color="red"
+        onPress={onOpen}
+      />
+      <CustomAlertDialog isOpen={isOpen} onClose={onClose} title="Logout">
+        <AlertDialogBody>
+          <Text fontSize={15}>Deseja realmente encerrar a sessão?</Text>
+        </AlertDialogBody>
+        <AlertDialogFooter>
+          <ButtonGroup flexDirection="column" w="$full">
+            <Button
+              w="$full"
+              text="Encerrar sessão"
+              action="negative"
+              variant="outline"
+              onPress={() => {
+                logout();
+                onClose();
+              }}
+            />
+            <Button
+              w="$full"
+              text="Voltar"
+              action="primary"
+              onPress={() => onClose()}
+            />
+          </ButtonGroup>
+        </AlertDialogFooter>
+      </CustomAlertDialog>
+    </>
+  );
+};
 
 type RouteType = {
   name: ScreenNames;
@@ -34,9 +75,9 @@ type RouteType = {
 
 const homeStack: RouteType[] = [
   {
-    name: "Home",
-    component: P.Home,
-    options: ({ navigation }) => ({
+    name: "Profile",
+    component: P.Profile,
+    options: () => ({
       headerTitle: () => <LoopMiniLogo />,
       headerRight: () => <LogoutButton />,
     }),
@@ -68,61 +109,3 @@ export function HomeStack() {
     </Stack.Navigator>
   );
 }
-
-const LogoutButton = () => {
-  const { logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onClose = () => setIsOpen(false);
-  const onOpen = () => setIsOpen(true);
-
-  return (
-    <>
-      <MaterialCommunityIcons
-        name="logout"
-        size={24}
-        color="white"
-        onPress={onOpen}
-      />
-      <CustomAlertDialog isOpen={isOpen} onClose={onClose} logout={logout} />
-    </>
-  );
-};
-
-type CustomAlertDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  logout: () => void;
-};
-
-const CustomAlertDialog = ({
-  isOpen,
-  onClose,
-  logout,
-}: CustomAlertDialogProps) => {
-  return (
-    <AlertDialog isOpen={isOpen} onClose={onClose}>
-      <AlertDialogBackdrop />
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <Text fontSize={30}>Logout</Text>
-          <AlertDialogCloseButton onPress={onClose} />
-        </AlertDialogHeader>
-        <AlertDialogBody>
-          <Text fontSize={20}>Deseja realmente encerrar a sessão?</Text>
-        </AlertDialogBody>
-        <AlertDialogFooter>
-          <Button
-            w="$full"
-            text="Encerrar sessão"
-            action="negative"
-            onPress={() => {
-              logout();
-              onClose();
-            }}
-          />
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};

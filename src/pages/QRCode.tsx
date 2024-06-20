@@ -5,16 +5,24 @@ import {
   PermissionStatus,
   BarcodeScanningResult,
 } from "expo-camera";
-import { Center, Text } from "@gluestack-ui/themed";
+import {
+  Box,
+  Center,
+  ModalBody,
+  ModalFooter,
+  HStack,
+  Text,
+} from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScannerOverlay } from "../components/ScannerOverlay";
 import { qrCodeCheckIn } from "../api/requests/qr-code-check-in";
 import type { QrCodeCheckInVariables } from "../api/requests/qr-code-check-in";
-import { CustomAlertDialog } from "../components/AlertCheckIn";
+import { CustomAlertMessage } from "../components/CustomAlertMessage";
 import { Background } from "../components/Background";
 import { useMutation } from "@tanstack/react-query";
+import { Modal } from "../components/Modal";
 import type {
   InvalidDataSchemaResponse,
   RequestErrorWithMessage,
@@ -25,7 +33,6 @@ export function QRCode() {
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-
   const [alertInfo, setAlertInfo] = useState({
     isOpen: false,
     title: "",
@@ -102,8 +109,84 @@ export function QRCode() {
     );
   }
 
+  //TODO: MODAL STATES: "ERROR", "NOT_REGISTERED" | "SUCCESS"
   return !showCamera ? (
     <View style={{ flex: 1 }}>
+      {/* <Modal
+        isOpen={true}
+        title="Não inscrito!"
+        withCloseButton
+        onClose={() => {
+          // setShowModal(false);
+        }}
+      > */}
+
+      {/* <ModalBody>
+          <Box>
+            <Box flex={1}>
+              <Text>Checkin realizado.</Text>
+              <Text>O evento se encerra ás 14:35 do dia 15/07/2024</Text>
+            </Box>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <HStack flex={1} justifyContent="space-between" alignItems="center">
+            <Button
+              action="primary"
+              p="$4"
+              h="$16"
+              flex={1}
+              text="Fechar"
+              iconSize={18}
+            />
+          </HStack>
+        </ModalFooter> */}
+
+      {/* <ModalBody>
+          <Box>
+            <Box flex={1}>
+              <Text>Houve algum erro ao realizar o CheckIn.</Text>
+            </Box>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <HStack flex={1} justifyContent="space-between" alignItems="center">
+            <Button
+              action="primary"
+              p="$4"
+              h="$16"
+              flex={1}
+              text="Tentar novamente"
+              iconSize={18}
+            />
+          </HStack>
+        </ModalFooter> */}
+
+      {/* <ModalBody>
+          <Box>
+            <Box flex={1} gap="$2">
+              <Text>Evento: Tela Quente</Text>
+              <Text>
+                Descrição: Filmes durante a tarde para melhorar seu dia!
+              </Text>
+              <Text>Encerramento: 15:40 às 30/09/24</Text>
+            </Box>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <HStack flex={1} justifyContent="space-between" alignItems="center">
+            <Button
+              action="positive"
+              p="$4"
+              h="$16"
+              flex={1}
+              text="Se inscrever"
+              iconSize={18}
+            />
+          </HStack>
+        </ModalFooter> */}
+      {/* </Modal> */}
+
       <CameraView
         style={{ flex: 1 }}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -136,7 +219,7 @@ export function QRCode() {
           />
         </Center>
       )}
-      <CustomAlertDialog
+      <CustomAlertMessage
         isOpen={alertInfo.isOpen}
         onClose={() => setAlertInfo({ ...alertInfo, isOpen: false })}
         title={alertInfo.title}

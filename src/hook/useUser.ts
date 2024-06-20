@@ -4,7 +4,7 @@ import { QK_ME, UserPermissions } from "../utils/constants";
 
 export function useUser() {
   const queryClient = useQueryClient();
-  // queryClient.refetchQueries({ queryKey: [QK_ME] });
+  queryClient.refetchQueries({ queryKey: [QK_ME] });
   const user = queryClient.getQueryData<GetMeResponse>([QK_ME]);
 
   const hasOrganizerPermission =
