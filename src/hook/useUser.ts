@@ -1,15 +1,15 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { GetMeResponse } from "../api/requests/get-me";
+import { useQuery } from "@tanstack/react-query";
+import { getMe, GetMeResponse } from "../api/requests/get-me";
 import { QK_ME, UserPermissions } from "../utils/constants";
 
 export function useUser() {
-  const queryClient = useQueryClient();
-  queryClient.refetchQueries({ queryKey: [QK_ME] });
-  const user = queryClient.getQueryData<GetMeResponse>([QK_ME]);
+  const getMeQuery = useQuery({ queryKey: [QK_ME], queryFn: getMe });
+  const userData: GetMeResponse | undefined =
+    (getMeQuery.data as GetMeResponse) || undefined;
 
   const hasOrganizerPermission =
-    user?.permissao === UserPermissions["Organizer"] ||
-    user?.permissao === UserPermissions["Admin"];
+    userData?.permissao === UserPermissions["Organizer"] ||
+    userData?.permissao === UserPermissions["Admin"];
 
-  return { user, hasOrganizerPermission };
+  return { user: userData, hasOrganizerPermission };
 }

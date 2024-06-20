@@ -23,7 +23,6 @@ const defaultFilter: ListEventsVariables = {
 };
 
 export function MyEvents({ navigation }: EventStackProps) {
-  const [refreshLoading, setRefreshLoading] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
 
@@ -37,7 +36,6 @@ export function MyEvents({ navigation }: EventStackProps) {
   const eventsData = eventsQuery.data as ListEventsResponse;
 
   useMemo(() => {
-    setRefreshLoading(false);
     const newEvents = eventsData?.eventos ?? [];
     const filteredEvents = newEvents.filter(
       (newEvent) =>
@@ -60,7 +58,6 @@ export function MyEvents({ navigation }: EventStackProps) {
   };
 
   const onRefresh = useCallback(() => {
-    setRefreshLoading(true);
     setFilters(defaultFilter);
     setEvents([]);
     //TODO: on reload not interact with react memo, fix this;
@@ -93,7 +90,7 @@ export function MyEvents({ navigation }: EventStackProps) {
           <RefreshControl
             colors={["#13F2F2"]}
             progressBackgroundColor="#111D40"
-            refreshing={refreshLoading}
+            refreshing={isLoading}
             onRefresh={onRefresh}
           />
         }

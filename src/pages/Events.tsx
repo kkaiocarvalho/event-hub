@@ -16,8 +16,13 @@ import {
   ButtonIcon,
   PaperclipIcon,
   Spinner,
+  Pressable,
 } from "@gluestack-ui/themed";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   FilterEventField,
   QK_EVENT_LIST,
@@ -50,32 +55,38 @@ const defaultFilter: ListEventsVariables = {
 
 export function Events({ navigation }: EventStackProps) {
   const { hasOrganizerPermission } = useUser();
-  const [refreshLoading, setRefreshLoading] = useState(false);
+  const queryClient = useQueryClient();
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
+  const [isFilterAll, setIsFilterAll] = useState(true);
 
   const eventsQuery = useQuery({
     queryKey: [QK_EVENT_LIST, filters],
     queryFn: () => listEvents(filters),
     placeholderData: keepPreviousData,
   });
-
+  console.log({ eventsQuery });
   const isLoading = eventsQuery.isLoading || eventsQuery.isFetching;
   const eventsData = eventsQuery.data as ListEventsResponse;
 
   useMemo(() => {
-    setRefreshLoading(false);
+    console.log("USE MEMO");
     const newEvents = eventsData?.eventos ?? [];
+    console.log({ newEvents });
     const filteredEvents = newEvents.filter(
       (newEvent) =>
         !events?.some(
           (event) => event.cdRegistroEvento === newEvent.cdRegistroEvento
         )
     );
+    console.log({ newEvents });
     setEvents((prev) => [...prev, ...filteredEvents]);
-  }, [eventsData?.eventos]);
+  }, [eventsData?.eventos, filters]);
+
+  console.log({ events });
 
   const loadMoreEvents = () => {
+    console.log("LOAD MORE");
     if (!eventsData?.paginacao?.temProximaPagina) return;
     setFilters((prev) => ({
       ...prev,
@@ -87,7 +98,8 @@ export function Events({ navigation }: EventStackProps) {
   };
 
   const onRefresh = useCallback(() => {
-    setRefreshLoading(true);
+    console.log("REFRESH");
+    queryClient.cancelQueries({ queryKey: [QK_EVENT_LIST, filters] });
     setFilters(defaultFilter);
     setEvents([]);
     //TODO: on reload not interact with react memo, fix this;
@@ -99,6 +111,54 @@ export function Events({ navigation }: EventStackProps) {
 
   return (
     <VStack bgColor="$background" flex={1} gap={10} px="$4" pt="$8">
+      {/* FILTER */}
+      <Box w="$full" px="$8" h="$16" mb="$5">
+        <Box flex={1} borderRadius="$2xl" bgColor="#FFF">
+          {/* <Box bgColor="$primary400" zIndex={10} position="absolute" /> */}
+          <HStack
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap="$3"
+            px="$2"
+            flex={1}
+          >
+            <Pressable
+              flex={1}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bgColor={isFilterAll ? "$primary400" : "transparent"}
+              borderRadius="$xl"
+              onPress={() => setIsFilterAll(true)}
+            >
+              <Text
+                py="$3"
+                fontWeight="$bold"
+                color={isFilterAll ? "$textColor" : "$primary400"}
+              >
+                Todos
+              </Text>
+            </Pressable>
+            <Pressable
+              flex={1}
+              display="flex"
+              alignItems="center"
+              bgColor={!isFilterAll ? "$primary400" : "transparent"}
+              borderRadius="$xl"
+              onPress={() => setIsFilterAll(false)}
+            >
+              <Text
+                py="$3"
+                fontWeight="$bold"
+                color={!isFilterAll ? "$textColor" : "$primary400"}
+              >
+                Inscritos
+              </Text>
+            </Pressable>
+          </HStack>
+        </Box>
+      </Box>
       <FlatList
         data={events}
         keyExtractor={(item) => (item as Event).cdRegistroEvento.toString()}
@@ -108,7 +168,7 @@ export function Events({ navigation }: EventStackProps) {
         )}
         ItemSeparatorComponent={() => <Box h="$5" />}
         ListEmptyComponent={
-          <Center flex={1} pt="$full">
+          <Center flex={1} pt="$2/3">
             <Text maxWidth="60%" textAlign="center" color="$textColor">
               {isLoading
                 ? "Carregando eventos."
@@ -120,7 +180,7 @@ export function Events({ navigation }: EventStackProps) {
           <RefreshControl
             colors={["#13F2F2"]}
             progressBackgroundColor="#111D40"
-            refreshing={refreshLoading}
+            refreshing={isLoading}
             onRefresh={onRefresh}
           />
         }
@@ -150,10 +210,12 @@ export function Events({ navigation }: EventStackProps) {
             bgColor="$background"
             borderColor="$primary400"
             borderWidth="$2"
+            borderRadius="$xl"
             mb="$1"
+            shadowColor="$primary400"
             trigger={({ ...triggerProps }) => {
               return (
-                <GlueButton {...triggerProps} gap="$2" borderRadius="$3xl">
+                <GlueButton {...triggerProps} gap="$2" borderRadius="$xl">
                   <ButtonText>Options</ButtonText>
                   <ButtonIcon as={MenuIcon} />
                 </GlueButton>
