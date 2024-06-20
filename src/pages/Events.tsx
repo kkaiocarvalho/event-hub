@@ -18,15 +18,12 @@ import {
   Spinner,
   Pressable,
 } from "@gluestack-ui/themed";
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   FilterEventField,
   QK_EVENT_LIST,
   FilterEventOperation,
+  ParticipationStatus,
 } from "../utils/constants";
 import { useCallback, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
@@ -53,40 +50,60 @@ const defaultFilter: ListEventsVariables = {
   },
 };
 
+const filterWithRegistered = {
+  campo: FilterEventField.USER_STATUS,
+  operacao: FilterEventOperation.EQUAL,
+  valor: ParticipationStatus.REGISTERED,
+};
+
 export function Events({ navigation }: EventStackProps) {
   const { hasOrganizerPermission } = useUser();
   const queryClient = useQueryClient();
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
-  const [isFilterAll, setIsFilterAll] = useState(true);
+  const [isRefreshLoading, setIsRefreshLoading] = useState(false);
+
+  const hasFilterRegistered = !!filters.filtros.filter(
+    (e) => e.campo === FilterEventField.USER_STATUS
+  ).length;
+
+  const handleSetFilter = (props: { removeFilter: boolean } | void) => {
+    if (props?.removeFilter) {
+      setFilters((prev) => ({
+        ...prev,
+        filtros: prev.filtros.filter(
+          (e) => e.campo !== FilterEventField.USER_STATUS
+        ),
+      }));
+      return;
+    }
+    setFilters((prev) => ({
+      ...prev,
+      filtros: [...prev.filtros, filterWithRegistered],
+    }));
+    return;
+  };
 
   const eventsQuery = useQuery({
     queryKey: [QK_EVENT_LIST, filters],
     queryFn: () => listEvents(filters),
-    placeholderData: keepPreviousData,
   });
-  console.log({ eventsQuery });
   const isLoading = eventsQuery.isLoading || eventsQuery.isFetching;
-  const eventsData = eventsQuery.data as ListEventsResponse;
+  const eventsData = eventsQuery?.data as ListEventsResponse;
 
   useMemo(() => {
-    console.log("USE MEMO");
+    setIsRefreshLoading(false);
     const newEvents = eventsData?.eventos ?? [];
-    console.log({ newEvents });
     const filteredEvents = newEvents.filter(
       (newEvent) =>
         !events?.some(
           (event) => event.cdRegistroEvento === newEvent.cdRegistroEvento
         )
     );
-    console.log({ newEvents });
     setEvents((prev) => [...prev, ...filteredEvents]);
-  }, [eventsData?.eventos, filters]);
-
-  console.log({ events });
+  }, [eventsData, filters]);
 
   const loadMoreEvents = () => {
-    console.log("LOAD MORE");
     if (!eventsData?.paginacao?.temProximaPagina) return;
     setFilters((prev) => ({
       ...prev,
@@ -98,11 +115,16 @@ export function Events({ navigation }: EventStackProps) {
   };
 
   const onRefresh = useCallback(() => {
-    console.log("REFRESH");
-    queryClient.cancelQueries({ queryKey: [QK_EVENT_LIST, filters] });
-    setFilters(defaultFilter);
+    setIsRefreshLoading(true);
+    queryClient.clear();
+    const defaultFilterWithRegistered: ListEventsVariables = {
+      ...defaultFilter,
+      filtros: [...defaultFilter.filtros, filterWithRegistered],
+    };
+    setFilters(
+      hasFilterRegistered ? defaultFilterWithRegistered : defaultFilter
+    );
     setEvents([]);
-    //TODO: on reload not interact with react memo, fix this;
   }, []);
 
   const openEvent = (event: Event) => {
@@ -128,14 +150,16 @@ export function Events({ navigation }: EventStackProps) {
               display="flex"
               alignItems="center"
               justifyContent="center"
-              bgColor={isFilterAll ? "$primary400" : "transparent"}
+              bgColor={!hasFilterRegistered ? "$primary400" : "transparent"}
               borderRadius="$xl"
-              onPress={() => setIsFilterAll(true)}
+              onPress={() =>
+                hasFilterRegistered && handleSetFilter({ removeFilter: true })
+              }
             >
               <Text
                 py="$3"
                 fontWeight="$bold"
-                color={isFilterAll ? "$textColor" : "$primary400"}
+                color={!hasFilterRegistered ? "$textColor" : "$primary400"}
               >
                 Todos
               </Text>
@@ -144,14 +168,14 @@ export function Events({ navigation }: EventStackProps) {
               flex={1}
               display="flex"
               alignItems="center"
-              bgColor={!isFilterAll ? "$primary400" : "transparent"}
+              bgColor={hasFilterRegistered ? "$primary400" : "transparent"}
               borderRadius="$xl"
-              onPress={() => setIsFilterAll(false)}
+              onPress={() => !hasFilterRegistered && handleSetFilter()}
             >
               <Text
                 py="$3"
                 fontWeight="$bold"
-                color={!isFilterAll ? "$textColor" : "$primary400"}
+                color={hasFilterRegistered ? "$textColor" : "$primary400"}
               >
                 Inscritos
               </Text>
@@ -170,7 +194,7 @@ export function Events({ navigation }: EventStackProps) {
         ListEmptyComponent={
           <Center flex={1} pt="$2/3">
             <Text maxWidth="60%" textAlign="center" color="$textColor">
-              {isLoading
+              {!isRefreshLoading && isLoading
                 ? "Carregando eventos."
                 : "Nenhum evento cadastrado até o momento :/"}
             </Text>
@@ -180,11 +204,13 @@ export function Events({ navigation }: EventStackProps) {
           <RefreshControl
             colors={["#13F2F2"]}
             progressBackgroundColor="#111D40"
-            refreshing={isLoading}
+            refreshing={isRefreshLoading}
             onRefresh={onRefresh}
           />
         }
-        onEndReached={loadMoreEvents}
+        onEndReached={
+          eventsData?.paginacao?.temProximaPagina ? loadMoreEvents : undefined
+        }
         onEndReachedThreshold={0.1}
         ListFooterComponent={
           <>
