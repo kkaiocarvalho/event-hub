@@ -147,7 +147,7 @@ export function EventParticipants({ route }: EventStackProps) {
             />
           }
         />
-        <Center>
+        <Center pt="$5">
           {isEventOpen ? (
             <Button
               text="Sortear"

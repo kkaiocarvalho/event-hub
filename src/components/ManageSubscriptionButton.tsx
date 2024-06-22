@@ -4,6 +4,7 @@ import {
   ToastTitle,
   ToastDescription,
   Toast,
+  CloseCircleIcon,
 } from "@gluestack-ui/themed";
 import { Button } from "./Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -102,10 +103,16 @@ export function ManageSubscriptionButton({
     <>
       <Button
         flex={1}
-        text={interactionButtonTitle}
+        text={
+          canInteractWithEvent
+            ? interactionButtonTitle
+            : "Cancelado ou Finalizado"
+        }
         iconSize={24}
-        action={interactionButtonAction}
-        rightIcon={interactionButtonIcon}
+        action={canInteractWithEvent ? interactionButtonAction : "secondary"}
+        rightIcon={
+          canInteractWithEvent ? interactionButtonIcon : CloseCircleIcon
+        }
         isDisabled={!canInteractWithEvent}
         isLoading={isLoading}
         onPress={() => handleEventInteract()}

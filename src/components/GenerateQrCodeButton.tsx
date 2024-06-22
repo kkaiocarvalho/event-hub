@@ -10,6 +10,7 @@ import {
   VStack,
   ToastTitle,
   ToastDescription,
+  ButtonGroup,
 } from "@gluestack-ui/themed";
 import {
   QrCodeGenerateResponse,
@@ -32,6 +33,7 @@ import { Image } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
+import { Text } from "@gluestack-ui/themed";
 
 type GenerateQrCodeButtonProps = {
   eventId: number;
@@ -51,7 +53,6 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
     mutationFn: qrCodeGenerate,
     onSuccess(response) {
       const data = response as QrCodeGenerateResponse;
-      setQrCode64(data.qrcode);
       configToast.closeAll();
       configToast.show({
         placement: "top",
@@ -66,6 +67,7 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
           );
         },
       });
+      setQrCode64(data.qrcode);
       queryClient.refetchQueries({ queryKey: [QK_EVENT, eventId] });
     },
     onError(error: RequestErrorSchema) {
@@ -92,8 +94,7 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
     },
   });
 
-  const handleOpenModal = () => {
-    setShowModal(true);
+  const generateQrCode = () => {
     if (!event) return;
     const body: QrCodeGenerateVariables = {
       cdRegistroEvento: event.cdRegistroEvento,
@@ -101,18 +102,29 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
     qrCodeGenerateMutation.mutate(body);
   };
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+    generateQrCode();
+  };
+
   return (
     <>
       <Modal
         isOpen={showModal}
-        title="QR Code"
+        title={`${qrCodeGenerateMutation.isError ? "Erro no " : ""}QR Code`}
         withCloseButton
         onClose={() => {
           setShowModal(false);
         }}
       >
         <ModalBody>
-          {!qrCodeGenerateMutation.isPending && qrCode64 ? (
+          {qrCodeGenerateMutation.isError ? (
+            <Box>
+              <Box flex={1} alignItems="center">
+                <Text>Ocorreu um erro ao gerar o QrCode.</Text>
+              </Box>
+            </Box>
+          ) : !qrCodeGenerateMutation.isPending && qrCode64 ? (
             <Box>
               <Box flex={1} alignItems="center">
                 <Box
@@ -142,41 +154,63 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Button
-              action="primary"
-              p="$4"
-              h="$16"
-              flex={1}
-              text="Copiar"
-              iconSize={18}
-              rightIcon={CopyIcon}
-              isDisabled={!qrCode64}
-              onPress={async () => {
-                if (!qrCode64) return;
-                //TODO: fix copy to clipboard qr code in base64
-                await Clipboard.setImageAsync(
-                  `data:image/png;base64,${qrCode64}`
-                ).then(() => {
-                  configToast.closeAll();
-                  configToast.show({
-                    placement: "top",
-                    render: () => {
-                      return (
-                        <Toast action="info" variant="accent" top={insets.top}>
-                          <VStack space="xs">
-                            <ToastTitle>Copiado!</ToastTitle>
-                            <ToastDescription>
-                              Qr Code copiado com sucesso!
-                            </ToastDescription>
-                          </VStack>
-                        </Toast>
-                      );
-                    },
+            {qrCodeGenerateMutation.isError ? (
+              <ButtonGroup w="$full" flexDirection="column">
+                <Button
+                  w="$full"
+                  text="Tentar novamente"
+                  disabled={qrCodeGenerateMutation.isPending}
+                  onPress={() => generateQrCode()}
+                />
+                <Button
+                  w="$full"
+                  text="Fechar"
+                  action="secondary"
+                  variant="outline"
+                  onPress={() => setShowModal(false)}
+                />
+              </ButtonGroup>
+            ) : (
+              <Button
+                action="primary"
+                p="$4"
+                h="$16"
+                flex={1}
+                text="Copiar"
+                iconSize={18}
+                rightIcon={CopyIcon}
+                isDisabled={!qrCode64}
+                onPress={async () => {
+                  if (!qrCode64) return;
+                  //TODO: fix copy to clipboard qr code in base64
+                  await Clipboard.setImageAsync(
+                    `data:image/png;base64,${qrCode64}`
+                  ).then(() => {
+                    configToast.closeAll();
+                    configToast.show({
+                      placement: "top",
+                      render: () => {
+                        return (
+                          <Toast
+                            action="info"
+                            variant="accent"
+                            top={insets.top}
+                          >
+                            <VStack space="xs">
+                              <ToastTitle>Copiado!</ToastTitle>
+                              <ToastDescription>
+                                Qr Code copiado com sucesso!
+                              </ToastDescription>
+                            </VStack>
+                          </Toast>
+                        );
+                      },
+                    });
                   });
-                });
-                setShowModal(false);
-              }}
-            />
+                  setShowModal(false);
+                }}
+              />
+            )}
           </HStack>
         </ModalFooter>
       </Modal>
