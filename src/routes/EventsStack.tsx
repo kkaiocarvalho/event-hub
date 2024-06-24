@@ -6,6 +6,7 @@ import {
 import * as P from "./allPages";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Event } from "../api/types";
 
 export const ScreenName = [
   "Events",
@@ -19,8 +20,8 @@ export type EventParamStack = {
   Events: undefined;
   MyEvents: undefined;
   CreateEvent: undefined;
-  EventDetails: { eventId: number };
-  EventParticipants: { eventId: number };
+  EventDetails: { event: Event };
+  EventParticipants: { event: Event };
 };
 export type EventStackProps = NativeStackScreenProps<EventParamStack>;
 

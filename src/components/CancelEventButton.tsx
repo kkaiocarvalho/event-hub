@@ -27,7 +27,6 @@ import type {
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QK_EVENT } from "../utils/constants";
-import { GetEventResponse } from "../api/requests/get-event";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -39,9 +38,10 @@ import {
 } from "../api/requests/cancel-events";
 import { Input } from "./Input";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
+import { Event } from "../api/types";
 
 type CancelEventButtonProps = {
-  eventId: number;
+  event: Event;
 };
 
 type FormValues = {
@@ -56,11 +56,11 @@ const schema = yup.object({
     .required('"Motivo" é obrigatório'),
 });
 
-export function CancelEventButton({ eventId }: CancelEventButtonProps) {
+export function CancelEventButton({ event }: CancelEventButtonProps) {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
-  const { canInteractWithEvent } = useUserAndEventRelationship(eventId);
+  const { canInteractWithEvent } = useUserAndEventRelationship(event);
   const queryClient = useQueryClient();
 
   const cancelEventMutation = useMutation({
@@ -83,7 +83,7 @@ export function CancelEventButton({ eventId }: CancelEventButtonProps) {
         },
       });
       setShowAlertDialog(false);
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, eventId] });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
     },
     onError(error: RequestErrorSchema) {
       const message =
@@ -110,7 +110,7 @@ export function CancelEventButton({ eventId }: CancelEventButtonProps) {
 
   const submit = (data: FormValues) => {
     const body: CancelEventVariables = {
-      cdRegistroEvento: eventId,
+      cdRegistroEvento: event.cdRegistroEvento,
       motivoCancelamentoEvento: data.reason,
     };
     cancelEventMutation.mutate(body);
@@ -121,8 +121,6 @@ export function CancelEventButton({ eventId }: CancelEventButtonProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
-
-  const event = queryClient.getQueryData<GetEventResponse>([QK_EVENT, eventId]);
 
   return (
     <>

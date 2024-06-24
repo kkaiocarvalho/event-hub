@@ -2,9 +2,10 @@ import { CheckIcon, CloseCircleIcon, CloseIcon } from "@gluestack-ui/themed";
 import { useUser } from "./useUser";
 import { EventStatus } from "../utils/constants";
 import { ManageSubscriptionEventVariables } from "../api/requests/manage-subscription-event";
-import { useEvent } from "./useEvent";
+import { Event } from "../api/types";
 
 enum UserStatusRelationToEvent {
+  MEU_EVENTO = "Meu evento",
   NAO_REGISTRADO = "Não inscrito",
   REGISTRADO = "Inscrito",
   REGISTRO_CANCELADO = "Inscrição excluida",
@@ -28,9 +29,8 @@ enum UserButtonTextInteractToEvent {
   PRESENTE = "Compareceu",
 }
 
-export function useUserAndEventRelationship(eventId: number) {
+export function useUserAndEventRelationship(event: Event) {
   const { user } = useUser();
-  const { event, eventQuery } = useEvent(eventId);
 
   const icons = {
     NAO_REGISTRADO: CheckIcon,
@@ -79,8 +79,6 @@ export function useUserAndEventRelationship(eventId: number) {
     return body;
   };
 
-  const isLoadingRelations = eventQuery.isLoading;
-
   return {
     userEventStatus,
     interactionButtonTitle,
@@ -88,6 +86,5 @@ export function useUserAndEventRelationship(eventId: number) {
     canInteractWithEvent,
     interactionButtonAction,
     interactWithEventBody,
-    isLoadingRelations,
   };
 }

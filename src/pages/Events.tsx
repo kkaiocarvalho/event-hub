@@ -1,7 +1,6 @@
 import {
   Center,
   VStack,
-  RefreshControl,
   HStack,
   Box,
   ButtonText,
@@ -15,8 +14,11 @@ import {
   Icon,
   ButtonIcon,
   PaperclipIcon,
-  Spinner,
   Pressable,
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription,
 } from "@gluestack-ui/themed";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -24,16 +26,18 @@ import {
   QK_EVENT_LIST,
   FilterEventOperation,
   ParticipationStatus,
+  EventStatus,
 } from "../utils/constants";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { listEvents, ListEventsResponse } from "../api/requests/list-events";
 import type { ListEventsVariables } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
 import { EventStackProps } from "../routes/EventsStack";
-import { FlatList } from "@gluestack-ui/themed";
 import { formatDateToSave } from "../utils/helpers";
 import { useUser } from "../hook/useUser";
 import { Event } from "../api/types";
+import { InfiniteScroll } from "../components/InfiniteScroll";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const defaultFilter: ListEventsVariables = {
   filtros: [
@@ -41,6 +45,11 @@ const defaultFilter: ListEventsVariables = {
       operacao: FilterEventOperation.GREATER_THAN,
       campo: FilterEventField.START_DATE,
       valor: formatDateToSave(new Date()),
+    },
+    {
+      operacao: FilterEventOperation.EQUAL,
+      campo: FilterEventField.EVENT_STATUS,
+      valor: EventStatus.OPEN,
     },
   ],
   apenasMeusEventos: "N",
@@ -59,40 +68,70 @@ const filterWithRegistered = {
 export function Events({ navigation }: EventStackProps) {
   const { hasOrganizerPermission } = useUser();
   const queryClient = useQueryClient();
+  const insets = useSafeAreaInsets();
+  const configToast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [filters, setFilters] = useState<ListEventsVariables>(defaultFilter);
   const [isRefreshLoading, setIsRefreshLoading] = useState(false);
+  const [withRegisteredFilter, setWithRegisteredFilter] = useState(false);
+  const [filterLoading, setFilterLoading] = useState(false);
 
-  const hasFilterRegistered = !!filters.filtros.filter(
-    (e) => e.campo === FilterEventField.USER_STATUS
-  ).length;
+  const eventsQuery = useQuery({
+    queryKey: [QK_EVENT_LIST, filters],
+    queryFn: () => listEvents(filters),
+  });
 
-  const handleSetFilter = (props: { removeFilter: boolean } | void) => {
-    if (props?.removeFilter) {
+  const isLoading = eventsQuery.isLoading;
+  const eventsData = eventsQuery?.data as ListEventsResponse;
+
+  useEffect(() => {
+    setFilterLoading(false);
+    setFilterLoading(true);
+    if (withRegisteredFilter) {
+      setFilters((prev) => ({
+        ...prev,
+        filtros: [...prev.filtros, filterWithRegistered],
+      }));
+      setEvents([]);
+    } else {
       setFilters((prev) => ({
         ...prev,
         filtros: prev.filtros.filter(
           (e) => e.campo !== FilterEventField.USER_STATUS
         ),
       }));
+      setEvents([]);
+    }
+  }, [withRegisteredFilter]);
+
+  useEffect(() => {
+    if (eventsQuery.error?.message || eventsQuery.isError) {
+      setIsRefreshLoading(false);
+      setFilterLoading(false);
+      configToast.closeAll();
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Pressable onPress={() => configToast.closeAll()}>
+              <Toast action="error" variant="accent" top={insets.top}>
+                <VStack space="xs">
+                  <ToastTitle>Erro</ToastTitle>
+                  <ToastDescription>
+                    {eventsQuery.error?.message ??
+                      "Ocorreu um erro inesperado."}
+                  </ToastDescription>
+                </VStack>
+              </Toast>
+            </Pressable>
+          );
+        },
+      });
       return;
     }
-    setFilters((prev) => ({
-      ...prev,
-      filtros: [...prev.filtros, filterWithRegistered],
-    }));
-    return;
-  };
-
-  const eventsQuery = useQuery({
-    queryKey: [QK_EVENT_LIST, filters],
-    queryFn: () => listEvents(filters),
-  });
-  const isLoading = eventsQuery.isLoading || eventsQuery.isFetching;
-  const eventsData = eventsQuery?.data as ListEventsResponse;
+  }, [eventsQuery.error?.message, eventsQuery.isError]);
 
   useMemo(() => {
-    setIsRefreshLoading(false);
     const newEvents = eventsData?.eventos ?? [];
     const filteredEvents = newEvents.filter(
       (newEvent) =>
@@ -101,7 +140,9 @@ export function Events({ navigation }: EventStackProps) {
         )
     );
     setEvents((prev) => [...prev, ...filteredEvents]);
-  }, [eventsData, filters]);
+    setIsRefreshLoading(false);
+    setFilterLoading(false);
+  }, [eventsData]);
 
   const loadMoreEvents = () => {
     if (!eventsData?.paginacao?.temProximaPagina) return;
@@ -115,28 +156,26 @@ export function Events({ navigation }: EventStackProps) {
   };
 
   const onRefresh = useCallback(() => {
-    setIsRefreshLoading(true);
     queryClient.clear();
+    setIsRefreshLoading(true);
     const defaultFilterWithRegistered: ListEventsVariables = {
       ...defaultFilter,
       filtros: [...defaultFilter.filtros, filterWithRegistered],
     };
     setFilters(
-      hasFilterRegistered ? defaultFilterWithRegistered : defaultFilter
+      withRegisteredFilter ? defaultFilterWithRegistered : defaultFilter
     );
     setEvents([]);
-  }, []);
+  }, [withRegisteredFilter]);
 
   const openEvent = (event: Event) => {
-    navigation.navigate("EventDetails", { eventId: event.cdRegistroEvento });
+    navigation.navigate("EventDetails", { event });
   };
 
   return (
     <VStack bgColor="$background" flex={1} gap={10} px="$4" pt="$8">
-      {/* FILTER */}
       <Box w="$full" px="$8" h="$16" mb="$5">
         <Box flex={1} borderRadius="$2xl" bgColor="#FFF">
-          {/* <Box bgColor="$primary400" zIndex={10} position="absolute" /> */}
           <HStack
             display="flex"
             alignItems="center"
@@ -150,16 +189,14 @@ export function Events({ navigation }: EventStackProps) {
               display="flex"
               alignItems="center"
               justifyContent="center"
-              bgColor={!hasFilterRegistered ? "$primary400" : "transparent"}
+              bgColor={!withRegisteredFilter ? "$primary400" : "transparent"}
               borderRadius="$xl"
-              onPress={() =>
-                hasFilterRegistered && handleSetFilter({ removeFilter: true })
-              }
+              onPress={() => setWithRegisteredFilter(false)}
             >
               <Text
                 py="$3"
                 fontWeight="$bold"
-                color={!hasFilterRegistered ? "$textColor" : "$primary400"}
+                color={!withRegisteredFilter ? "$textColor" : "$primary400"}
               >
                 Todos
               </Text>
@@ -168,14 +205,14 @@ export function Events({ navigation }: EventStackProps) {
               flex={1}
               display="flex"
               alignItems="center"
-              bgColor={hasFilterRegistered ? "$primary400" : "transparent"}
+              bgColor={withRegisteredFilter ? "$primary400" : "transparent"}
               borderRadius="$xl"
-              onPress={() => !hasFilterRegistered && handleSetFilter()}
+              onPress={() => setWithRegisteredFilter(true)}
             >
               <Text
                 py="$3"
                 fontWeight="$bold"
-                color={hasFilterRegistered ? "$textColor" : "$primary400"}
+                color={withRegisteredFilter ? "$textColor" : "$primary400"}
               >
                 Inscritos
               </Text>
@@ -183,45 +220,20 @@ export function Events({ navigation }: EventStackProps) {
           </HStack>
         </Box>
       </Box>
-      <FlatList
+      <InfiniteScroll
         data={events}
         keyExtractor={(item) => (item as Event).cdRegistroEvento.toString()}
         extraData={events}
         renderItem={({ item }) => (
           <EventCard event={item as Event} openEvent={openEvent} />
         )}
-        ItemSeparatorComponent={() => <Box h="$5" />}
-        ListEmptyComponent={
-          <Center flex={1} pt="$2/3">
-            <Text maxWidth="60%" textAlign="center" color="$textColor">
-              {!isRefreshLoading && isLoading
-                ? "Carregando eventos."
-                : "Nenhum evento cadastrado até o momento :/"}
-            </Text>
-          </Center>
-        }
-        refreshControl={
-          <RefreshControl
-            colors={["#13F2F2"]}
-            progressBackgroundColor="#111D40"
-            refreshing={isRefreshLoading}
-            onRefresh={onRefresh}
-          />
-        }
-        onEndReached={
-          eventsData?.paginacao?.temProximaPagina ? loadMoreEvents : undefined
-        }
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={
-          <>
-            {isLoading ? (
-              <Box py="$5">
-                <Spinner size={45} />
-              </Box>
-            ) : null}
-          </>
-        }
+        hasNextPage={!!eventsData?.paginacao?.temProximaPagina}
+        isRefreshLoading={isRefreshLoading}
+        onRefresh={onRefresh}
+        loadMoreEvents={loadMoreEvents}
+        isLoading={isLoading || filterLoading}
       />
+
       {hasOrganizerPermission ? (
         <Box
           display="flex"

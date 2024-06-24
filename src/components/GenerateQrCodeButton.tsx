@@ -34,20 +34,19 @@ import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
 import { Text } from "@gluestack-ui/themed";
+import { Event } from "../api/types";
 
 type GenerateQrCodeButtonProps = {
-  eventId: number;
+  event: Event;
 };
 
-export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
+export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
   const insets = useSafeAreaInsets();
   const configToast = useToast();
   const [showModal, setShowModal] = useState(false);
   const [qrCode64, setQrCode64] = useState<string | null>(null);
   const queryClient = useQueryClient();
-  const { canInteractWithEvent } = useUserAndEventRelationship(eventId);
-
-  const event = queryClient.getQueryData<GetEventResponse>([QK_EVENT, eventId]);
+  const { canInteractWithEvent } = useUserAndEventRelationship(event);
 
   const qrCodeGenerateMutation = useMutation({
     mutationFn: qrCodeGenerate,
@@ -68,7 +67,7 @@ export function GenerateQrCodeButton({ eventId }: GenerateQrCodeButtonProps) {
         },
       });
       setQrCode64(data.qrcode);
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, eventId] });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
     },
     onError(error: RequestErrorSchema) {
       const message =

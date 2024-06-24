@@ -11,16 +11,15 @@ import { Background } from "../components/Background";
 import { EventStackProps } from "../routes/EventsStack";
 import { formatDateToShow } from "../utils/helpers";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
-import { useQueryClient } from "@tanstack/react-query";
 import { ComponentProps } from "react";
-import { QK_EVENT } from "../utils/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { GetEventResponse } from "../api/requests/get-event";
 import { useUser } from "../hook/useUser";
 import { Button } from "../components/Button";
 import { GenerateQrCodeButton } from "../components/GenerateQrCodeButton";
 import { CancelEventButton } from "../components/CancelEventButton";
 import { ManageSubscriptionButton } from "../components/ManageSubscriptionButton";
+import { Event } from "../api/types";
+import { useEvent } from "../hook/useEvent";
 
 type EventInfo = {
   title: string;
@@ -28,13 +27,10 @@ type EventInfo = {
 } & ComponentProps<typeof Text>;
 
 export function EventDetails({ route, navigation }: EventStackProps) {
-  const { eventId } = route.params as { eventId: number };
-  const queryClient = useQueryClient();
+  const paramsEvent = (route.params as { event: Event }).event as Event;
   const { hasOrganizerPermission } = useUser();
-  const { userEventStatus } = useUserAndEventRelationship(eventId);
-
-  const event = queryClient.getQueryData<GetEventResponse>([QK_EVENT, eventId]);
-
+  const { userEventStatus } = useUserAndEventRelationship(paramsEvent);
+  const { event } = useEvent(paramsEvent.cdRegistroEvento);
   const isEventCreator = hasOrganizerPermission && event?.meuEvento;
 
   const eventInfo: EventInfo[] = [
@@ -154,7 +150,7 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                   action="positive"
                   iconSize={24}
                   onPress={() =>
-                    navigation.navigate("EventParticipants", { eventId })
+                    navigation.navigate("EventParticipants", { event })
                   }
                   rightIcon={() => (
                     <MaterialCommunityIcons
@@ -164,12 +160,12 @@ export function EventDetails({ route, navigation }: EventStackProps) {
                     />
                   )}
                 />
-                <GenerateQrCodeButton eventId={eventId} />
-                <CancelEventButton eventId={eventId} />
+                <GenerateQrCodeButton event={event} />
+                <CancelEventButton event={event} />
               </HStack>
             ) : (
               <HStack gap={4}>
-                <ManageSubscriptionButton eventId={eventId} />
+                <ManageSubscriptionButton event={event} />
               </HStack>
             )}
           </VStack>

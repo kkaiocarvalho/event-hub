@@ -3,8 +3,6 @@ import {
   HStack,
   Text,
   VStack,
-  AddIcon,
-  CloseCircleIcon,
   BadgeText,
   Toast,
   ToastTitle,
@@ -27,9 +25,7 @@ type EventCardProps = {
 };
 
 export function EventCard({ event, openEvent }: EventCardProps) {
-  const { userEventStatus } = useUserAndEventRelationship(
-    event.cdRegistroEvento
-  );
+  const { userEventStatus } = useUserAndEventRelationship(event);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
 
@@ -113,16 +109,18 @@ export function EventCard({ event, openEvent }: EventCardProps) {
                     {event.statusEvento}
                   </BadgeText>
                 </Badge>
-                <Badge
-                  size="sm"
-                  variant="outline"
-                  borderRadius="$md"
-                  action="info"
-                >
-                  <BadgeText textTransform="capitalize">
-                    {userEventStatus}
-                  </BadgeText>
-                </Badge>
+                {!event.meuEvento ? (
+                  <Badge
+                    size="sm"
+                    variant="outline"
+                    borderRadius="$md"
+                    action="info"
+                  >
+                    <BadgeText textTransform="capitalize">
+                      {userEventStatus}
+                    </BadgeText>
+                  </Badge>
+                ) : null}
               </HStack>
               <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
                 {formatDateToShow(event.dtInicio)}

@@ -1,7 +1,7 @@
 import { Background } from "../components/Background";
 import { EventStackProps } from "../routes/EventsStack";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QK_EVENT, QK_EVENT_PARTICIPANTS } from "../utils/constants";
+import { QK_EVENT_PARTICIPANTS } from "../utils/constants";
 import {
   listSubscribedInEvent,
   ListSubscribedInEventResponse,
@@ -20,7 +20,6 @@ import {
 import { Text } from "@gluestack-ui/themed";
 import { RefreshControl } from "@gluestack-ui/themed";
 import { UserCard } from "../components/UserCard";
-import { GetEventResponse } from "../api/requests/get-event";
 import { Button } from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,13 +32,15 @@ import type {
   RequestErrorWithMessage,
   RequestErrorSchema,
 } from "../config/request";
+import { useEvent } from "../hook/useEvent";
+import { Event } from "../api/types";
 
 export function EventParticipants({ route }: EventStackProps) {
   const queryClient = useQueryClient();
-  const eventId = (route.params as { eventId: number }).eventId as number;
+  const paramsEvent = (route.params as { event: Event }).event as Event;
   const configToast = useToast();
   const insets = useSafeAreaInsets();
-  const event = queryClient.getQueryData<GetEventResponse>([QK_EVENT, eventId]);
+  const { event } = useEvent(paramsEvent.cdRegistroEvento);
 
   const participantsQuery = useQuery({
     queryKey: [QK_EVENT_PARTICIPANTS, event],

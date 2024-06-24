@@ -20,13 +20,14 @@ import {
   RequestErrorSchema,
 } from "../config/request";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
+import { Event } from "../api/types";
 
 type ManageSubscriptionButtonProps = {
-  eventId: number;
+  event: Event;
 };
 
 export function ManageSubscriptionButton({
-  eventId,
+  event,
 }: ManageSubscriptionButtonProps) {
   const configToast = useToast();
   const insets = useSafeAreaInsets();
@@ -38,8 +39,7 @@ export function ManageSubscriptionButton({
     interactionButtonIcon,
     canInteractWithEvent,
     interactWithEventBody,
-    isLoadingRelations,
-  } = useUserAndEventRelationship(eventId);
+  } = useUserAndEventRelationship(event);
 
   const manageSubscriptionEventMutation = useMutation({
     mutationFn: manageSubscriptionEvent,
@@ -64,7 +64,7 @@ export function ManageSubscriptionButton({
           );
         },
       });
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, eventId] });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
     },
     onError(error: RequestErrorSchema) {
       const message =
@@ -96,8 +96,7 @@ export function ManageSubscriptionButton({
     manageSubscriptionEventMutation.mutate(body);
   };
 
-  const isLoading =
-    manageSubscriptionEventMutation.isPending || isLoadingRelations;
+  const isLoading = manageSubscriptionEventMutation.isPending;
 
   return (
     <>

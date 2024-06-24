@@ -3,8 +3,8 @@ import { api } from "./api";
 import { z } from "zod";
 
 const invalidDataSchema = z.object({
-  code: z.number(),
-  correlationError: z.string(),
+  code: z.number().optional(),
+  correlationError: z.string().optional(),
   errors: z.array(z.string()),
 });
 
@@ -14,9 +14,9 @@ const ruleErrorSchema = z.object({
 });
 
 const internalErrorSchema = z.object({
-  code: z.number(),
+  code: z.number().optional(),
   message: z.string(),
-  correlationError: z.string(),
+  correlationError: z.string().optional(),
 });
 
 export type InvalidDataSchemaResponse = z.infer<typeof invalidDataSchema>;
