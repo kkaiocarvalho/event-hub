@@ -85,7 +85,6 @@ export function Events({ navigation }: EventStackProps) {
   const eventsData = eventsQuery?.data as ListEventsResponse;
 
   useEffect(() => {
-    setFilterLoading(false);
     setFilterLoading(true);
     if (withRegisteredFilter) {
       setFilters((prev) => ({

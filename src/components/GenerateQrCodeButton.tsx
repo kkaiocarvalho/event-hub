@@ -67,7 +67,9 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
         },
       });
       setQrCode64(data.qrcode);
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
+      queryClient.refetchQueries({
+        queryKey: [QK_EVENT, event.cdRegistroEvento],
+      });
     },
     onError(error: RequestErrorSchema) {
       const message =

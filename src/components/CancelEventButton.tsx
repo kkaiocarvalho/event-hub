@@ -83,7 +83,9 @@ export function CancelEventButton({ event }: CancelEventButtonProps) {
         },
       });
       setShowAlertDialog(false);
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
+      queryClient.refetchQueries({
+        queryKey: [QK_EVENT, event.cdRegistroEvento],
+      });
     },
     onError(error: RequestErrorSchema) {
       const message =

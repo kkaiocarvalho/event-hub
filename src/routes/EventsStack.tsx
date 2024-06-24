@@ -4,8 +4,6 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as P from "./allPages";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { Event } from "../api/types";
 
 export const ScreenName = [

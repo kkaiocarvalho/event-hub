@@ -13,7 +13,7 @@ import {
   ManageSubscriptionEventResponse,
 } from "../api/requests/manage-subscription-event";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { QK_EVENT } from "../utils/constants";
+import { QK_EVENT, QK_EVENT_LIST } from "../utils/constants";
 import {
   InvalidDataSchemaResponse,
   RequestErrorWithMessage,
@@ -64,7 +64,9 @@ export function ManageSubscriptionButton({
           );
         },
       });
-      queryClient.refetchQueries({ queryKey: [QK_EVENT, event] });
+      queryClient.refetchQueries({
+        queryKey: [QK_EVENT, event.cdRegistroEvento],
+      });
     },
     onError(error: RequestErrorSchema) {
       const message =

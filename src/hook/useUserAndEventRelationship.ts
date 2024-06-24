@@ -6,11 +6,22 @@ import { Event } from "../api/types";
 
 enum UserStatusRelationToEvent {
   MEU_EVENTO = "Meu evento",
-  NAO_REGISTRADO = "Não inscrito",
+  CHEIO = "Cheio",
+  NAO_REGISTRADO = "Disponível",
   REGISTRADO = "Inscrito",
   REGISTRO_CANCELADO = "Inscrição excluida",
   FALTANTE = "Faltante",
   PRESENTE = "Presente",
+}
+
+enum ColorUserRelationToEvent {
+  MEU_EVENTO = "info",
+  CHEIO = "warning",
+  NAO_REGISTRADO = "info",
+  REGISTRADO = "success",
+  REGISTRO_CANCELADO = "error",
+  FALTANTE = "error",
+  PRESENTE = "success",
 }
 
 enum UserButtonActionInteractToEvent {
@@ -48,9 +59,19 @@ export function useUserAndEventRelationship(event: Event) {
   // EVENT STATE: "Inscrito", "Insc. Removida", "Dispoível" and "Cheio".
   // ("Disponível" and "Cheio" must be compared with number max of participans and atual count of participans)
 
-  const userEventStatus = event
-    ? UserStatusRelationToEvent[event.statusParticipacao]
-    : UserStatusRelationToEvent.NAO_REGISTRADO;
+  const userEventStatus =
+    event.numeroMaximoParticipantes >= 100
+      ? UserStatusRelationToEvent.CHEIO
+      : event
+      ? UserStatusRelationToEvent[event.statusParticipacao]
+      : UserStatusRelationToEvent.NAO_REGISTRADO;
+
+  const color =
+    event.numeroMaximoParticipantes >= 100
+      ? ColorUserRelationToEvent.CHEIO
+      : event
+      ? ColorUserRelationToEvent[event.statusParticipacao]
+      : ColorUserRelationToEvent.NAO_REGISTRADO;
 
   const interactionButtonAction = event
     ? UserButtonActionInteractToEvent[event.statusParticipacao]
@@ -86,5 +107,6 @@ export function useUserAndEventRelationship(event: Event) {
     canInteractWithEvent,
     interactionButtonAction,
     interactWithEventBody,
+    color,
   };
 }

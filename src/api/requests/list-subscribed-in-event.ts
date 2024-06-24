@@ -4,12 +4,13 @@ import { request } from "../../config/request";
 
 const SubscribedUser = z.object({
   nomeParticipante: z.string(),
+  emailParticipante: z.string(),
   nuRegistroParticipacao: z.number(),
   statusParticipacao: z.string(),
-  formaEntrada: z.string().nullable(),
-  formaSaida: z.string(),
-  dtEntradaEvento: z.string(),
-  dtSaidaEvento: z.string(),
+  formaEntrada: z.string().nullable().nullable(),
+  formaSaida: z.string().nullable(),
+  dtEntradaEvento: z.string().nullable(),
+  dtSaidaEvento: z.string().nullable(),
   sorteado: z.string(),
 });
 

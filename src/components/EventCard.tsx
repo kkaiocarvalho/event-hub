@@ -25,7 +25,7 @@ type EventCardProps = {
 };
 
 export function EventCard({ event, openEvent }: EventCardProps) {
-  const { userEventStatus } = useUserAndEventRelationship(event);
+  const { userEventStatus, color } = useUserAndEventRelationship(event);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
 
@@ -99,28 +99,27 @@ export function EventCard({ event, openEvent }: EventCardProps) {
               justifyContent="space-between"
             >
               <HStack gap={4}>
-                <Badge
-                  size="sm"
-                  variant="outline"
-                  borderRadius="$md"
-                  action="info"
-                >
-                  <BadgeText textTransform="capitalize">
-                    {event.statusEvento}
-                  </BadgeText>
-                </Badge>
                 {!event.meuEvento ? (
                   <Badge
                     size="sm"
                     variant="outline"
                     borderRadius="$md"
-                    action="info"
+                    action={color}
                   >
                     <BadgeText textTransform="capitalize">
                       {userEventStatus}
                     </BadgeText>
                   </Badge>
-                ) : null}
+                ) : (
+                  <Badge
+                    size="sm"
+                    variant="outline"
+                    borderRadius="$md"
+                    action="warning"
+                  >
+                    <BadgeText textTransform="capitalize">Meu evento</BadgeText>
+                  </Badge>
+                )}
               </HStack>
               <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
                 {formatDateToShow(event.dtInicio)}

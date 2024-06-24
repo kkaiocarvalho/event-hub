@@ -104,8 +104,6 @@ export function EventParticipants({ route }: EventStackProps) {
 
   const handleDrawParticipant = () => {
     if (!event) return;
-
-    console.log("Chegou aqui");
     drawParticipantsMutation.mutate({
       cdRegistroEvento: event.cdRegistroEvento,
     });
@@ -128,7 +126,9 @@ export function EventParticipants({ route }: EventStackProps) {
             (item as SubscribedUser).nuRegistroParticipacao.toString()
           }
           extraData={participants}
-          renderItem={({ item }) => <UserCard user={item as SubscribedUser} />}
+          renderItem={({ item }) => (
+            <UserCard user={item as SubscribedUser} event={paramsEvent} />
+          )}
           ItemSeparatorComponent={() => <Box h="$5" />}
           ListEmptyComponent={
             <Center flex={1} pt="$full">
