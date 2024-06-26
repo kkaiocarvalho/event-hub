@@ -76,24 +76,24 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     onError(error: RequestErrorSchema) {
       const message =
         (error as RequestErrorWithMessage)?.message ||
-        (error as InvalidDataSchemaResponse)?.errors.join(", ");
-
-      if (message) {
-        configToast.closeAll();
-        configToast.show({
-          placement: "top",
-          render: () => {
-            return (
-              <Toast action="error" variant="accent" top={insets.top}>
-                <VStack space="xs">
-                  <ToastTitle>Erro durante o Login</ToastTitle>
-                  <ToastDescription>{message}</ToastDescription>
-                </VStack>
-              </Toast>
-            );
-          },
-        });
-      }
+        (error as InvalidDataSchemaResponse)?.errors?.join(", ");
+      configToast.closeAll();
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast action="error" variant="accent" top={insets.top}>
+              <VStack space="xs">
+                <ToastTitle>Erro durante o Login</ToastTitle>
+                <ToastDescription>
+                  {message ??
+                    "Verifique suas credenciais e tente novamente mais tarde."}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     },
   });
   const queryClient = useQueryClient();

@@ -5,33 +5,22 @@ import { z } from "zod";
 const invalidDataSchema = z.object({
   code: z.number().optional(),
   correlationError: z.string().optional(),
-  errors: z.array(z.string()),
+  errors: z.array(z.string()).optional(),
 });
 
 const ruleErrorSchema = z.object({
-  enumError: z.string(),
-  message: z.string(),
-});
-
-const internalErrorSchema = z.object({
-  code: z.number().optional(),
-  message: z.string(),
-  correlationError: z.string().optional(),
+  enumError: z.string().optional(),
+  message: z.string().optional(),
 });
 
 export type InvalidDataSchemaResponse = z.infer<typeof invalidDataSchema>;
 export type RuleErrorSchemaResponse = z.infer<typeof ruleErrorSchema>;
-export type InternalErrorSchemaResponse = z.infer<typeof internalErrorSchema>;
 
-export type RequestErrorWithMessage =
-  | RuleErrorSchemaResponse
-  | InternalErrorSchemaResponse
-  | AxiosError;
+export type RequestErrorWithMessage = RuleErrorSchemaResponse | AxiosError;
 
 export type RequestErrorSchema =
   | InvalidDataSchemaResponse
   | RuleErrorSchemaResponse
-  | InternalErrorSchemaResponse
   | AxiosError;
 
 type RequestProps = {
@@ -57,11 +46,10 @@ export async function request<T = unknown>({
       if (!response) return err;
       const status = response?.status as number;
       const schema =
-        status === 500
-          ? internalErrorSchema
-          : status === 400
-          ? invalidDataSchema
-          : [401, 404, 403, 422].includes(status)
+        // status === 400
+        //   ? invalidDataSchema
+        //   :
+        [401, 404, 403, 422, 500, 400].includes(status)
           ? ruleErrorSchema
           : undefined;
       if (!schema) return Promise.reject(err.response);

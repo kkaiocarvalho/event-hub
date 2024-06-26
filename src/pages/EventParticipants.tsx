@@ -82,7 +82,7 @@ export function EventParticipants({ route }: EventStackProps) {
     onError(error: RequestErrorSchema) {
       const message =
         (error as RequestErrorWithMessage)?.message ||
-        (error as InvalidDataSchemaResponse)?.errors.join(", ");
+        (error as InvalidDataSchemaResponse)?.errors?.join(", ");
       if (message) {
         configToast.closeAll();
         configToast.show({
