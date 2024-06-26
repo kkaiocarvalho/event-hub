@@ -89,15 +89,13 @@ export function Events({ navigation }: EventStackProps) {
     if (withRegisteredFilter) {
       setFilters((prev) => ({
         ...prev,
-        filtros: [...prev.filtros, filterWithRegistered],
+        filtros: [filterWithRegistered],
       }));
       setEvents([]);
     } else {
       setFilters((prev) => ({
         ...prev,
-        filtros: prev.filtros.filter(
-          (e) => e.campo !== FilterEventField.USER_STATUS
-        ),
+        filtros: [...defaultFilter.filtros],
       }));
       setEvents([]);
     }
@@ -157,13 +155,6 @@ export function Events({ navigation }: EventStackProps) {
   const onRefresh = useCallback(() => {
     queryClient.clear();
     setIsRefreshLoading(true);
-    const defaultFilterWithRegistered: ListEventsVariables = {
-      ...defaultFilter,
-      filtros: [...defaultFilter.filtros, filterWithRegistered],
-    };
-    setFilters(
-      withRegisteredFilter ? defaultFilterWithRegistered : defaultFilter
-    );
     setEvents([]);
   }, [withRegisteredFilter]);
 
