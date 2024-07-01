@@ -84,7 +84,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
           return (
             <Toast action="error" variant="accent" top={insets.top}>
               <VStack space="xs">
-                <ToastTitle>Erro durante o Login</ToastTitle>
+                <ToastTitle>Ops!</ToastTitle>
                 <ToastDescription>
                   {message ??
                     "Verifique suas credenciais e tente novamente mais tarde."}

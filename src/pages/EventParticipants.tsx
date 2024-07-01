@@ -83,22 +83,22 @@ export function EventParticipants({ route }: EventStackProps) {
       const message =
         (error as RequestErrorWithMessage)?.message ||
         (error as InvalidDataSchemaResponse)?.errors?.join(", ");
-      if (message) {
-        configToast.closeAll();
-        configToast.show({
-          placement: "top",
-          render: () => {
-            return (
-              <Toast action="error" variant="accent" top={insets.top}>
-                <VStack space="xs">
-                  <ToastTitle>Erro ao sortear um parcitipante</ToastTitle>
-                  <ToastDescription>{message}</ToastDescription>
-                </VStack>
-              </Toast>
-            );
-          },
-        });
-      }
+      configToast.closeAll();
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast action="error" variant="accent" top={insets.top}>
+              <VStack space="xs">
+                <ToastTitle>Ops!</ToastTitle>
+                <ToastDescription>
+                  {message ?? "Erro ao sortear um parcitipante"}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     },
   });
 

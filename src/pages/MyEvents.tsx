@@ -56,7 +56,7 @@ export function MyEvents({ navigation }: EventStackProps) {
             <Pressable onPress={() => configToast.closeAll()}>
               <Toast action="error" variant="accent" top={insets.top}>
                 <VStack space="xs">
-                  <ToastTitle>Erro</ToastTitle>
+                  <ToastTitle>Ops!</ToastTitle>
                   <ToastDescription>
                     {eventsQuery.error?.message ??
                       "Ocorreu um erro inesperado."}

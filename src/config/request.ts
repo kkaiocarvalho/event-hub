@@ -46,10 +46,9 @@ export async function request<T = unknown>({
       if (!response) return err;
       const status = response?.status as number;
       const schema =
-        // status === 400
-        //   ? invalidDataSchema
-        //   :
-        [401, 404, 403, 422, 500, 400].includes(status)
+        status === 400
+          ? invalidDataSchema
+          : [401, 404, 403, 422, 500].includes(status)
           ? ruleErrorSchema
           : undefined;
       if (!schema) return Promise.reject(err.response);

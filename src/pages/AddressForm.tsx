@@ -295,6 +295,7 @@ export function AddressForm({ form }: AddressFormProps) {
                   placeholder="Ex.: 0000"
                   label="Número"
                   inputName="addressForm.number"
+                  keyboardType="numeric"
                   isDisabled={isDisabled}
                   control={control}
                   errorMessage={errors.addressForm?.number?.message}

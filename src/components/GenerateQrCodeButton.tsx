@@ -60,7 +60,9 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
             <Toast action="success" variant="accent" top={insets.top}>
               <VStack space="xs">
                 <ToastTitle>Sucesso</ToastTitle>
-                <ToastDescription>{data.mensagem}</ToastDescription>
+                <ToastDescription>
+                  {data.mensagem ?? "QrCode gerado!"}
+                </ToastDescription>
               </VStack>
             </Toast>
           );
@@ -76,22 +78,22 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
         (error as RequestErrorWithMessage)?.message ||
         (error as InvalidDataSchemaResponse)?.errors?.join(", ");
 
-      if (message) {
-        configToast.closeAll();
-        configToast.show({
-          placement: "top",
-          render: () => {
-            return (
-              <Toast action="error" variant="accent" top={insets.top}>
-                <VStack space="xs">
-                  <ToastTitle>Erro ao criar codigo QR do evento</ToastTitle>
-                  <ToastDescription>{message}</ToastDescription>
-                </VStack>
-              </Toast>
-            );
-          },
-        });
-      }
+      configToast.closeAll();
+      configToast.show({
+        placement: "top",
+        render: () => {
+          return (
+            <Toast action="error" variant="accent" top={insets.top}>
+              <VStack space="xs">
+                <ToastTitle>Ops!</ToastTitle>
+                <ToastDescription>
+                  {message ?? "Erro ao gerar codigo QR do evento."}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     },
   });
 
