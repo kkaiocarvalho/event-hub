@@ -2,7 +2,7 @@
   "expo": {
     "name": "event-hub",
     "slug": "event-hub",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "dark",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0B1726"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,7 +21,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#0B1726"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.kaioserg.eventhub"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +40,11 @@
           "recordAudioAndroid": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "47736a9c-7326-427f-8f28-ab10cb9c0da2"
+      }
+    }
   }
 }
