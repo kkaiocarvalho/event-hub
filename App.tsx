@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import StackComponent from './src/routes/stack';
+import { Routes } from "./src/routes/routes";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./src/config/react-query";
+import { NavigationContainer } from "@react-navigation/native";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "./src/config/themeConfig";
+import { useReactQueryDevTools } from "@dev-plugins/react-query";
+import { AuthProvider } from "./src/contexts/AuthContext";
+import { StatusBar } from "react-native";
 
+import "react-native-reanimated";
+import "react-native-gesture-handler";
 
 export default function App() {
+  useReactQueryDevTools(queryClient);
+  // press shift + m to open
   return (
-      <StackComponent/>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <GluestackUIProvider config={config}>
+          <NavigationContainer>
+            <StatusBar barStyle="light-content" backgroundColor="#111D40" />
+            <AuthProvider>
+              <SafeAreaView style={{ flex: 1 }}>
+                <Routes />
+              </SafeAreaView>
+            </AuthProvider>
+          </NavigationContainer>
+        </GluestackUIProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
