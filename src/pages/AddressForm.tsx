@@ -50,58 +50,6 @@ export function AddressForm({ form }: AddressFormProps) {
 
   const recentAddresses =
     (recentAddressesQuery.data as GetAddressesResponse) ?? [];
-  // const recentAddresses: GetAddressesResponse = [
-  //   {
-  //     cdEnderecoEvento: 0,
-  //     estado: "MG",
-  //     cidade: "Uberlândia",
-  //     cep: "38401528",
-  //     nuEndereco: "1539",
-  //     logradouro: "Marta Helena, Av. Quilombo dos Palmares",
-  //     dsEndereco: "Perto da Gontijo",
-  //     dtInclusao: "2024-02-16T03:37:26",
-  //   },
-  //   {
-  //     cdEnderecoEvento: 2,
-  //     estado: "RJ",
-  //     cidade: "Belford Roxo",
-  //     cep: "38401528",
-  //     nuEndereco: "47",
-  //     logradouro: "Av. Kalashinikov",
-  //     dsEndereco: "rastros de 7.62 na entrada",
-  //     dtInclusao: "2024-02-16T03:37:26",
-  //   },
-  //   {
-  //     cdEnderecoEvento: 4,
-  //     estado: "SP",
-  //     cidade: "São Paulo",
-  //     cep: "38401528",
-  //     nuEndereco: "8888",
-  //     logradouro: "Rua da fumaça",
-  //     dsEndereco: "perto da fábrica de poluição",
-  //     dtInclusao: "2024-02-16T03:37:26",
-  //   },
-  //   {
-  //     cdEnderecoEvento: 6,
-  //     estado: "AM",
-  //     cidade: "Catinguelê",
-  //     cep: "38401528",
-  //     nuEndereco: "2323",
-  //     logradouro: "Lagoa do mato",
-  //     dsEndereco: "Duas árvores a esquerda da palmeira",
-  //     dtInclusao: "2024-02-16T03:37:26",
-  //   },
-  //   {
-  //     cdEnderecoEvento: 8,
-  //     estado: "GO",
-  //     cidade: "Caldas Novas",
-  //     cep: "38401528",
-  //     nuEndereco: "444",
-  //     logradouro: "rua das águas quentes",
-  //     dsEndereco: "atrás do show sertanejo",
-  //     dtInclusao: "2024-02-16T03:37:26",
-  //   },
-  // ];
 
   const wathAddressCode = useWatch({ control }).addressForm?.addressCode;
 
@@ -150,7 +98,7 @@ export function AddressForm({ form }: AddressFormProps) {
   };
 
   const setAddress = (item: (typeof recentAddresses)[0]) => {
-    form.setValue("addressForm.addressCode", item.cep);
+    form.setValue("addressForm.addressCode", formatCEP(item.cep));
     form.setValue("addressForm.city", item.cidade);
     form.setValue("addressForm.complement", item.dsEndereco);
     form.setValue("addressForm.uf", item.estado);

@@ -31,7 +31,7 @@ export function formatDateToShow(value: string, options = { withTime: false }) {
   const minute = toLocale(date.getMinutes());
 
   return `${day}/${month}/${year}${
-    options.withTime ? ` ás ${hour}:${minute}` : ""
+    options.withTime ? ` às ${hour}:${minute}` : ""
   }`;
 }
 

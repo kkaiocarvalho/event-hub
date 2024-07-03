@@ -48,31 +48,31 @@ type FormValues = {
 const schema = yup.object({
   name: yup
     .string()
-    .min(4, "O nome deve ter pelo menos 4 caracteres")
-    .max(255, "O nome não pode ter mais de 255 caracteres")
-    .required('"Nome" é um campo obrigatório'),
+    .min(4, "O nome deve ter pelo menos 4 caracteres.")
+    .max(255, "O nome não pode ter mais de 255 caracteres.")
+    .required('"Nome" é um campo obrigatório.'),
   email: yup
     .string()
-    .email("E-mail inválido")
-    .required('"E-mail"  é um campo obrigatório'),
+    .email("E-mail inválido.")
+    .required('"E-mail"  é um campo obrigatório.'),
   cpf: yup
     .string()
-    .required("CPF é obrigatório")
-    .test("test-cpf", "CPF inválido", isValidCPF),
+    .required("CPF é obrigatório.")
+    .test("test-cpf", "CPF inválido.", isValidCPF),
   phone: yup
     .string()
-    .required("Telefone é obrigatório")
-    .test("test-phone", "Telefone inválido", isValidPhone),
+    .required("Telefone é obrigatório.")
+    .test("test-phone", "Telefone inválido.", isValidPhone),
   password: yup
     .string()
-    .min(6, "Senha deve conter mais de 6 caracteres")
-    .required('"Senha"  é um campo obrigatório'),
+    .min(6, "Senha deve conter mais de 6 caracteres.")
+    .required('"Senha"  é um campo obrigatório.'),
   confirmPassword: yup
     .string()
-    .required("Confirme a senha")
+    .required("Confirme a senha.")
     .oneOf(
-      [yup.ref("password"), '"Senha"  é um campo obrigatório'],
-      "As senhas não conferem"
+      [yup.ref("password"), '"Senha"  é um campo obrigatório.'],
+      "As senhas não conferem."
     ),
 });
 

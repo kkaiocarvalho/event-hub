@@ -37,7 +37,7 @@ export enum FilterEventField {
 
 export enum FilterEventOperation {
   GREATER = "maior",
-  SMALLER = "menor",
+  LESS = "menor",
   EQUAL = "igual",
   CONTAINS = "contem",
   GREATER_THAN = "maiorIgual",

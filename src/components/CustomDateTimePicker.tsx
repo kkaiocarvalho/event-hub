@@ -4,14 +4,11 @@ import { Subtitle } from "./Subtitle";
 import {
   InputField,
   Input as GlueInput,
-  HStack,
   VStack,
-  Box,
+  Pressable,
 } from "@gluestack-ui/themed";
-import { Button } from "./Button";
 import { formatDateToShow } from "../utils/helpers";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { FontAwesome } from "@expo/vector-icons";
 
 export type DateTimePickerMode = "date" | "time" | undefined;
 
@@ -48,15 +45,15 @@ export function CustomDateTimePicker<T>({
       name={datePickerName}
       control={control}
       render={({ field }) => (
-        <VStack minHeight="$40" flex={1} justifyContent="center">
+        <VStack h="$24">
           <Subtitle text={label} h="$5" pl="$0" mb="$2" fontSize="$sm" />
-          <Box>
+          <Pressable onPress={changeModeDate}>
             <GlueInput
-              h="$10"
+              h="$12"
               w="$full"
-              variant="underlined"
               isReadOnly
               borderColor={errorMessage ? "$error700" : "$primary600"}
+              backgroundColor="$primary600"
             >
               <InputField
                 color="$textColor"
@@ -75,32 +72,14 @@ export function CustomDateTimePicker<T>({
                 autoCapitalize="none"
               />
             </GlueInput>
-          </Box>
-          <HStack
-            display="flex"
-            h="$10"
-            gap="$4"
-            mt="$4"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Button
-              h="$12"
-              flex={1}
-              onPress={changeModeDate}
-              text="  Horário"
-              leftIcon={() => (
-                <FontAwesome name="clock-o" size={24} color="#F2F2F2" />
-              )}
-            />
-          </HStack>
+          </Pressable>
           {errorMessage ? (
             <Subtitle
               color="$error400"
               text={errorMessage}
-              h="$10"
-              mt="$1"
-              pl="$1"
+              h="$5"
+              mt="$0.5"
+              pl="$0"
               fontSize="$sm"
             />
           ) : null}
@@ -110,14 +89,14 @@ export function CustomDateTimePicker<T>({
               value={field.value || new Date()}
               mode={dateTimePickerState.mode}
               is24Hour={true}
-              onChange={(_, value) => {
-                const changeDate = () => {
+              onChange={({ type }, value) => {
+                if (type === "dismissed") return onClose();
+                if (type === "set") {
+                  dateTimePickerState.mode === "date"
+                    ? changeModeTime()
+                    : onClose();
                   field.onChange(value);
-                  changeModeTime();
-                };
-
-                dateTimePickerState.mode === "date" ? changeDate() : onClose();
-                field.onChange(value);
+                }
               }}
             />
           ) : null}

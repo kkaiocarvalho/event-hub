@@ -3,7 +3,6 @@ import {
   VStack,
   HStack,
   Box,
-  ButtonText,
   Text,
   Button as GlueButton,
   MenuItem,
@@ -35,38 +34,40 @@ import type { ListEventsVariables } from "../api/requests/list-events";
 import { EventCard } from "../components/EventCard";
 import { EventStackProps } from "../routes/EventsStack";
 import { formatDateToSave } from "../utils/helpers";
-import { useUser } from "../hook/useUser";
 import { Event } from "../api/types";
 import { InfiniteScroll } from "../components/InfiniteScroll";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const defaultFilter: ListEventsVariables = {
-  filtros: [
-    {
-      operacao: FilterEventOperation.LESS_THAN,
-      campo: FilterEventField.END_DATE,
-      valor: formatDateToSave(new Date()),
-    },
-    {
-      operacao: FilterEventOperation.EQUAL,
-      campo: FilterEventField.EVENT_STATUS,
-      valor: EventStatus.OPEN,
-    },
-  ],
-  apenasMeusEventos: "N",
-  paginacao: {
-    pagina: 0,
-    qntItensPaginados: 15,
-  },
-};
-
-const filterWithRegistered = {
-  campo: FilterEventField.USER_STATUS,
-  operacao: FilterEventOperation.EQUAL,
-  valor: ParticipationStatus.REGISTERED,
-};
+import { useUser } from "../hook/useUser";
 
 export function Events({ navigation }: EventStackProps) {
+  const defaultFilter: ListEventsVariables = {
+    filtros: [
+      {
+        operacao: FilterEventOperation.EQUAL,
+        campo: FilterEventField.EVENT_STATUS,
+        valor: EventStatus.OPEN,
+      },
+    ],
+    apenasMeusEventos: "N",
+    paginacao: {
+      pagina: 0,
+      qntItensPaginados: 15,
+    },
+  };
+
+  const filterWithRegistered = [
+    {
+      campo: FilterEventField.USER_STATUS,
+      operacao: FilterEventOperation.EQUAL,
+      valor: ParticipationStatus.REGISTERED,
+    },
+    {
+      operacao: FilterEventOperation.GREATER_THAN,
+      campo: FilterEventField.END_DATE,
+      valor: formatDateToSave(new Date(Date.now())),
+    },
+  ];
+
   const { hasOrganizerPermission } = useUser();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
@@ -76,7 +77,7 @@ export function Events({ navigation }: EventStackProps) {
   const [isRefreshLoading, setIsRefreshLoading] = useState(false);
   const [withRegisteredFilter, setWithRegisteredFilter] = useState(false);
   const [filterLoading, setFilterLoading] = useState(false);
-
+  //dtEncerramento: "2024-07-03 23:59:00"
   const eventsQuery = useQuery({
     queryKey: [QK_EVENT_LIST, filters],
     queryFn: () => listEvents(filters),
@@ -90,7 +91,7 @@ export function Events({ navigation }: EventStackProps) {
     if (withRegisteredFilter) {
       setFilters((prev) => ({
         ...prev,
-        filtros: [filterWithRegistered],
+        filtros: filterWithRegistered,
       }));
       setEvents([]);
     } else {

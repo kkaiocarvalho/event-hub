@@ -10,7 +10,7 @@ const getAddressesResponseSchema = z.array(
     cep: z.string(),
     nuEndereco: z.string(),
     logradouro: z.string(),
-    dsEndereco: z.string(),
+    dsEndereco: z.string().nullable(),
     dtInclusao: z.string(),
   })
 );

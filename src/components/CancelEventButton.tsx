@@ -53,7 +53,7 @@ const schema = yup.object({
     .string()
     .min(4, "Pelo menos 4 caracteres")
     .max(255, "Não mais de 255 caracteres")
-    .required('"Motivo" é obrigatório'),
+    .required('"Motivo" é obrigatório.'),
 });
 
 export function CancelEventButton({ event }: CancelEventButtonProps) {

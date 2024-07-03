@@ -55,7 +55,6 @@ export function EventForm({ form }: EventFormProps) {
     setFocus,
     formState: { errors },
     control,
-    watch,
   } = form;
 
   // const value = watch("eventForm.notifyParticipants");
@@ -72,6 +71,9 @@ export function EventForm({ form }: EventFormProps) {
               placeholder="Semana Acadêmica"
               label="Nome do evento"
               inputName="eventForm.name"
+              format={(value: string) =>
+                value.replace(/[^A-Za-zÀ-ÿ0-9\s.,!?:;()&@$#%*-]/g, "")
+              }
               control={control}
               variant="outline"
               errorMessage={errors.eventForm?.name?.message}
@@ -89,7 +91,6 @@ export function EventForm({ form }: EventFormProps) {
               <Text>Virá em breve</Text>
             ) : (
               <>
-                <HStack gap="$4" w="$full" mb="$10">
                 <CustomDateTimePicker
                   dateTimePickerState={dateTimePickerStart}
                   label="Início do evento"
@@ -101,7 +102,10 @@ export function EventForm({ form }: EventFormProps) {
                     setDateTimePickerStart({ show: true, mode: "date" })
                   }
                   changeModeTime={() =>
-                    setDateTimePickerStart({ show: true, mode: "time" })
+                    setDateTimePickerStart((prev) => ({
+                      ...prev,
+                      mode: "time",
+                    }))
                   }
                   onClose={() =>
                     setDateTimePickerStart({
@@ -121,7 +125,10 @@ export function EventForm({ form }: EventFormProps) {
                     setDateTimePickerEnd({ show: true, mode: "date" })
                   }
                   changeModeTime={() =>
-                    setDateTimePickerEnd({ show: true, mode: "time" })
+                    setDateTimePickerEnd((prev) => ({
+                      ...prev,
+                      mode: "time",
+                    }))
                   }
                   onClose={() =>
                     setDateTimePickerEnd({
@@ -130,7 +137,6 @@ export function EventForm({ form }: EventFormProps) {
                     })
                   }
                 />
-                </HStack>
               </>
             )}
             <Input

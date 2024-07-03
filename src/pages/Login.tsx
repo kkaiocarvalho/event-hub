@@ -25,12 +25,12 @@ type FormValues = {
 const schema = yup.object({
   email: yup
     .string()
-    .email("E-mail inválido")
-    .required('"E-mail"  é um campo obrigatório'),
+    .email("E-mail inválido.")
+    .required('"E-mail"  é um campo obrigatório.'),
   password: yup
     .string()
-    .min(6, "Senha deve conter mais de 6 caracteres")
-    .required('"Senha"  é um campo obrigatório'),
+    .min(6, "Senha deve conter mais de 6 caracteres.")
+    .required('"Senha"  é um campo obrigatório.'),
 });
 
 export function Login({ navigation }: RootStackProps) {

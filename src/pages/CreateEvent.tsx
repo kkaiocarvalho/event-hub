@@ -61,22 +61,22 @@ const schema = yup.object({
   eventForm: yup.object({
     name: yup
       .string()
-      .required("Nome do evento é obrigatório")
-      .min(3, "Deve ter no mínimo 3 caracteres")
-      .max(50, "Deve ter no máximo 50 caracteres"),
+      .required("Nome do evento é obrigatório.")
+      .min(3, "Deve ter no mínimo 3 caracteres.")
+      .max(50, "Deve ter no máximo 50 caracteres."),
     complement: yup
       .string()
-      .required("Complemento é obrigatório")
-      .min(3, "Deve ter no mínimo 3 caracteres")
-      .max(50, "Deve ter no máximo 50 caracteres"),
+      .required("Complemento é obrigatório.")
+      .min(3, "Deve ter no mínimo 3 caracteres.")
+      .max(50, "Deve ter no máximo 50 caracteres."),
     startDate: yup
       .date()
-      .required("Data de início é obrigatório")
-      .min(new Date()),
+      .required("Data de início é obrigatório.")
+      .min(new Date(), "Data de inicio menor que a atual."),
     endDate: yup
       .date()
-      .required("Data de finalização é obrigatório")
-      .min(yup.ref("startDate"), "Data de finalização menor que inicio"),
+      .required("Data de finalização é obrigatório.")
+      .min(yup.ref("startDate"), "Data de finalização menor que inicio."),
     // TODO: endDate is not valid when is below startDate
     //
     // notifyParticipants: yup
@@ -89,26 +89,26 @@ const schema = yup.object({
   addressForm: yup.object({
     addressCode: yup
       .string()
-      .required("CEP é obrigatório")
-      .test("test-address-code", "CEP inválido", isValidCEP),
+      .required("CEP é obrigatório.")
+      .test("test-address-code", "CEP inválido.", isValidCEP),
     uf: yup
       .string()
-      .required("Sigla do estado é obrigatória")
-      .max(2, "Sigla do estado deve ter no máximo 2 caracteres"),
+      .required("Sigla do estado é obrigatória.")
+      .max(2, "Sigla do estado deve ter no máximo 2 caracteres."),
     city: yup
       .string()
-      .required("Cidade é obrigatória")
-      .min(3, "Deve ter no mínimo 3 caracteres")
-      .max(255, "Cidade deve ter no máximo 255 caracteres"),
-    number: yup.string().required("Número é obrigatório"),
+      .required("Cidade é obrigatória.")
+      .min(3, "Deve ter no mínimo 3 caracteres.")
+      .max(255, "Cidade deve ter no máximo 255 caracteres."),
+    number: yup.string().required("Número é obrigatório."),
     address: yup
       .string()
-      .required("Logradouro é obrigatório")
-      .min(4, "Logradouro deve ter no mínimo 4 caracteres")
-      .max(50, "Logradouro deve ter no máximo 50 caracteres"),
+      .required("Logradouro é obrigatório.")
+      .min(4, "Logradouro deve ter no mínimo 4 caracteres.")
+      .max(50, "Logradouro deve ter no máximo 50 caracteres."),
     complement: yup
       .string()
-      .max(100, "Complemento deve ter no máximo 100 caracteres")
+      .max(100, "Complemento deve ter no máximo 100 caracteres.")
       .notRequired(),
   }),
 });
@@ -251,7 +251,7 @@ export function CreateEvent({ navigation }: EventStackProps) {
               rightIcon={CheckIcon}
               iconSize={25}
               flex={1}
-              isDisabled={isLoading}
+              isLoading={isLoading}
               onPress={form.handleSubmit(submit)}
             />
           </ButtonGroup>

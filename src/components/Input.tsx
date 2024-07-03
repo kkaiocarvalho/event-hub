@@ -69,7 +69,7 @@ export function Input<T>(inputProps: InputProps<T>) {
         {...subtitleProps}
       />
       <GlueInput
-        h="$10"
+        h="$12"
         variant="outline"
         bgColor="$primary600"
         borderColor={errorMessage ? "$error700" : "$primary600"}
