@@ -60,23 +60,18 @@ export function useUserAndEventRelationship(event: Event) {
     PRESENTE: CheckIcon,
   };
 
-  //TODO: add export color and icons correctly
-  //TODO: when get event participants ok, refactor to contains the follow status
-  // USER RELATED TO EVENT:  "Faltante", "Presente", "Registrado", "Cancelado"
-  // and additional state "Sorteado" off this initial list
-
-  // EVENT STATE: "Inscrito", "Insc. Removida", "Dispoível" and "Cheio".
-  // ("Disponível" and "Cheio" must be compared with number max of participans and atual count of participans)
+  const isEventFull = false;
+  // const eventIsFull = event.numeroMaximoParticipantes >= 100
 
   const userEventStatus =
-    event.numeroMaximoParticipantes >= 100
+    isEventFull
       ? UserStatusRelationToEvent.CHEIO
       : event
       ? UserStatusRelationToEvent[event.statusParticipacao]
       : UserStatusRelationToEvent.NAO_REGISTRADO;
 
   const color =
-    event.numeroMaximoParticipantes >= 100
+    isEventFull
       ? ColorUserRelationToEvent.CHEIO
       : event
       ? ColorUserRelationToEvent[event.statusParticipacao]

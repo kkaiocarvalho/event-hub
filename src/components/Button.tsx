@@ -6,7 +6,6 @@ import {
 } from "@gluestack-ui/themed";
 import { ComponentProps } from "react";
 
-//TODO: type ButtonProps appropriately
 export type ButtonProps = {
   iconSize?: any;
   leftIcon?: any;

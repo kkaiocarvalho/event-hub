@@ -77,7 +77,6 @@ const schema = yup.object({
       .date()
       .required("Data de finalização é obrigatório.")
       .min(yup.ref("startDate"), "Data de finalização menor que inicio."),
-    // TODO: endDate is not valid when is below startDate
     //
     // notifyParticipants: yup
     //   .string()
