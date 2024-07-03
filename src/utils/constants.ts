@@ -15,7 +15,6 @@ export enum UserPermissions {
 
 export enum EventStatus {
   OPEN = "ABERTO",
-  CLOSED = "FECHADO",
   CANCELED = "CANCELADO",
   SHUT_DOWN = "ENCERRADO",
 }
@@ -30,6 +29,7 @@ export enum ParticipationStatus {
 
 export enum FilterEventField {
   START_DATE = "dtInicioEvento",
+  END_DATE = "dtEncerramentoEvento",
   ID = "cdRegistroEvento",
   EVENT_STATUS = "statusEvento",
   USER_STATUS = "statusParticipacao",

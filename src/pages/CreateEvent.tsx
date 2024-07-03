@@ -158,7 +158,9 @@ export function CreateEvent({ navigation }: EventStackProps) {
                 <VStack space="xs">
                   <ToastTitle>Sucesso</ToastTitle>
                   <ToastDescription>
-                    Evento chamado: "{data.nomeEvento}" cadastrado com sucesso!
+                    {data.nomeEvento
+                      ? `Evento chamado: "${data.nomeEvento}" cadastrado com sucesso!`
+                      : "Evento cadastrado com sucesso!"}
                   </ToastDescription>
                 </VStack>
               </Toast>

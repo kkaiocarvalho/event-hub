@@ -5,7 +5,7 @@ import {
   PermissionStatus,
   BarcodeScanningResult,
 } from "expo-camera";
-import { Center, Text } from "@gluestack-ui/themed";
+import { Center, Spinner, Text } from "@gluestack-ui/themed";
 import { Button } from "../components/Button";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -23,6 +23,7 @@ import type {
 import { QrCodeModals } from "../components/QrCodeModals";
 
 export function QRCode() {
+  const [isLoading, setIsLoading] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
@@ -75,6 +76,9 @@ export function QRCode() {
         type: "ERROR",
       });
     },
+    onSettled() {
+      setIsLoading(false);
+    },
   });
 
   const handleMutationQrCode = () => {
@@ -84,6 +88,7 @@ export function QRCode() {
   };
 
   const handleBarCodeScanned = async (scanner: BarcodeScanningResult) => {
+    setIsLoading(true);
     const { data } = scanner;
     setScanned(true);
     const { cdRegistroEvento, chaveQRCode, cpfParticipante } = JSON.parse(data);
@@ -108,7 +113,6 @@ export function QRCode() {
     );
   }
   if (hasPermission === false) {
-    //TODO: make request access work
     return (
       <Background>
         <Center flex={1} gap={15}>
@@ -134,7 +138,6 @@ export function QRCode() {
         modalExtraData={modalExtraData}
         eventId={eventId}
       />
-
       <CameraView
         style={{ flex: 1 }}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -143,7 +146,18 @@ export function QRCode() {
         }}
       />
       <ScannerOverlay />
-      {scanned && (
+      {isLoading ? (
+        <Center
+          position="absolute"
+          w="$full"
+          h="$full"
+          zIndex={100}
+          bg="$black"
+          opacity="$90"
+        >
+          <Spinner size={45} />
+        </Center>
+      ) : scanned ? (
         <Center
           position="absolute"
           w="$full"
@@ -166,7 +180,7 @@ export function QRCode() {
             )}
           />
         </Center>
-      )}
+      ) : null}
     </View>
   ) : (
     <Center flex={1} bgColor="$background">

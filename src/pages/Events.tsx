@@ -19,6 +19,7 @@ import {
   Toast,
   ToastTitle,
   ToastDescription,
+  CloseIcon,
 } from "@gluestack-ui/themed";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -42,8 +43,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const defaultFilter: ListEventsVariables = {
   filtros: [
     {
-      operacao: FilterEventOperation.GREATER_THAN,
-      campo: FilterEventField.START_DATE,
+      operacao: FilterEventOperation.LESS_THAN,
+      campo: FilterEventField.END_DATE,
       valor: formatDateToSave(new Date()),
     },
     {
@@ -242,10 +243,19 @@ export function Events({ navigation }: EventStackProps) {
             mb="$1"
             shadowColor="$primary400"
             trigger={({ ...triggerProps }) => {
+              const isOpen = triggerProps["aria-expanded"];
               return (
-                <GlueButton {...triggerProps} gap="$2" borderRadius="$xl">
-                  <ButtonText>Options</ButtonText>
-                  <ButtonIcon as={MenuIcon} />
+                <GlueButton
+                  {...triggerProps}
+                  borderRadius="$full"
+                  h="$16"
+                  w="$16"
+                >
+                  <ButtonIcon
+                    as={isOpen ? CloseIcon : MenuIcon}
+                    w="$8"
+                    h="$8"
+                  />
                 </GlueButton>
               );
             }}

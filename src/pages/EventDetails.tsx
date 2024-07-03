@@ -134,7 +134,6 @@ export function EventDetails({ route, navigation }: EventStackProps) {
               borderTopWidth="$2"
               borderBottomWidth="$2"
               borderStyle="dashed"
-              paddingTop={20}
               borderColor="$background"
             >
               {eventInfo.map((info) => (

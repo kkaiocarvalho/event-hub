@@ -21,6 +21,7 @@ export async function drawParticipant(variables: DrawParticipantVariables) {
     method: apiEvents.post,
     url: "/participantes/sortear-participante",
     body: variables,
-    schema: drawParticipantResponseSchema,
+    // schema: drawParticipantResponseSchema,
+    schema: z.string(),
   });
 }

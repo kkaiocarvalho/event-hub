@@ -1,5 +1,4 @@
 import { CheckIcon, CloseCircleIcon, CloseIcon } from "@gluestack-ui/themed";
-import { useUser } from "./useUser";
 import { EventStatus } from "../utils/constants";
 import { ManageSubscriptionEventVariables } from "../api/requests/manage-subscription-event";
 import { Event } from "../api/types";
@@ -24,6 +23,18 @@ enum ColorUserRelationToEvent {
   PRESENTE = "success",
 }
 
+enum MyEventStatusMessage {
+  ABERTO = "Aberto",
+  CANCELADO = "Cancelado",
+  ENCERRADO = "Finalizado",
+}
+
+enum MyEventStatusColor {
+  ABERTO = "success",
+  CANCELADO = "error",
+  ENCERRADO = "muted",
+}
+
 enum UserButtonActionInteractToEvent {
   NAO_REGISTRADO = "positive",
   REGISTRADO = "negative",
@@ -41,8 +52,6 @@ enum UserButtonTextInteractToEvent {
 }
 
 export function useUserAndEventRelationship(event: Event) {
-  const { user } = useUser();
-
   const icons = {
     NAO_REGISTRADO: CheckIcon,
     REGISTRADO: CloseIcon,
@@ -87,6 +96,13 @@ export function useUserAndEventRelationship(event: Event) {
     ? UserButtonTextInteractToEvent[event.statusParticipacao]
     : UserButtonTextInteractToEvent.NAO_REGISTRADO;
 
+  const myEventStatus = event.meuEvento
+    ? MyEventStatusMessage[event.statusEvento]
+    : null;
+  const myEventColor = event.meuEvento
+    ? MyEventStatusColor[event.statusEvento]
+    : null;
+
   const interactWithEventBody = () => {
     if (!canInteractWithEvent) return;
 
@@ -102,6 +118,8 @@ export function useUserAndEventRelationship(event: Event) {
 
   return {
     userEventStatus,
+    myEventStatus,
+    myEventColor,
     interactionButtonTitle,
     interactionButtonIcon,
     canInteractWithEvent,

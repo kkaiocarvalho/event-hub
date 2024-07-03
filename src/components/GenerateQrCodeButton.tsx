@@ -1,7 +1,6 @@
 import {
   ModalBody,
   ModalFooter,
-  CopyIcon,
   Box,
   HStack,
   Spinner,
@@ -11,6 +10,7 @@ import {
   ToastTitle,
   ToastDescription,
   ButtonGroup,
+  ShareIcon,
 } from "@gluestack-ui/themed";
 import {
   QrCodeGenerateResponse,
@@ -27,14 +27,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QK_EVENT } from "../utils/constants";
-import { GetEventResponse } from "../api/requests/get-event";
 import { Modal } from "../components/Modal";
 import { Image } from "react-native";
-import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
 import { Text } from "@gluestack-ui/themed";
 import { Event } from "../api/types";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 
 type GenerateQrCodeButtonProps = {
   event: Event;
@@ -45,8 +45,26 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
   const configToast = useToast();
   const [showModal, setShowModal] = useState(false);
   const [qrCode64, setQrCode64] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const { canInteractWithEvent } = useUserAndEventRelationship(event);
+
+  const shareQrCode = async (base64: string) => {
+    setIsLoading(true);
+    try {
+      const filename = `evento-${event.nomeEvento
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replace(" ", "-")}.png`;
+      const filepath = `${FileSystem.documentDirectory}/${filename}`;
+      await FileSystem.writeAsStringAsync(filepath, base64, {
+        encoding: "base64",
+      }).finally(() => setIsLoading(false));
+      await Sharing.shareAsync(filepath, { mimeType: "image/png" });
+    } catch (e) {
+      console.log({ e });
+    }
+  };
 
   const qrCodeGenerateMutation = useMutation({
     mutationFn: qrCodeGenerate,
@@ -179,38 +197,14 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
                 p="$4"
                 h="$16"
                 flex={1}
-                text="Copiar"
+                text="Coompartilhar"
                 iconSize={18}
-                rightIcon={CopyIcon}
+                isLoading={isLoading}
+                rightIcon={ShareIcon}
                 isDisabled={!qrCode64}
                 onPress={async () => {
                   if (!qrCode64) return;
-                  //TODO: fix copy to clipboard qr code in base64
-                  await Clipboard.setImageAsync(
-                    `data:image/png;base64,${qrCode64}`
-                  ).then(() => {
-                    configToast.closeAll();
-                    configToast.show({
-                      placement: "top",
-                      render: () => {
-                        return (
-                          <Toast
-                            action="info"
-                            variant="accent"
-                            top={insets.top}
-                          >
-                            <VStack space="xs">
-                              <ToastTitle>Copiado!</ToastTitle>
-                              <ToastDescription>
-                                Qr Code copiado com sucesso!
-                              </ToastDescription>
-                            </VStack>
-                          </Toast>
-                        );
-                      },
-                    });
-                  });
-                  setShowModal(false);
+                  shareQrCode(qrCode64);
                 }}
               />
             )}

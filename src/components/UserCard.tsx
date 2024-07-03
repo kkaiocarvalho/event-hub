@@ -2,13 +2,17 @@ import { Badge, BadgeText, HStack, Text, VStack } from "@gluestack-ui/themed";
 import { SubscribedUser } from "../api/requests/list-subscribed-in-event";
 import { useUserAndEventRelationship } from "../hook/useUserAndEventRelationship";
 import { Event } from "../api/types";
+import { ParticipationStatus } from "../utils/constants";
 
 type UserCardProps = {
   user: SubscribedUser;
   event: Event;
 };
 export function UserCard({ user, event }: UserCardProps) {
-  const { userEventStatus, color } = useUserAndEventRelationship(event);
+  const { userEventStatus, color } = useUserAndEventRelationship({
+    ...event,
+    statusParticipacao: user.statusParticipacao as ParticipationStatus,
+  });
 
   return (
     <HStack bgColor="$primary400" alignItems="center" borderRadius="$md" p="$2">

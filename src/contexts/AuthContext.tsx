@@ -53,7 +53,9 @@ AuthContext.displayName = "AuthContext";
 export function AuthProvider({ children }: React.PropsWithChildren) {
   const configToast = useToast();
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
   const authenticateMutation = useMutation({
     mutationFn: authenticate,
     onSuccess(response) {
@@ -96,7 +98,6 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       });
     },
   });
-  const queryClient = useQueryClient();
 
   React.useMemo(() => {
     getStorageItem(AUTH_TOKEN)

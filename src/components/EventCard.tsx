@@ -25,7 +25,8 @@ type EventCardProps = {
 };
 
 export function EventCard({ event, openEvent }: EventCardProps) {
-  const { userEventStatus, color } = useUserAndEventRelationship(event);
+  const { userEventStatus, myEventStatus, myEventColor, color } =
+    useUserAndEventRelationship(event);
   const configToast = useToast();
   const insets = useSafeAreaInsets();
 
@@ -55,11 +56,11 @@ export function EventCard({ event, openEvent }: EventCardProps) {
 
   return (
     <Pressable
-      onLongPress={() => {
+      onPress={() => {
         configToast.closeAll();
         openEvent(event);
       }}
-      onPress={() => showHelpMessage()}
+      // onLongPress={() => showHelpMessage()}
     >
       <HStack
         alignItems="flex-start"
@@ -99,27 +100,16 @@ export function EventCard({ event, openEvent }: EventCardProps) {
               justifyContent="space-between"
             >
               <HStack gap={4}>
-                {!event.meuEvento ? (
-                  <Badge
-                    size="sm"
-                    variant="outline"
-                    borderRadius="$md"
-                    action={color}
-                  >
-                    <BadgeText textTransform="capitalize">
-                      {userEventStatus}
-                    </BadgeText>
-                  </Badge>
-                ) : (
-                  <Badge
-                    size="sm"
-                    variant="outline"
-                    borderRadius="$md"
-                    action="warning"
-                  >
-                    <BadgeText textTransform="capitalize">Meu evento</BadgeText>
-                  </Badge>
-                )}
+                <Badge
+                  size="sm"
+                  variant="outline"
+                  borderRadius="$md"
+                  action={myEventColor ?? color}
+                >
+                  <BadgeText textTransform="capitalize">
+                    {myEventStatus ?? userEventStatus}
+                  </BadgeText>
+                </Badge>
               </HStack>
               <Text fontSize="$xl" color="$background" fontWeight="$extrabold">
                 {formatDateToShow(event.dtInicio)}

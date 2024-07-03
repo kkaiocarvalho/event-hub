@@ -1,7 +1,7 @@
 import { Background } from "../components/Background";
 import { EventStackProps } from "../routes/EventsStack";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QK_EVENT_PARTICIPANTS } from "../utils/constants";
+import { EventStatus, QK_EVENT_PARTICIPANTS } from "../utils/constants";
 import {
   listSubscribedInEvent,
   ListSubscribedInEventResponse,
@@ -10,15 +10,12 @@ import {
 import {
   Box,
   Center,
-  FlatList,
   Toast,
   ToastDescription,
   ToastTitle,
   useToast,
   VStack,
 } from "@gluestack-ui/themed";
-import { Text } from "@gluestack-ui/themed";
-import { RefreshControl } from "@gluestack-ui/themed";
 import { UserCard } from "../components/UserCard";
 import { Button } from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -34,6 +31,7 @@ import type {
 } from "../config/request";
 import { useEvent } from "../hook/useEvent";
 import { Event } from "../api/types";
+import { InfiniteScroll } from "../components/InfiniteScroll";
 
 export function EventParticipants({ route }: EventStackProps) {
   const queryClient = useQueryClient();
@@ -78,6 +76,7 @@ export function EventParticipants({ route }: EventStackProps) {
           );
         },
       });
+      queryClient.refetchQueries({ queryKey: [QK_EVENT_PARTICIPANTS, event] });
     },
     onError(error: RequestErrorSchema) {
       const message =
@@ -111,16 +110,12 @@ export function EventParticipants({ route }: EventStackProps) {
 
   const isLoading = participantsQuery.isLoading;
 
-  const isEventOpen = event
-    ? new Date(event.dtEncerramento) < new Date() &&
-      new Date(event.dtInicio) > new Date() &&
-      !event.motivoCancelamentoEvento
-    : false;
+  const isEventOpen = event?.statusEvento === EventStatus.OPEN;
 
   return (
     <Background>
       <Box mb="$1/6" flex={1}>
-        <FlatList
+        <InfiniteScroll
           data={participants}
           keyExtractor={(item) =>
             (item as SubscribedUser).nuRegistroParticipacao.toString()
@@ -129,24 +124,11 @@ export function EventParticipants({ route }: EventStackProps) {
           renderItem={({ item }) => (
             <UserCard user={item as SubscribedUser} event={paramsEvent} />
           )}
-          ItemSeparatorComponent={() => <Box h="$5" />}
-          ListEmptyComponent={
-            <Center flex={1} pt="$full">
-              <Text maxWidth="60%" textAlign="center" color="$textColor">
-                {isLoading
-                  ? "Carregando participantes."
-                  : "Nenhum participante inscrito até o momento :/"}
-              </Text>
-            </Center>
-          }
-          refreshControl={
-            <RefreshControl
-              colors={["#13F2F2"]}
-              progressBackgroundColor="#111D40"
-              refreshing={isLoading}
-              onRefresh={onRefresh}
-            />
-          }
+          hasNextPage={false}
+          isRefreshLoading={isLoading}
+          onRefresh={onRefresh}
+          loadMoreEvents={() => {}}
+          isLoading={isLoading}
         />
         <Center pt="$5">
           {isEventOpen ? (
