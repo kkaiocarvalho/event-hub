@@ -27,7 +27,7 @@ type RequestProps = {
   method: typeof api.get | typeof api.post | typeof api.delete;
   url: string;
   body?: any;
-  schema: z.ZodObject<any> | z.ZodArray<any> | z.ZodString;
+  schema: z.ZodObject<any> | z.ZodArray<any> | z.ZodString | z.ZodUnion<any>;
 };
 
 export async function request<T = unknown>({

@@ -10,6 +10,7 @@ import {
 import {
   Box,
   Center,
+  Pressable,
   Toast,
   ToastDescription,
   ToastTitle,
@@ -58,27 +59,33 @@ export function EventParticipants({ route }: EventStackProps) {
   const drawParticipantsMutation = useMutation({
     mutationFn: drawParticipant,
     onSuccess(response) {
-        console.log({response})
       configToast.closeAll();
-      if(typeof response === "string") return;
-      configToast.show({
-        placement: "top",
-        render: () => {
-          console.log({ response });
-          return (
-            <Toast action="success" variant="accent" top={insets.top}>
-              <VStack space="xs">
-                <ToastTitle>Sucesso</ToastTitle>
-                <ToastDescription>
-                  O Participante sorteado foi:{" "}
-                  {(response as DrawParticipantResponse).nomeParticipante}!
-                </ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
-      queryClient.refetchQueries({ queryKey: [QK_EVENT_PARTICIPANTS, event] });
+      if (typeof response === "string") return;
+      const name = (
+        response as DrawParticipantResponse as {
+          nomeParticipante: string;
+        }
+      ).nomeParticipante;
+      if (name) {
+        configToast.show({
+          placement: "top",
+          render: () => {
+            return (
+              <Toast action="success" variant="accent" top={insets.top}>
+                <VStack space="xs">
+                  <ToastTitle>Sucesso</ToastTitle>
+                  <ToastDescription>
+                    O Participante sorteado foi: {name}!
+                  </ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+        queryClient.refetchQueries({
+          queryKey: [QK_EVENT_PARTICIPANTS, event],
+        });
+      }
     },
     onError(error: RequestErrorSchema) {
       const message =
@@ -114,6 +121,29 @@ export function EventParticipants({ route }: EventStackProps) {
 
   const isEventOpen = event?.statusEvento === EventStatus.OPEN;
 
+  const hasParticipantsToDraw = !!participants.filter((e) =>
+    e.statusParticipacao === "PRESENTE" ? e.sorteado === "N" : false
+  ).length;
+
+  const toastCantDrawnParticipants = () => {
+    configToast.closeAll();
+    configToast.show({
+      placement: "top",
+      render: () => {
+        return (
+          <Toast action="warning" variant="accent" top={insets.top}>
+            <VStack space="xs">
+              <ToastTitle>Ops!</ToastTitle>
+              <ToastDescription>
+                Nenhum participante elegível para o sorteio.
+              </ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+  };
+
   return (
     <Background>
       <Box mb="$1/6" flex={1}>
@@ -134,16 +164,24 @@ export function EventParticipants({ route }: EventStackProps) {
         />
         <Center pt="$5">
           {isEventOpen ? (
-            <Button
-              text="Sortear"
-              width="$full"
-              rightIcon={() => (
-                <Box sx={{ paddingLeft: "$2" }}>
-                  <Ionicons name="dice" size={24} color="#FFF" />
-                </Box>
-              )}
-              onPress={() => handleDrawParticipant()}
-            />
+            <Pressable
+              w="$full"
+              onPress={() =>
+                !hasParticipantsToDraw && toastCantDrawnParticipants()
+              }
+            >
+              <Button
+                text="Sortear"
+                width="$full"
+                isDisabled={!hasParticipantsToDraw}
+                rightIcon={() => (
+                  <Box sx={{ paddingLeft: "$2" }}>
+                    <Ionicons name="dice" size={24} color="#FFF" />
+                  </Box>
+                )}
+                onPress={() => handleDrawParticipant()}
+              />
+            </Pressable>
           ) : null}
         </Center>
       </Box>
