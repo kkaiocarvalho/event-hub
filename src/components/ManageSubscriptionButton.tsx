@@ -114,7 +114,11 @@ export function ManageSubscriptionButton({
         rightIcon={
           canInteractWithEvent ? interactionButtonIcon : CloseCircleIcon
         }
-        isDisabled={!canInteractWithEvent}
+        isDisabled={
+          !canInteractWithEvent ||
+          event.statusParticipacao === "FALTANTE" ||
+          event.statusParticipacao === "PRESENTE"
+        }
         isLoading={isLoading}
         onPress={() => handleEventInteract()}
       />

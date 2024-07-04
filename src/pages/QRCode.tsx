@@ -84,11 +84,11 @@ export function QRCode() {
   const handleMutationQrCode = () => {
     if (body) {
       qrCodeCheckInMutation.mutate(body);
+      setIsLoading(true);
     }
   };
 
   const handleBarCodeScanned = async (scanner: BarcodeScanningResult) => {
-    setIsLoading(true);
     const { data } = scanner;
     setScanned(true);
     const { cdRegistroEvento, chaveQRCode, cpfParticipante } = JSON.parse(data);
@@ -100,7 +100,8 @@ export function QRCode() {
       cpfParticipante,
     };
     setBody(scannerBody);
-    handleMutationQrCode();
+    qrCodeCheckInMutation.mutate(scannerBody);
+    setIsLoading(true);
   };
 
   if (hasPermission === null) {
@@ -112,6 +113,7 @@ export function QRCode() {
       </Background>
     );
   }
+
   if (hasPermission === false) {
     return (
       <Background>
