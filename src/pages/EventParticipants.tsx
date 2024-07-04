@@ -58,7 +58,9 @@ export function EventParticipants({ route }: EventStackProps) {
   const drawParticipantsMutation = useMutation({
     mutationFn: drawParticipant,
     onSuccess(response) {
+        console.log({response})
       configToast.closeAll();
+      if(typeof response === "string") return;
       configToast.show({
         placement: "top",
         render: () => {

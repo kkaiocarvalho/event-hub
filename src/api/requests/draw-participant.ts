@@ -2,11 +2,13 @@ import { z } from "zod";
 import { apiEvents } from "../../config/api";
 import { request } from "../../config/request";
 
-const drawParticipantResponseSchema = z.object({
-  cdParticipanteEvento: z.number(),
-  nuInscricaoEvento: z.number(),
-  nomeParticipante: z.string(),
-});
+const drawParticipantResponseSchema = z
+  .object({
+    cdParticipanteEvento: z.number(),
+    nuInscricaoEvento: z.number(),
+    nomeParticipante: z.string(),
+  })
+  .or(z.string());
 
 export type DrawParticipantVariables = {
   cdRegistroEvento: number;
@@ -21,7 +23,7 @@ export async function drawParticipant(variables: DrawParticipantVariables) {
     method: apiEvents.post,
     url: "/participantes/sortear-participante",
     body: variables,
-    // schema: drawParticipantResponseSchema,
-    schema: z.string(),
+    schema: drawParticipantResponseSchema,
+    // schema: ,
   });
 }

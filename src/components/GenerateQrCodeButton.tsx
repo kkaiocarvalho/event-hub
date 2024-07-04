@@ -197,7 +197,7 @@ export function GenerateQrCodeButton({ event }: GenerateQrCodeButtonProps) {
                 p="$4"
                 h="$16"
                 flex={1}
-                text="Coompartilhar"
+                text="Compartilhar"
                 iconSize={18}
                 isLoading={isLoading}
                 rightIcon={ShareIcon}
