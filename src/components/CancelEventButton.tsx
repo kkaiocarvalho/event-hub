@@ -136,7 +136,7 @@ export function CancelEventButton({ event }: CancelEventButtonProps) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <Heading size="lg" color="$error500">
-              Cencelar Evento
+              Cancelar Evento
             </Heading>
             <AlertDialogCloseButton>
               <Icon as={CloseIcon} />
